@@ -162,7 +162,7 @@
   var _mapForceTestSkill = 1 || skillTestID;
 
   var _mapForcePayCost = 'true' || 'false' || payCost;
-  var _sceneMapProto = Scene_Map.prototype;core
+  var _sceneMapProto = Scene_Map.prototype;
 
   var mapbattleParameters = PluginManager.parameters('SRPG_MapBattle');
   var _animDelay = Number(mapbattleParameters['SRPG_MapBattle'] || coreParameters['SRPG_MapBattle'] || -1);

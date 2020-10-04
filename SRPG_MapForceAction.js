@@ -165,9 +165,9 @@
   var _sceneMapProto = Scene_Map.prototype;
 
   var mapbattleParameters = PluginManager.parameters('SRPG_MapBattle');
-  var _animDelay = Number(mapbattleParameters['SRPG_MapBattle'] || coreParameters['SRPG_MapBattle'] || -1);
-  var _BeforeMapBattleCE =  Number(mapbattleParameters['BeforeMapBattleCE_ID'] || coreParameters['SRPG_MapBattle'] || 1);
-  var _changed_Skill_CE_Timing = Number(mapbattleParameters['Skill_CE_Timing_SwitchID'] || coreParameters['SRPG_MapBattle'] || 0);
+  var _animDelay = Number(mapbattleParameters['Animation Delay'] || coreParameters['Animation Delay'] || -1);
+  var _BeforeMapBattleCE =  Number(mapbattleParameters['BeforeMapBattleCE_ID'] || coreParameters['BeforeMapBattleCE_ID'] || 1);
+  var _changed_Skill_CE_Timing = Number(mapbattleParameters['Skill_CE_Timing_SwitchID'] || coreParameters['Skill_CE_Timing_SwitchID'] || 0);
 
   var _callMapForceAction = false; // default Disabled
 

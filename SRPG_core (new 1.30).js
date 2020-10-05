@@ -323,7 +323,12 @@
  * Map movement(event command "Location move") during SRPG battle is not possible.
  * Go to the map for battle and use the plug-in command SRPGBattle Start.
  * Also, use the plugin command SRPGBattle End before moving to other map.
- * 
+ *
+ *
+ * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
+ *                    => if No Skillnote is used or SkillNote is NOT "false" , AgiAtt+ will work normal on that Skill
+ *
+ *
  * Plugins built in from Ver.1.30Q:
  * - SRPG_AgiAttackPlus
  * - SRPG_UncounterableAttack

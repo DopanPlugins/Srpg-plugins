@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_core.js -SRPGコンバータMV-
 // バージョン   : 1.30 + Q
 // 最終更新日   : 2020/9/26
@@ -14,8 +14,8 @@
 //=============================================================================
 
 /*:
- * @plugindesc SRPG battle system (tactical battle system) on map.
- * @author Gakuto Mikagami, Dr. Q (edited by dopan for Mapbattle & ActorCommands)
+ * @plugindesc SRPG battle system (tactical battle system) on map (Version 1.30).
+ * @author Gakuto Mikagami, Dr. Q (edited by dopan for little Extras)
  *
  * @param srpgTroopID
  * @desc SRPGconverter use this troop ID.
@@ -821,6 +821,9 @@
  * 改めて導入する必要はありません。
  * SRPG_AgiAttackPlus、SRPGconverter_with_YEP_BattleEngineCoreを使用する際は
  * プラグインパラメータからONにしてください。
+ *
+ * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
+ *                    => if No Skillnote is used or SkillNote is NOT false , AgiAtt+ will work normal on that Skill
  *
  * プラグインコマンド:
  *   SRPGBattle Start   # SRPG戦闘を開始する。
@@ -6912,7 +6915,21 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
 
-                // agi attack plus
+
+
+                // agi attack plus ->edited by dopan add If Condition for SkillNote "<AgiExtra:true/false>"
+                // "<AgiExtra:true/false>" -> "true" is default
+        
+                // dopan Edit :  get data of "active Skill" Skill_ID
+                var activeSkill = user._actions[0]._item._itemId;
+
+                // dopan Edit :  use the "active Skill" Skill_ID to ask about the SkillNote meta of this Skill
+                if ($dataSkills[activeSkill].meta.AgiExtra == "false") {
+                    // nothing
+
+                // dopan Edit : if Skillnote "<AgiExtra:true/false>" -> NOT "false" -> trigger the Agi Function
+                } else {
+                // agi attack plus 
                 if (_srpgUseAgiAttackPlus == 'true') {
                     if (user.agi >= target.agi) {
                         var firstBattler = user;
@@ -6939,6 +6956,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                         }
                     }
                 }
+                }; // dopan Edit End (SkillNote usage)
 	};
 
 	// work through the queue of attacks

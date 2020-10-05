@@ -329,6 +329,7 @@
  *                    => if No Skillnote is used or SkillNote is NOT "false" , AgiAtt+ will work normal on that Skill
  *
  *
+ *
  * Plugins built in from Ver.1.30Q:
  * - SRPG_AgiAttackPlus
  * - SRPG_UncounterableAttack

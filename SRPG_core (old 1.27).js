@@ -15,7 +15,7 @@
 
 /*:
  * @plugindesc SRPG battle system (tactical battle system) on map.
- * @author Gakuto Mikagami (adjustments by Dr. Q)
+ * @author Gakuto Mikagami (adjustments by Dr. Q) (added Switches for ActorBattleCommands by dopan)
  *
  * @param srpgTroopID
  * @desc SRPGconverter use this troop ID.

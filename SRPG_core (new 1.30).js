@@ -15,7 +15,7 @@
 
 /*:
  * @plugindesc SRPG battle system (tactical battle system) on map (edited Version 1.30).
- * @author Gakuto Mikagami, Dr. Q (edited by dopan for little Extras)
+ * @author Gakuto Mikagami, Dr. Q (extraEdits by boomy & dopan)
  *
  * @param srpgTroopID
  * @desc SRPGconverter use this troop ID.
@@ -2284,6 +2284,12 @@
             this.removeBuffsAuto();
             this.clearResult();
             this.setSrpgTurnEnd(false);
+	    //Buff & States Core Fix ,contributed by boomy
+            if(Imported.YEP_BuffsStatesCore !== undefined) {
+               if(Imported.YEP_BuffsStatesCore) {
+                  if (this.meetTurnEndStateEffectsConditions()) this.onTurnEndStateEffects();
+               }
+            } //Buff & States Core Fix ,edit end  	
         } else {
             return _SRPG_Game_Battler_onTurnEnd.call(this);
         }

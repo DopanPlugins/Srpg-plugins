@@ -1957,6 +1957,12 @@
             this.removeBuffsAuto();
             this.clearResult();
             this.setSrpgTurnEnd(false);
+            //Buff & States Core Fix ,contributed by boomy
+            if(Imported.YEP_BuffsStatesCore !== undefined) {
+               if(Imported.YEP_BuffsStatesCore) {
+                  if (this.meetTurnEndStateEffectsConditions()) this.onTurnEndStateEffects();
+               }
+            } //Buff & States Core Fix ,edit end      
         } else {
             return _SRPG_Game_Battler_onTurnEnd.call(this);
         }

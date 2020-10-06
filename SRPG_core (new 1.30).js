@@ -85,6 +85,8 @@
  * @type boolean
  * @default true
  *
+ * //-dopan edit start- for ActorbattleCommands
+ *
  * @param srpgActorCommandAttackSwitchID
  * @desc Switch ID:0 or Switch "false" ->*Enable*AttackCommand      Switch "true" ->*Disable*AttackCommand。
  * @type switch
@@ -109,6 +111,8 @@
  * @desc Switch ID:0 or Switch "false" ->*Enable*WaitCommand      Switch "true" ->*Disable*WaitCommand。
  * @type switch
  * @default 0
+ *
+ * //-dopan edit end- for ActorbattleCommands
  *
  * @param srpgWinLoseConditionCommand
  * @desc true is add command 'Win / Lose Condetion' in menu command.(true / false)
@@ -161,6 +165,20 @@
  * @desc Set true if you use YEP_BattleEngineCore.
  * @type boolean
  * @default false
+ *
+ * // boomys edit start // side view battler positions
+ *
+ * @param ActorHomeX
+ * @desc This formula determines the actor's home X position in SRPG mode
+ * YEP Default: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
+ * @default Graphics.width - 216 - index * 240
+ *
+ * @param ActorHomeY
+ * @desc This formula determines the actor's home Y position in SRPG mode
+ * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
+ * @default Graphics.height / 2 + 48 
+ *
+ * // boomys edit end // side view battler positions
  *
  * @param Use Map Battle
  * @desc Default Map Battle usage
@@ -656,6 +674,20 @@
  * @type boolean
  * @default false
  * 
+ * // boomys edit start // side view battler positions
+ *
+ * @param ActorHomeX
+ * @desc アクタースプライトの基準位置
+ * YEP Default: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
+ * @default Graphics.width - 216 - index * 240
+ *
+ * @param ActorHomeY
+ * @desc アクタースプライトの基準位置
+ * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
+ * @default Graphics.height / 2 + 48 
+ *
+ * // boomys edit end // side view battler positions
+ *
  * @param Use Map Battle
  * @desc マップバトルを使用するかどうか
  * @type select
@@ -1005,11 +1037,11 @@
     var _textSrpgTurnEnd = parameters['textSrpgTurnEnd'] || 'ターン終了';
     var _textSrpgAutoBattle = parameters['textSrpgAutoBattle'] || 'オート戦闘';
     var _srpgBattleQuickLaunch = parameters['srpgBattleQuickLaunch'] || 'true';
-    var _srpgActorCommandAttackSwitchID = Number(parameters['srpgActorCommandAttackSwitchID'] || 0);
-    var _srpgActorCommandSkillSwitchID = Number(parameters['srpgActorCommandSkillSwitchID'] || 0);
-    var _srpgActorCommandItemSwitchID = Number(parameters['srpgActorCommandItemSwitchID'] || 0);
-    var _srpgActorCommandEquipSwitchID = Number(parameters['srpgActorCommandEquipSwitchID'] || 0);
-    var _srpgActorCommandWaitSwitchID = Number(parameters['srpgActorCommandWaitSwitchID'] || 0);  
+    var _srpgActorCommandAttackSwitchID = Number(parameters['srpgActorCommandAttackSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandSkillSwitchID = Number(parameters['srpgActorCommandSkillSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandItemSwitchID = Number(parameters['srpgActorCommandItemSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandEquipSwitchID = Number(parameters['srpgActorCommandEquipSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandWaitSwitchID = Number(parameters['srpgActorCommandWaitSwitchID'] || 0); //dopans edit
     var _srpgBattleEndAllHeal = parameters['srpgBattleEndAllHeal'] || 'true';
     var _srpgStandUnitSkip = 'true';
     var _srpgPredictionWindowMode = Number(parameters['srpgPredictionWindowMode'] || 1);
@@ -1031,14 +1063,16 @@
     var _useMapBattle = Number(parameters['Use Map Battle'] || 3);
     var _mapBattleSwitch = Number(parameters['Map Battle Switch'] || 0);
     var _animDelay = Number(parameters['Animation Delay'] || -1);
-    var _BeforeMapBattleCE = Number(parameters['BeforeMapBattleCE_ID'] || 1);    
-    var _changeAnimationDelaySwitchID = Number(parameters['ChangeAniDelaySwitch_ID'] || 0); 
-    var _changeAniDelayVarID = Number(parameters['ChangeAniDelayVarID'] || 0); 
-    var _changed_Skill_CE_Timing = Number(parameters['Skill_CE_Timing_SwitchID'] || 0);
+    var _BeforeMapBattleCE = Number(parameters['BeforeMapBattleCE_ID'] || 1);  //dopans edit 
+    var _changeAnimationDelaySwitchID = Number(parameters['ChangeAniDelaySwitch_ID'] || 0); //dopans edit
+    var _changeAniDelayVarID = Number(parameters['ChangeAniDelayVarID'] || 0);  //dopans edit
+    var _changed_Skill_CE_Timing = Number(parameters['Skill_CE_Timing_SwitchID'] || 0);  //dopans edit
     var _srpgUseAgiAttackPlus = parameters['useAgiAttackPlus'] || 'true';
     var _srpgAgilityAffectsRatio = Number(parameters['srpgAgilityAffectsRatio'] || 2);
     var _AAPwithYEP_BattleEngineCore = parameters['WithYEP_BattleEngineCore'] || 'false';
-
+    var _actorHomeX = parameters['ActorHomeX']) || Graphics.width - 216 - index * 240; //boomys edit
+    var _actorHomeY = parameters['ActorHomeY']) || Graphics.height / 2 + 48;  //boomys edit
+	
     var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
@@ -3890,7 +3924,8 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
     var _SRPG_Sprite_Actor_setActorHome = Sprite_Actor.prototype.setActorHome;
     Sprite_Actor.prototype.setActorHome = function(index) {
         if ($gameSystem.isSRPGMode() == true) {
-            this.setHome(Graphics.width - 216 - index * 240, Graphics.height / 2 + 48);
+            //boomys edit // default was "this.setHome(Graphics.width - 216 - index * 240, Graphics.height / 2 + 48);"
+            this.setHome(eval(_actorHomeX), eval(_actorHomeY)); //boomys edit 
         } else {
             _SRPG_Sprite_Actor_setActorHome.call(this, index);
         }
@@ -6596,11 +6631,16 @@ Window_WinLoseCondition.prototype.refresh = function() {
             this._logWindow.push('pushBaseLine');
             if (Math.random() < this._action.itemCnt(target)) {
                 var attackSkill = $dataSkills[target.attackSkillId()];
-                if (target.canUse(attackSkill) == true) {
-                    this.invokeCounterAttack(subject, target);
-                } else {
-                    this.invokeNormalAction(subject, target);
-                }
+		// boomys edit Start // fix counter if not using SRPG mode
+                if ($gameSystem.isSRPGMode() == true) {
+		    if (target.canUse(attackSkill) == true) {
+                        this.invokeCounterAttack(subject, target);
+                    } else {
+                        this.invokeNormalAction(subject, target);
+                    }
+		} else {
+		    this.invokeCounterAttack(subject, target);	
+		} // boomys edit end // fix counter if not using SRPG mode
             } else if (Math.random() < this._action.itemMrf(target)) {
                 this.invokeMagicReflection(subject, target);
             } else {

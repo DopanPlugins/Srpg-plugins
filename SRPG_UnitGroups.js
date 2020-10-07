@@ -2,13 +2,8 @@
 // SRPG_UnitGroups.js
 //=============================================================================>
 /*:
- * @plugindesc v1.0 Adds <SRPG_UnitGroups> to use 50 new Scriptcalls in SRPG 
+ * @plugindesc v1.0 Adds <SRPG_UnitGroups> to use 68 new Scriptcalls in SRPG 
  * @author dopan
- *
- *
- *
- * 
- *
  *
  *
  *

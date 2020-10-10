@@ -739,8 +739,9 @@
     var _srpgSet = parameters['srpgSet'] || 'srpg_set';
     var _rewardSe = parameters['rewardSound'] || 'Item3';
     var _expSe = parameters['expSound'] || 'Up4';
-    var _actorHomeX = parameters['ActorHomeX']) || Graphics.width - 216 - index * 240; // boomys edit
-    var _actorHomeY = parameters['ActorHomeY']) || Graphics.height / 2 + 48; // boomys edit 
+    var index = 0 ; // dopan info -> this is needed for boomys next edit
+    var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; // boomys edit
+    var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48; // boomys edit 
     
     var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;

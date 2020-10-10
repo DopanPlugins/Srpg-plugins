@@ -1070,8 +1070,9 @@
     var _srpgUseAgiAttackPlus = parameters['useAgiAttackPlus'] || 'true';
     var _srpgAgilityAffectsRatio = Number(parameters['srpgAgilityAffectsRatio'] || 2);
     var _AAPwithYEP_BattleEngineCore = parameters['WithYEP_BattleEngineCore'] || 'false';
-    var _actorHomeX = parameters['ActorHomeX']) || Graphics.width - 216 - index * 240; //boomys edit
-    var _actorHomeY = parameters['ActorHomeY']) || Graphics.height / 2 + 48;  //boomys edit
+    var index = 0 ; // dopan info -> this is needed for boomys next edit
+    var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; //boomys edit
+    var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48;  //boomys edit
 	
     var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;

@@ -268,41 +268,42 @@
   
 //-----------------------------------------------------------------------------------------
 
-//Plugin ScriptCall:
+
 
 	var _srpgAfterAction = Scene_Map.prototype.srpgAfterAction;
 	Scene_Map.prototype.srpgAfterAction = function() {
-          if (_srpgRangeDmgCheck == true) {
-             _srpgRangeDmgCheck = false;
-             for (var i = 1; i <= $gameMap.events().length; i++) {
-             var battleunit = $gameSystem.EventToUnit([i]);
-             var eventunit = $gameMap.event([i]);
-             if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy') && (!battleunit[1].isDead())) {  
-                 // check HitRate States and remove them if Affected
-                 if (battleunit[1].isStateAffected(_lowestHRstate)) {
-                     battleunit[1].removeState(_lowestHRstate);
-                 };  
-                 if (battleunit[1].isStateAffected(_lowHRstate)) {
-                     battleunit[1].removeState(_lowHRstate);
-                 }; 
-                 if (battleunit[1].isStateAffected(_highHRstate)) {
-                     battleunit[1].removeState(_highHRstate);
-                 };  
-                 if (battleunit[1].isStateAffected(_highestHRstate)) {
-                     battleunit[1].removeState(_highestHRstate);
-                 }; 
-                 if (battleunit[1].isStateAffected(_customHRstate)) {
-                     battleunit[1].removeState(_customHRstate);
-                 }; 
-             }
+             _srpgAfterAction.call(this);
+             if (_srpgRangeDmgCheck == true) {
+                _srpgRangeDmgCheck = false;
+                for (var i = 1; i <= $gameMap.events().length; i++) {
+                var battleunit = $gameSystem.EventToUnit([i]);
+                var eventunit = $gameMap.event([i]);
+                if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy') && (!battleunit[1].isDead())) {  
+                    // check HitRate States and remove them if Affected
+                    if (battleunit[1].isStateAffected(_lowestHRstate)) {
+                        battleunit[1].removeState(_lowestHRstate);
+                    };  
+                    if (battleunit[1].isStateAffected(_lowHRstate)) {
+                        battleunit[1].removeState(_lowHRstate);
+                    }; 
+                    if (battleunit[1].isStateAffected(_highHRstate)) {
+                        battleunit[1].removeState(_highHRstate);
+                    };  
+                    if (battleunit[1].isStateAffected(_highestHRstate)) {
+                        battleunit[1].removeState(_highestHRstate);
+                    }; 
+                    if (battleunit[1].isStateAffected(_customHRstate)) {
+                        battleunit[1].removeState(_customHRstate);
+                    }; 
+                }
                        
-             }
-	     _srpgAfterAction.call(this);
-          };
+                }
+	     
+             };
 	};
 
 
-
+//Plugin ScriptCall:
 
         // ScriptCall:  "this.srpgRangeDmgEditor(true/false);"
 	Game_Interpreter.prototype.srpgRangeDmgEditor = function(changeHR) {

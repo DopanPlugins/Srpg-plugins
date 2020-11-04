@@ -695,6 +695,16 @@
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
  * @default Graphics.height / 2 + 48 
  *
+ * @param EnemyHomeX
+ * @desc この式は、SRPGモードでの敵のホームX位置を決定します
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc この式は、SRPGモードでの敵のホームY位置を決定します
+ * SRPG Default: Graphics.height / 2 + 48
+ * @default Graphics.height / 2 + 48 
+ *
  * // boomys edit end // side view battler positions
  *
  * @param Use Map Battle

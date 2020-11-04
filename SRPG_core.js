@@ -6913,7 +6913,9 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var target = targetArray[1];
 		var action = user.action(0);
 		var reaction = null;
-
+                //get data for activeSkil
+                var activeSkill = user._actions[0]._item._itemId;
+		
 		// check if we're using map battle on this skill
 		if (action && action.item()) {
 			var mapBattleTag = action.item().meta.mapBattle;
@@ -6967,26 +6969,14 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			reaction.setSubject(target);
 			reaction.setAttack();
 			var actFirst = (reaction.speed() > action.speed());
-			if (_srpgUseAgiAttackPlus == 'true') actFirst = false;
+                        // dopan edit added "check- meta.AgiExtra"
+			if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
 			this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
 
-
-
-                // agi attack plus ->edited by dopan add If Condition for SkillNote "<AgiExtra:true/false>"
-                // "<AgiExtra:true/false>" -> "true" is default
-
-                // dopan Edit :  get data of "active Skill" Skill_ID
-                var activeSkill = user._actions[0]._item._itemId;
-
-                // dopan Edit :  use the "active Skill" Skill_ID to ask about the SkillNote meta of this Skill
-                if ($dataSkills[activeSkill].meta.AgiExtra == "false") {
-                    // nothing
-
-                // dopan Edit : if Skillnote "<AgiExtra:true/false>" -> NOT "false" -> trigger the Agi Function
-                } else {
                 // agi attack plus 
-                if (_srpgUseAgiAttackPlus == 'true') {
+                // dopan edit added "check- meta.AgiExtra"
+                if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
                     if (user.agi >= target.agi) {
                         var firstBattler = user;
                         var secondBattler = target;
@@ -7011,8 +7001,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                             this.srpgAddMapSkill(agiAction, firstBattler, secondBattler)
                         }
                     }
-                }
-                }; // dopan Edit End (SkillNote usage)			
+                }		
 	};
 
 	// work through the queue of attacks
@@ -7543,7 +7532,10 @@ Window_Options.prototype.addGeneralOptions = function() {
 //====================================================================
     var _SRPG_AAP_Game_Action_speed = Game_Action.prototype.speed;
     Game_Action.prototype.speed = function() {
-        if ($gameSystem.isSRPGMode() == true && _srpgUseAgiAttackPlus == 'true') {
+        // dopan edit added var data & "check- meta.AgiExtra"
+        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; // dopan edit
+        var activeSkill = user._actions[0]._item._itemId; // dopan edit
+        if (($gameSystem.isSRPGMode() == true) && (_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
             return this.subject().agi;
         } else {
             return _SRPG_AAP_Game_Action_speed.call(this);
@@ -7588,7 +7580,13 @@ Window_Options.prototype.addGeneralOptions = function() {
     var _SRPG_AAP_BattleManager_makeActionOrders = BattleManager.makeActionOrders;
     BattleManager.makeActionOrders = function() {
         _SRPG_AAP_BattleManager_makeActionOrders.call(this);
-        if (!_srpgUseAgiAttackPlus) return;
+        // agi attack plus ->edited by dopan added var data & "check- meta.AgiExtra"
+        // SideNote: "<AgiExtra:true/false>" -> "true" is default if no SkillNote is used
+        // dopan Edit :  get data of "active Skill" Skill_ID
+        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; //dopan edit
+        var activeSkill = user._actions[0]._item._itemId; //dopan edit
+        // dopan edit added "check- meta.AgiExtra"
+        if ((!_srpgUseAgiAttackPlus) || ($dataSkills[activeSkill].meta.AgiExtra == "false")) return;
         var battlers = this._actionBattlers;
         var firstBattler = battlers[0];
         if (!firstBattler.currentAction() || !firstBattler.currentAction().item()) {

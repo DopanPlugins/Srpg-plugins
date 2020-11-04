@@ -1081,7 +1081,7 @@
     var index = 0 ; // dopan info -> this is needed for boomys next edit
     var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; //boomys edit
     var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48;  //boomys edit
-	var _enemyHomeX = parameters['EnemyHomeX'] || 216 + index * 240; //boomys edit
+    var _enemyHomeX = parameters['EnemyHomeX'] || 216 + index * 240; //boomys edit
     var _enemyHomeY = parameters['EnemyHomeY'] || Graphics.height / 2 + 48; //boomys edit
 	
 	
@@ -2926,8 +2926,9 @@
             this._enemies = [];
             for (var i = 0; i < this.SrpgBattleEnemys().length; i++) {
                 var enemy = this.SrpgBattleEnemys()[i];
-				var index = i;
-                enemy.setScreenXy(eval(_enemyHomeX), eval(_enemyHomeY)); 
+    //dopan edit info //about boomys edit,default was => "enemy.setScreenXy(200 + 240 * i, Graphics.height / 2 + 48); "   
+		var index = i; // boomys edit
+                enemy.setScreenXy(eval(_enemyHomeX), eval(_enemyHomeY)); /boomys edit
                 this._enemies.push(enemy);
             }
             this.makeUniqueNames();

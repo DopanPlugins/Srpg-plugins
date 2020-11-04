@@ -178,6 +178,16 @@
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
  * @default Graphics.height / 2 + 48 
  *
+ * @param EnemyHomeX
+ * @desc This formula determines the enemy's home X position in SRPG mode
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc This formula determines the enemy's home Y position in SRPG mode
+ * SRPG Default: Graphics.height / 2 + 48
+ * @default Graphics.height / 2 + 48 
+ *
  * // boomys edit end // side view battler positions
  *
  * @param Use Map Battle
@@ -1071,6 +1081,8 @@
     var index = 0 ; // dopan info -> this is needed for boomys next edit
     var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; //boomys edit
     var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48;  //boomys edit
+	var _enemyHomeX = parameters['EnemyHomeX'] || 216 + index * 240; //boomys edit
+    var _enemyHomeY = parameters['EnemyHomeY'] || Graphics.height / 2 + 48; //boomys edit
 	
 	
     var _Game_Interpreter_pluginCommand =
@@ -2914,7 +2926,8 @@
             this._enemies = [];
             for (var i = 0; i < this.SrpgBattleEnemys().length; i++) {
                 var enemy = this.SrpgBattleEnemys()[i];
-                enemy.setScreenXy(200 + 240 * i, Graphics.height / 2 + 48);
+				var index = i;
+                enemy.setScreenXy(eval(_enemyHomeX), eval(_enemyHomeY)); 
                 this._enemies.push(enemy);
             }
             this.makeUniqueNames();
@@ -2922,6 +2935,7 @@
             _SRPG_Game_Troop_setup.call(this, troopId);
         }
     };
+
 
     // EXPを返す
     var _SRPG_Game_Troop_expTotal = Game_Troop.prototype.expTotal;
@@ -7685,4 +7699,3 @@ BattleManager.invokeAction = function(subject, target) {
 };
 
 })();
-

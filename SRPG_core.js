@@ -2928,7 +2928,7 @@
                 var enemy = this.SrpgBattleEnemys()[i];
     //dopan edit info //about boomys edit,default was => "enemy.setScreenXy(200 + 240 * i, Graphics.height / 2 + 48); "    
 		  var index = i; // boomys edit
-                enemy.setScreenXy(eval(_enemyHomeX), eval(_enemyHomeY)); /boomys edit
+                enemy.setScreenXy(eval(_enemyHomeX), eval(_enemyHomeY)); // boomys edit
                 this._enemies.push(enemy);
             }
             this.makeUniqueNames();

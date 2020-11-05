@@ -1,7 +1,7 @@
 //=============================================================================
 // SRPG_core.js -SRPGコンバータMV-
-// バージョン   : 1.30 + Q
-// 最終更新日   : 2020/9/26
+// バージョン   : 1.32 + Q
+// 最終更新日   : 2020/10/8
 // 制作         : 神鏡学斗, Dr. Q
 // 配布元       : http://www.lemon-slice.net/
 // 制作協力 　　: アンチョビ様　
@@ -14,7 +14,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc SRPG battle system (tactical battle system) on map (edited Version 1.30).
+ * @plugindesc SRPG battle system (tactical battle system) on map (edited Version 1.32).
  * @author Gakuto Mikagami, Dr. Q (extraEdits by boomy & dopan)
  *
  * @param srpgTroopID
@@ -176,6 +176,16 @@
  * @param ActorHomeY
  * @desc This formula determines the actor's home Y position in SRPG mode
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
+ * @default Graphics.height / 2 + 48 
+ *
+ * @param EnemyHomeX
+ * @desc This formula determines the enemy's home X position in SRPG mode
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc This formula determines the enemy's home Y position in SRPG mode
+ * SRPG Default: Graphics.height / 2 + 48
  * @default Graphics.height / 2 + 48 
  *
  * // boomys edit end // side view battler positions
@@ -341,13 +351,7 @@
  * Map movement(event command "Location move") during SRPG battle is not possible.
  * Go to the map for battle and use the plug-in command SRPGBattle Start.
  * Also, use the plugin command SRPGBattle End before moving to other map.
- *
- *
- * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
- *                    => if No Skillnote is used or SkillNote is NOT "false" , AgiAtt+ will work normal on that Skill
- *
- *
- *
+ * 
  * Plugins built in from Ver.1.30Q:
  * - SRPG_AgiAttackPlus
  * - SRPG_UncounterableAttack
@@ -356,7 +360,13 @@
  * The above plugins are already built into SRPG_core.js, so you don't need to install them again.
  * When using SRPG_AgiAttackPlus and SRPGconverter_with_YEP_BattleEngineCore, 
  * please turn on the function from the plug-in parameter.
- * 
+ *
+ *
+ * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
+ *   (dopan edit)     => if No Skillnote is used or SkillNote is NOT "false" , AgiAtt+ will work normal on that Skill
+ *
+ *
+ *
  * plugin command:
  *   SRPGBattle Start   # start tactical battle.
  *   SRPGBattle End     # end tactical battle.
@@ -409,7 +419,6 @@
  *   <srpgWeaponSkill:X># set attack skill ID X. normal attack is skill ID 1.
  *   <srpgCounter:false># set this weapon can't counter attack.
  *   <srpgMovePlus:X>   # change move range X. you can set minus value.
- *   <srpgWRangePlus:X> # change normal attack range X. you can set minus value.
  *   <srpgThroughTag:X> # unit can go through tiles with terrain tags less than X(except for terrain tag 0)
  *
  * armor's note:
@@ -595,7 +604,7 @@
  * @type boolean
  * @default true
  *
- *
+ * //dopan edit start 
  * @param srpgActorCommandAttackSwitchID
  * @desc スイッチ ID：0またはスイッチ「false」-> *有効* AttackCommandスイッチ「true」-> *無効* AttackCommand。
  * @type switch
@@ -620,7 +629,7 @@
  * @desc スイッチID：0またはスイッチ「false」-> *有効* WaitCommandスイッチ「true」-> *無効* WaitCommand。
  * @type switch
  * @default 0
- *
+ * //dopan edit end 
  *
  * @param srpgWinLoseConditionCommand
  * @desc メニューコマンドに『勝敗条件』を追加します。(true / false)
@@ -673,7 +682,7 @@
  * @desc YEP_BattleEngineCoreと併用する場合はtrueに設定してください。
  * @type boolean
  * @default false
- * 
+ *
  * // boomys edit start // side view battler positions
  *
  * @param ActorHomeX
@@ -684,6 +693,16 @@
  * @param ActorHomeY
  * @desc アクタースプライトの基準位置
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
+ * @default Graphics.height / 2 + 48 
+ *
+ * @param EnemyHomeX
+ * @desc この式は、SRPGモードでの敵のホームX位置を決定します
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc この式は、SRPGモードでの敵のホームY位置を決定します
+ * SRPG Default: Graphics.height / 2 + 48
  * @default Graphics.height / 2 + 48 
  *
  * // boomys edit end // side view battler positions
@@ -745,7 +764,7 @@
  *
  * //-dopan edit end--dopan編集終了-
  *
- *
+ * 
  * @param useAgiAttackPlus
  * @desc 敏捷が高い方が２回攻撃する仕組みを使用します。
  * @type boolean
@@ -861,7 +880,7 @@
  * プラグインパラメータからONにしてください。
  *
  * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
- *                    => if No Skillnote is used or SkillNote is NOT false , AgiAtt+ will work normal on that Skill
+ *    (dopan edit)    => if No Skillnote is used or SkillNote is NOT false , AgiAtt+ will work normal on that Skill
  *
  * プラグインコマンド:
  *   SRPGBattle Start   # SRPG戦闘を開始する。
@@ -914,7 +933,6 @@
  *   <srpgWeaponSkill:X># 攻撃時に、通常攻撃（スキルID 1）ではなく、Xで設定したＩＤのスキルを発動する武器になります。
  *   <srpgCounter:false># 設定すると、相手からの攻撃に対して反撃しない武器になります（反撃率とは異なる）。
  *   <srpgMovePlus:X>   # Xの分だけ移動力を変化させます。マイナスの値も設定可能です。
- *   <srpgWRangePlus:X> # Xの分だけ通常攻撃の攻撃射程を変化させます。マイナスの値も設定可能です。
  *   <srpgThroughTag:X> # X以下の地形タグが設定されたタイルを通過できます（地形タグ 0 には無効）。
  *
  * 防具のメモ欄:
@@ -1073,6 +1091,9 @@
     var index = 0 ; // dopan info -> this is needed for boomys next edit
     var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; //boomys edit
     var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48;  //boomys edit
+    var _enemyHomeX = parameters['EnemyHomeX'] || 216 + index * 240; //boomys edit
+    var _enemyHomeY = parameters['EnemyHomeY'] || Graphics.height / 2 + 48; //boomys edit
+	
 	
     var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;
@@ -1719,7 +1740,7 @@
                     if (event.event().meta.mode) {
                         actor_unit.setBattleMode(event.event().meta.mode);
                         if (event.event().meta.targetId) {
-                            actor_unit.setTargetId(event.event().meta.targetId);
+                            actor_unit.setTargetId(Number(event.event().meta.targetId));
                         }
                     }
                     actor_unit.setSearchItem(event.event().meta.searchItem);
@@ -1746,7 +1767,7 @@
                     if (event.event().meta.mode) {
                         enemy_unit.setBattleMode(event.event().meta.mode);
                         if (event.event().meta.targetId) {
-                            enemy_unit.setTargetId(event.event().meta.targetId);
+                            enemy_unit.setTargetId(Number(event.event().meta.targetId));
                         }
                     }
                     enemy_unit.initTp(); //TPを初期化
@@ -1934,14 +1955,17 @@
         $gameTemp.initialMoveTable(event.posX(), event.posY(), battlerArray[1].srpgMove());
         event.makeMoveTable(event.posX(), event.posY(), battlerArray[1].srpgMove(), [0], battlerArray[1].srpgThroughTag());
         var list = $gameTemp.moveList();
+        if (battlerArray[1].action(0) && battlerArray[1].action(0).item()) {
+            var range = battlerArray[1].srpgSkillRange(battlerArray[1].action(0).item());
+            var item = battlerArray[1].action(0).item();
+        } else {
+            var range = battlerArray[1].srpgWeaponRange();
+            var item = $dataSkills[battlerArray[1].attackSkillId()];
+        }
         for (var i = 0; i < list.length; i++) {
             var pos = list[i];
             var flag = this.areTheyNoUnits(pos[0], pos[1], '');
-            if (battlerArray[1].action(0) && battlerArray[1].action(0).item()) {
-                if (flag == true && _srpgBestSearchRouteSize > 0) event.makeRangeTable(pos[0], pos[1], battlerArray[1].srpgSkillRange(battlerArray[1].action(0).item()), [0], pos[0], pos[1], battlerArray[1].action(0).item());
-            } else {
-                if (flag == true && _srpgBestSearchRouteSize > 0) event.makeRangeTable(pos[0], pos[1], battlerArray[1].srpgWeaponRange(), [0], pos[0], pos[1], $dataSkills[battlerArray[1].attackSkillId()]);
-            }
+            if (flag == true && _srpgBestSearchRouteSize > 0) event.makeRangeTable(pos[0], pos[1], range, [0], pos[0], pos[1], item);
         }
         $gameTemp.pushRangeListToMoveList();
     };
@@ -2324,7 +2348,7 @@
                if(Imported.YEP_BuffsStatesCore) {
                   if (this.meetTurnEndStateEffectsConditions()) this.onTurnEndStateEffects();
                }
-            } //Buff & States Core Fix ,edit end  	
+            } //Buff & States Core Fix ,edit end 
         } else {
             return _SRPG_Game_Battler_onTurnEnd.call(this);
         }
@@ -2421,21 +2445,19 @@
         if (skill && skill.meta.srpgRange == -1) {
             if (!this.hasNoWeapons()) {
                 weapon = this.weapons()[0];
-                range = weapon.meta.weaponRange;
+                range = Number(weapon.meta.weaponRange);
                 // ステートによる変更
                 this.states().forEach(function(state) {
-                    if (state.meta.srpgWRangePlus) {
+                    if (state && state.meta.srpgWRangePlus) {
                         range += Number(state.meta.srpgWRangePlus);
                     }
                 }, this);
                 // 装備による変更
-                var equips = this.equips();
-                for (var i = 0; i < equips.length; i++) {
-                    var item = equips[i];
-                    if (item && item.meta.srpgMovePlus) {
-                        range += Number(item.meta.srpgWRangePlus);
+                this.armors().forEach(function(armor) {
+                    if (armor && armor.meta.srpgWRangePlus) {
+                        range += Number(armor.meta.srpgWRangePlus);
                     }
-                }
+                }, this);
             }
         } else if (skill.meta.srpgRange) {
             range = skill.meta.srpgRange;
@@ -2500,15 +2522,11 @@
             } else if (skill.meta.srpgMinRange) {
                 minRange = skill.meta.srpgMinRange;
             }
-            if (!minRange) {
-                minRange = 0;
-            }
+            if (!minRange) minRange = 0;
         } else {
             minRange = 0;
         }
-        if (minRange > this.srpgSkillRange(skill)) {
-            minRange = this.srpgSkillRange(skill);
-        }
+        if (Number(minRange) > this.srpgSkillRange(skill)) minRange = this.srpgSkillRange(skill);
         return Number(minRange);
     };
 
@@ -2573,7 +2591,7 @@
         }, this);
         // 装備による変更
         if (!this.hasNoWeapons()) {
-            var item = $dataWeapons[this.enemy().meta.srpgWeapon];
+            var item = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
             if (item && item.meta.srpgMovePlus) {
                 n += Number(item.meta.srpgMovePlus);
             }
@@ -2587,14 +2605,14 @@
         var range = 1;
         if (skill && skill.meta.srpgRange == -1) {
             if (!this.hasNoWeapons()) {
-                var weapon = $dataWeapons[this.enemy().meta.srpgWeapon];
-                range = weapon.meta.weaponRange;
+                var weapon = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
+                range = Number(weapon.meta.weaponRange);
             } else {
-                range = this.enemy().meta.weaponRange;
+                range = Number(this.enemy().meta.weaponRange);
             }
             // ステートによる変更
             this.states().forEach(function(state) {
-                if (state.meta.srpgWRangePlus) {
+                if (state && state.meta.srpgWRangePlus) {
                     range += Number(state.meta.srpgWRangePlus);
                 }
             }, this);
@@ -2614,7 +2632,7 @@
     // 武器が反撃可能かを返す
     Game_Enemy.prototype.srpgWeaponCounter = function() {
         if (!this.hasNoWeapons()) {
-            var weapon = $dataWeapons[this.enemy().meta.srpgWeapon];
+            var weapon = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
             var counter = weapon.meta.srpgCounter;
         } else {
             var counter = this.enemy().meta.srpgCounter;
@@ -2641,7 +2659,7 @@
         }, this);
         // 装備
         if (!this.hasNoWeapons()) {
-            var item = $dataWeapons[this.enemy().meta.srpgWeapon];
+            var item = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
             if (item && item.meta.srpgThroughTag && n < Number(item.meta.srpgThroughTag)) {
                 n = Number(item.meta.srpgThroughTag);
             }
@@ -2655,7 +2673,7 @@
         if (skill) {
             if (skill.meta.srpgRange == -1) {
                 if (!this.hasNoWeapons()) {
-                    var weapon = $dataWeapons[this.enemy().meta.srpgWeapon];
+                    var weapon = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
                     minRange = weapon.meta.weaponMinRange;
                 } else {
                     minRange = this.enemy().meta.weaponMinRange;
@@ -2663,15 +2681,11 @@
             } else if (skill.meta.srpgMinRange) {
                 minRange = skill.meta.srpgMinRange;
             }
-            if (!minRange) {
-                minRange = 0;
-            }
+            if (!minRange) minRange = 0;
         } else {
             minRange = 0;
         }
-        if (minRange > this.srpgSkillRange(skill)) {
-            minRange = this.srpgSkillRange(skill);
-        }
+        if (Number(minRange) > this.srpgSkillRange(skill)) minRange = this.srpgSkillRange(skill);
         return Number(minRange);
     };
 
@@ -2682,7 +2696,7 @@
 
     // 武器を装備しているか返す
     Game_Enemy.prototype.hasNoWeapons = function() {
-        return !$dataWeapons[this.enemy().meta.srpgWeapon];
+        return !$dataWeapons[Number(this.enemy().meta.srpgWeapon)];
     };
 
     // 装備の特徴を反映する
@@ -2690,7 +2704,7 @@
     Game_Enemy.prototype.traitObjects = function() {
         var objects = _SRPG_Game_Enemy_traitObjects.call(this);
         if ($gameSystem.isSRPGMode() == true) {
-            var item = $dataWeapons[this.enemy().meta.srpgWeapon];
+            var item = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
             if (item) {
                 objects.push(item);
             }
@@ -2702,7 +2716,7 @@
     Game_Enemy.prototype.paramPlus = function(paramId) {
         var value = Game_Battler.prototype.paramPlus.call(this, paramId);
         if ($gameSystem.isSRPGMode() == true) {
-            var item = $dataWeapons[this.enemy().meta.srpgWeapon];
+            var item = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
             if (item) {
                 value += item.params[paramId];
             }
@@ -2715,7 +2729,7 @@
         if (this.hasNoWeapons()) {
             return this.bareHandsAnimationId();
         } else {
-            var weapons = $dataWeapons[this.enemy().meta.srpgWeapon];
+            var weapons = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
             return weapons ? weapons.animationId : 1;
         }
     };
@@ -2727,7 +2741,7 @@
 
     // attackSkillId == 1 以外の武器を作る
     Game_Enemy.prototype.attackSkillId = function() {
-        var weapon = $dataWeapons[this.enemy().meta.srpgWeapon];
+        var weapon = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
         if (weapon && weapon.meta.srpgWeaponSkill) {
             return Number(weapon.meta.srpgWeaponSkill);
         } else {
@@ -2922,7 +2936,9 @@
             this._enemies = [];
             for (var i = 0; i < this.SrpgBattleEnemys().length; i++) {
                 var enemy = this.SrpgBattleEnemys()[i];
-                enemy.setScreenXy(200 + 240 * i, Graphics.height / 2 + 48);
+     //dopan edit info //about boomys edit,default was => "enemy.setScreenXy(200 + 240 * i, Graphics.height / 2 + 48); "    
+		  var index = i; // boomys edit
+                enemy.setScreenXy(eval(_enemyHomeX), eval(_enemyHomeY)); // boomys edit
                 this._enemies.push(enemy);
             }
             this.makeUniqueNames();
@@ -2930,6 +2946,7 @@
             _SRPG_Game_Troop_setup.call(this, troopId);
         }
     };
+
 
     // EXPを返す
     var _SRPG_Game_Troop_expTotal = Game_Troop.prototype.expTotal;
@@ -3606,11 +3623,7 @@
                 this.setImage(unit.characterName(), unit.characterIndex());
             } else if (type === 'enemy') {
                 var characterName = unit.enemy().meta.characterName;
-                var characterIndex = unit.enemy().meta.characterIndex;
-                if (!characterName || !characterIndex) {
-                    var characterName = 'monster.png';
-                    var characterIndex = 0;
-                }
+                var characterIndex = Number(unit.enemy().meta.characterIndex);
                 this.setImage(characterName, characterIndex);
             } else if (type === 'null') {
                 this.erase();
@@ -4174,8 +4187,8 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
     // エネミーの顔グラフィックを描画する
     Window_Base.prototype.drawEnemyFace = function(enemy, x, y, width, height) {
         var faceName = enemy.enemy().meta.faceName;
-        var faceIndex = enemy.enemy().meta.faceIndex;
-        if (!faceName || !faceIndex) {
+        var faceIndex = Number(enemy.enemy().meta.faceIndex);
+        if (!faceName) {
             this.drawEnemyFaceWhenNoFace(enemy, x, y, width, height);
         } else {
             this.drawFace(faceName, faceIndex, x, y, width, height);
@@ -4208,7 +4221,7 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
 
     // エネミーの装備（武器）を描画する
     Window_Base.prototype.drawEnemySrpgEqiup = function(enemy, x, y) {
-        var item = $dataWeapons[enemy.enemy().meta.srpgWeapon];
+        var item = $dataWeapons[Number(enemy.enemy().meta.srpgWeapon)];
         this.changeTextColor(this.systemColor());
         this.drawText(_textSrpgEquip, x, y, 92);
         this.resetTextColor();
@@ -4882,7 +4895,7 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
                     if (actor.isActor()) {
                         var item = actor.weapons()[0];
                     } else {
-                        var item = $dataWeapons[actor.enemy().meta.srpgWeapon];
+                        var item = $dataWeapons[Number(actor.enemy().meta.srpgWeapon)];
                     }
                     this.drawItemName(item, x, y, 280 - costWidth);
                 } else {
@@ -6400,9 +6413,9 @@ Window_WinLoseCondition.prototype.refresh = function() {
         }
         this.preBattleSetDirection();
         //行動回数追加スキルなら行動回数を追加する
-        var addActionNum = actionArray[1].action(0).item().meta.addActionTimes;
-        if (addActionNum && Number(addActionNum) > 0) {
-            actionArray[1].SRPGActionTimesAdd(Number(addActionNum));
+        var addActionNum = Number(actionArray[1].action(0).item().meta.addActionTimes);
+        if (addActionNum && addActionNum > 0) {
+            actionArray[1].SRPGActionTimesAdd(addActionNum);
         }
         this._callSrpgBattle = true;
         this.eventBeforeBattle();
@@ -6910,7 +6923,9 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var target = targetArray[1];
 		var action = user.action(0);
 		var reaction = null;
-
+                //get data for activeSkil
+                var activeSkill = user._actions[0]._item._itemId;
+		
 		// check if we're using map battle on this skill
 		if (action && action.item()) {
 			var mapBattleTag = action.item().meta.mapBattle;
@@ -6937,9 +6952,9 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		}
 
 		this.preBattleSetDirection();
-
+		
                 // EDIT dopan (for better PreActionPhase Timing)
-		$gameTemp.reserveCommonEvent(_BeforeMapBattleCE); //this.eventBeforeBattle();
+		$gameTemp.reserveCommonEvent(_BeforeMapBattleCE); //defaut was ->// this.eventBeforeBattle();
                 // EDIT dopan (this CE = "_BeforeMapBattleCE" ,needs only Script..
 		//..=> "Scene_Map.prototype.eventBeforeBattle.call(this);" ,in it and nothing else!)
 
@@ -6964,26 +6979,14 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			reaction.setSubject(target);
 			reaction.setAttack();
 			var actFirst = (reaction.speed() > action.speed());
-			if (_srpgUseAgiAttackPlus == 'true') actFirst = false;
+                        // dopan edit added "check- meta.AgiExtra"
+			if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
 			this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
 
-
-
-                // agi attack plus ->edited by dopan add If Condition for SkillNote "<AgiExtra:true/false>"
-                // "<AgiExtra:true/false>" -> "true" is default
-        
-                // dopan Edit :  get data of "active Skill" Skill_ID
-                var activeSkill = user._actions[0]._item._itemId;
-
-                // dopan Edit :  use the "active Skill" Skill_ID to ask about the SkillNote meta of this Skill
-                if ($dataSkills[activeSkill].meta.AgiExtra == "false") {
-                    // nothing
-
-                // dopan Edit : if Skillnote "<AgiExtra:true/false>" -> NOT "false" -> trigger the Agi Function
-                } else {
                 // agi attack plus 
-                if (_srpgUseAgiAttackPlus == 'true') {
+                // dopan edit added "check- meta.AgiExtra"
+                if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
                     if (user.agi >= target.agi) {
                         var firstBattler = user;
                         var secondBattler = target;
@@ -7008,8 +7011,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                             this.srpgAddMapSkill(agiAction, firstBattler, secondBattler)
                         }
                     }
-                }
-                }; // dopan Edit End (SkillNote usage)
+                }		
 	};
 
 	// work through the queue of attacks
@@ -7175,7 +7177,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var action = data.action;
 		var user = data.user;
 		var target = data.target;
-                
+
 		switch (data.phase) {
 			// skill cost and casting animations
 			case 'start':
@@ -7191,6 +7193,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				if ($gameSwitches.value(_changed_Skill_CE_Timing)) {
                                     action.applyGlobal(); // dopan Edit (set Skill CE before Action)
 				}
+				//
 				user.useItem(action.item());
 				if (!$gameTemp.isFirstAction || $gameTemp.isFirstAction()) {
 					var castAnim = false;
@@ -7539,7 +7542,10 @@ Window_Options.prototype.addGeneralOptions = function() {
 //====================================================================
     var _SRPG_AAP_Game_Action_speed = Game_Action.prototype.speed;
     Game_Action.prototype.speed = function() {
-        if ($gameSystem.isSRPGMode() == true && _srpgUseAgiAttackPlus == 'true') {
+        // dopan edit added var data & "check- meta.AgiExtra"
+        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; // dopan edit
+        var activeSkill = user._actions[0]._item._itemId; // dopan edit
+        if (($gameSystem.isSRPGMode() == true) && (_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
             return this.subject().agi;
         } else {
             return _SRPG_AAP_Game_Action_speed.call(this);
@@ -7584,7 +7590,13 @@ Window_Options.prototype.addGeneralOptions = function() {
     var _SRPG_AAP_BattleManager_makeActionOrders = BattleManager.makeActionOrders;
     BattleManager.makeActionOrders = function() {
         _SRPG_AAP_BattleManager_makeActionOrders.call(this);
-        if (!_srpgUseAgiAttackPlus) return;
+        // agi attack plus ->edited by dopan added var data & "check- meta.AgiExtra"
+        // SideNote: "<AgiExtra:true/false>" -> "true" is default if no SkillNote is used
+        // dopan Edit :  get data of "active Skill" Skill_ID
+        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; //dopan edit
+        var activeSkill = user._actions[0]._item._itemId; //dopan edit
+        // dopan edit added "check- meta.AgiExtra"
+        if ((!_srpgUseAgiAttackPlus) || ($dataSkills[activeSkill].meta.AgiExtra == "false")) return;
         var battlers = this._actionBattlers;
         var firstBattler = battlers[0];
         if (!firstBattler.currentAction() || !firstBattler.currentAction().item()) {

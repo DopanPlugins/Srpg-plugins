@@ -164,6 +164,16 @@
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
  * @default Graphics.height / 2 + 48 
  *
+ * @param EnemyHomeX
+ * @desc This formula determines the enemy's home X position in SRPG mode
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc This formula determines the enemy's home Y position in SRPG mode
+ * SRPG Default: Graphics.height / 2 + 48
+ * @default Graphics.height / 2 + 48 
+ *
  * // boomys edit end // side view battler positions
  *
  * @param enemyDefaultClass
@@ -502,6 +512,16 @@
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
  * @default Graphics.height / 2 + 48 
  *
+ * @param EnemyHomeX
+ * @desc この式は、SRPGモードでの敵のホームX位置を決定します
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc この式は、SRPGモードでの敵のホームY位置を決定します
+ * SRPG Default: Graphics.height / 2 + 48
+ * @default Graphics.height / 2 + 48 
+ *
  * // boomys edit end // side view battler positions
  *
  * @param enemyDefaultClass
@@ -742,7 +762,9 @@
     var index = 0 ; // dopan info -> this is needed for boomys next edit
     var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; // boomys edit
     var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48; // boomys edit 
-    
+    var _enemyHomeX = parameters['EnemyHomeX'] || 216 + index * 240; //boomys edit
+    var _enemyHomeY = parameters['EnemyHomeY'] || Graphics.height / 2 + 48; //boomys edit   
+	
     var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {

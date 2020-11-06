@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_TerrainStates.js
 //=============================================================================
 /*:
@@ -176,8 +176,18 @@
  *
  *
  *
+ * NEW ScriptCalls:
+ * (Can be used Incase you dont want to use the Plugin Param Variables, it does basicly the same )
  *
+ * - "this.unitAddTerrainState(unitID, tagID, stateID);"
  *
+ * => checks if state"ID" is NOT affected , and if unit"ID" is on terrainTag"ID",..
+ *    .. the State will be Added to the Unit.
+ *
+ * - "this.unitRemoveTerrainState(unitID, tagID, stateID);"
+ *
+ * => checks if state"ID" IS affected , and if unit"ID" is on terrainTag"ID",..
+ *    .. the State will be Removed from the Unit.
  *
  *
  *
@@ -237,12 +247,40 @@
   var _varEVT6ID = Number(parameters['Tag6_UnitEventID'] || 0);
   var _varEVT7ID = Number(parameters['Tag7_UnitEventID'] || 0);
 
+  var _tsEventID = 0;
+  var _tsStateID = 0; 
+  var _tsTagID = 0;
 
- 
 
+//-------- ScriptCalls
 
+    // ScriptCall => "this.unitAddTerrainState(unitID, tagID, stateID);"
+    Game_Interpreter.prototype.unitAddTerrainState = function(unitID, tagID, stateID) {
+        _tsEventID = unitID;
+        _tsStateID = stateID; 
+        _tsTagID = tagID;
+        if ((_tsEventID >= 1) && (_tsStateID >= 1) && (_tsTagID >= 0)) {
+           if ((!$gameSystem.EventToUnit(_tsEventID)[1].isStateAffected(_tsStateID)) &&
+               ($gameMap.terrainTag(($gameMap.event(_tsEventID).x),($gameMap.event(_tsEventID).y))== _tsTagID)) {
+                $gameSystem.EventToUnit(_tsEventID)[1].addState(_tsStateID);
+           }
+        }
+    };
 
+    // ScriptCall => "this.unitRemoveTerrainState(unitID, tagID, stateID);"
+    Game_Interpreter.prototype.unitRemoveTerrainState = function(unitID, tagID, stateID) {
+        _tsEventID = unitID;
+        _tsStateID = stateID; 
+        _tsTagID = tagID;
+        if ((_tsEventID >= 1) && (_tsStateID >= 1) && (_tsTagID >= 0)) {
+           if (($gameSystem.EventToUnit(_tsEventID)[1].isStateAffected(_tsStateID)) &&
+               ($gameMap.terrainTag(($gameMap.event(_tsEventID).x),($gameMap.event(_tsEventID).y))== _tsTagID)) {
+                $gameSystem.EventToUnit(_tsEventID)[1].removeState(_tsStateID);
+           }
+        }
+    };
 
+//-------- PluginCommand
 
 var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;

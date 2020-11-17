@@ -1,4 +1,4 @@
-//=============================================================================
+﻿//=============================================================================
 // SRPG_core.js -SRPGコンバータMV-
 // バージョン   : 1.32 + Q
 // 最終更新日   : 2020/10/8
@@ -3983,24 +3983,24 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
                 if ((battlerArray[0] === 'actor' || battlerArray[0] === 'enemy') &&
                     battlerArray[1].isAlive()) {
                     if (battlerArray[1].isRestricted()) {
-                        var sx = (6 + this.characterPatternX()) * pw;
+                        var sx = (0 + this.characterPatternX()) * pw;//dopan edit info Default=> // var sx = (6 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_X'); //dopan edit info Default=> // this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this.isTurnEndUnit() == true) {
-                        var sx = (3 + this.characterPatternX()) * pw;
+                        var sx = (0 + this.characterPatternX()) * pw; //dopan edit info Default=> // var sx = (3 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_E'); //dopan edit info Default=> // this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (battlerArray[1].isAutoBattle()) {
-                        var sx = (9 + this.characterPatternX()) * pw;
+                        var sx = (0 + this.characterPatternX()) * pw;//dopan edit info Default=> // var sx = (9 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_A'); //dopan edit info Default=> // this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this._turnEndSprite) {

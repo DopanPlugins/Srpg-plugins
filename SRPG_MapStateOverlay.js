@@ -117,24 +117,24 @@
         this.updateChildren();
 
         //Dopan INFO=> edited part starts here, stuff above is the Default Function Content
-
-        if (SceneManager._scene instanceof Scene_Menu === true) {
-            _checkSOS = false;
-
-        }
-        if (SceneManager._scene instanceof Scene_Battle === true) {
-            _checkSOS = false;
-
-        }
-        if (SceneManager._scene instanceof Scene_Map === true) {    
-            if (_checkSOS === false) {
-                Game_Interpreter.prototype.srpgStateOverlay.call(this);
-                _checkSOS = true;
+        if ($gameSystem.isSRPGMode() == true) {
+            if (SceneManager._scene instanceof Scene_Menu === true) {
+                _checkSOS = false;
 
             }
+            if (SceneManager._scene instanceof Scene_Battle === true) {
+                _checkSOS = false;
 
+            }
+            if (SceneManager._scene instanceof Scene_Map === true) {    
+                if (_checkSOS === false) {
+                    Game_Interpreter.prototype.srpgStateOverlay.call(this);
+                    _checkSOS = true;
+
+                }
+
+            }
         }
-
     };
 
     // overwrite Battlestart Event calling Function to initialize StateOverlaySprite..

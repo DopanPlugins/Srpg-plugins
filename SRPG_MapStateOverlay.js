@@ -44,7 +44,7 @@
  *
  * -> plug & play !
  *
- * -> credits for Caethyril for the Coding Help!
+ * -> credits to Caethyril for the Coding Help!
  *
  * ============================================================================
  * Terms of Use

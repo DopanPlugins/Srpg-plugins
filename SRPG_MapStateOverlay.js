@@ -2,7 +2,7 @@
 // SRPG_MapStateOverlay.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
+ * @plugindesc v1.0 <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
  * @author dopan
  *
  *

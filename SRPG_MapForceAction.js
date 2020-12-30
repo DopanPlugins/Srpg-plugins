@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_MapForceAction.js
 //=============================================================================
 /*:
@@ -62,8 +62,11 @@
  * => this Function doesnt work with "Scene_map" like "Mapbattle.js" does, thats why it works a bit different..
  * => thats why DirectionalAnimations wont work and why MovingAnimations only work if created in Switch-triggered_CommonEvents..
  *
- * => this Function has no PreAction Phase(the Code is disabled ,can be changed) ,but it has a PostAction Phase 
+ * => this Function has no PreAction Phase,but it has a PostAction Phase 
  *   (thats because PreAction Phase would trigger after the Effect in this Function)
+ *
+ * => also the user wont get EXP..
+ * -> ..perhaps i will find a solution in the future to add the EXP and the prebattlePhase corretly to that Scriptcall..
  *
  * there is an Exampel Event (little girl next to chuck) to test this function:
  * Used Skills that use Custom Execution(like MovingAnimations), need to happen with "Switch"-triggered CEs in Custom Execution
@@ -566,11 +569,12 @@
         // this Scene is not needed its for testing purposes..
         //Scene_Map.prototype.srpgMapActionEND.call(this); 
         // "this.srpgMapActionEND();" "_srpgMapActionEND.call(this);" "_sceneMapProto.srpgMapActionEND();"
-        var _srpgMapActionEND = Scene_Map.prototype.srpgMapActionEND;
-        Scene_Map.prototype.srpgMapActionEND = function() {
-             this._MapActionEND = true;
-             return true;
-        };
+        //var _srpgMapActionEND = Scene_Map.prototype.srpgMapActionEND;
+        //Scene_Map.prototype.srpgMapActionEND = function() {
+             //this._MapActionEND = true;
+
+             //return true;
+        //};
 
 
         //ScriptCall = "this.isMapForceActionTest(userID, targetID, skillID, payCost);" // for testing purposes..
@@ -609,9 +613,20 @@
 // MapForceAction SETUP
 //-----------------------------------------------------------------------------------------
 
+//INFO, this function has still 2 main "Issues" it doesnt add the pre battle phase to that action & the user doesnt get EXP.
+// hopefully i will solve these 2 issues in the future.. but for now i advise to only use that function,..
+//.. for "story sequenses" for example, in cases where the EXP and the Pre Battle Phase isnt required.
+// (that was actually what this function was made for..)
+// The other Mapforce Action Functions/Scriptcalls (MapForceActionNote & MapForceDoubleAction) should work fine,..
+// because they use a similar coding like the mapbbatlle Plugin from DrQ,..
+//..while "this.isMapForceAction" uses a different solution which is still experimental.
+// Basicly the mapbattle Plugin uses "scene_map.prototype" and "this.isMapForceAction"-Function uses "Game_Interpreter.prototype" instead..  
+// The mapbattle Plugin coding works better but i had to make that walkaround for the "this.isMapForceAction"-Function,..
+
 
         // this.isMapForceAction(userID, targetID, skillID, payCost);
         Game_Interpreter.prototype.isMapForceAction = function(userID, targetID, skillID, payCost) {
+            // insert scriptcall data into plugin variables
             _mapForceUser = userID;
             _mapForceTarget = targetID;
             _mapForceSkill = skillID;
@@ -619,9 +634,18 @@
              if ($gameSystem.isSRPGMode()) { 
                  var actionArray = $gameSystem.EventToUnit(_mapForceUser);
                  var targetArray = $gameSystem.EventToUnit(_mapForceTarget);
-                 if (!actionArray[1].isDead() && !targetArray[1].isDead()) { 
 
-                     // Prepare Action..           
+                 // clear "this._list" to avoid repeating actions, incase this Function was used earlier..
+                 this._list.splice(this._index + 1, this._list.length);
+
+                 // abort Function if user or target is dead
+                 if (actionArray[1].isDead() || targetArray[1].isDead()) {
+                     return;
+                 }
+
+                 //if user and target are not dead,..
+                 if (!actionArray[1].isDead() && !targetArray[1].isDead()) { 
+                     //.. Prepare Action..           
                      $gameTemp.setActiveEvent($gameMap.event(_mapForceUser));
                      $gameTemp.setTargetEvent($gameMap.event(_mapForceTarget));
                      $gameTemp.setShouldPayCost(_mapForcePayCost);
@@ -630,11 +654,14 @@
                      $gameSystem.setSubBattlePhase('invoke_action');
                      this.playerMoveTo($gameTemp.targetEvent().posX(), $gameTemp.targetEvent().posY());  
           
-		     // get the data   
+		     // get the data for user,target & action..
 		     var user = actionArray[1];
 		     var target = targetArray[1];
 		     var action = user.action(0);   
-                                                             
+
+                     // user look at target
+                     Scene_Map.prototype.preBattleSetDirection.call(this);    
+                                    
                      // setup the chain of Commands
                      var aniCom = 212;              // Show Animation command
                      var scriptCom = 355;               // Script command
@@ -643,12 +670,14 @@
                      var p2 = [_mapForceUser, action.item().castAnimation, true];  //user params (char, anim, wait)
                      var p3 = [_mapForceTarget, action.item().animationId, true]; //target params (char, anim, wait)
                      var p4 = ['this.endActionPhaseMFA();']; // script happens at the end
+
                      // Make command objects
                      var com1 = { code: scriptCom, indent: ind, parameters: p1 };
                      var com2 = { code: aniCom, indent: ind, parameters: p2 };
                      var com3 = { code: aniCom, indent: ind, parameters: p3 };
                      var com4 = { code: scriptCom, indent: ind, parameters: p4 };
-                     // Insert commands at next position
+
+                     // Insert commands into the Cleared/Empty "this._list"
                      this._list.splice(this._index + 1, 0, com1, com2, com3, com4);
 
 		     // prepare action timing
@@ -660,9 +689,8 @@
 		     if (addActionTimes > 0) {
 			 user.SRPGActionTimesAdd(addActionTimes);
 		     } 
-
                  }
-                 return true;
+                
              }
         };
 
@@ -674,18 +702,10 @@
              var user = actionArray[1];
 	     var target = targetArray[1];
              var action = user.action(0);
-
+             
              //use skill and apply skill CE
              user.useItem(action.item());
              action.applyGlobal();
-
-             // call PreBattle Phase Event (disabled because it would happen after the effect)
-             //$gameMap.events().forEach(function(event) {
-             //if (event.isType() === 'beforeBattle') {
-             //    if (event.pageIndex() >= 0) event.start();
-             //    $gameTemp.pushSrpgEventList(event);
-             //    }
-             //});
 
              // Insert "MapActionText" CE
              var commonEvent = $dataCommonEvents[_usedCE];
@@ -693,7 +713,7 @@
                  var eventId = this.isOnCurrentMap() ? this._eventId : 0;
                  this.setupChild(commonEvent.list, eventId);
              }
-             return true;
+
         };
 
         // "this.endActionPhaseMFA();"
@@ -704,17 +724,17 @@
              var user = actionArray[1];
 	     var target = targetArray[1];
              var action = user.action(0);
+             user.removeCurrentAction();
 
              // trigger action and show DMG popups
              action.apply(target);
 	     user.srpgShowResults();
 	     target.srpgShowResults();
-             // user look at target
-             Scene_Map.prototype.preBattleSetDirection.call(this);
+
              //call ending scene
              //"_srpgMapActionEND.call(this);" // this line is not needed its for testing purposes.. 
 
-             return true;
+
  
         };
 

@@ -13,7 +13,7 @@
  * @help
  *  
  * after understanding what the Scriptcall "this.isSubPhaseNormal(SwitchID)" does, 
- * i looking into the SRPG_Core,and decided to add Scriptcalls for any Subphase that i could find in SRPG_Core..
+ * i was looking into the SRPG_Core,and decided to add Scriptcalls for any Subphase that i could find in SRPG_Core..
  *
  * When these Scriptcalls are used ,they will connect the Switch which ID is used to the "Subphase".
  * That way the Switch will be "ON" = "true" whenever the used Subphase is Active and the Switch will 

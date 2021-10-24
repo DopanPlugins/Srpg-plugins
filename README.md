@@ -29,7 +29,8 @@ The MapActionText can easyly made with 1 Common event triggered from pre-action 
 ![Screenshot_4](https://user-images.githubusercontent.com/72324675/138602102-d713cbe1-ecbf-4e00-9a73-56025c96147f.png)
 
 
-![Screenshot_2](https://user-images.githubusercontent.com/72324675/138601922-73b61343-de76-4bd7-8c36-13860ffe8e0d.png)
+![11](https://user-images.githubusercontent.com/72324675/138607811-16ef1e5a-6b33-42cb-886a-d157b5d89daf.png)
+
 
 The "MFA switch" is a Switch that is aktivated by the newest update of MapForceAction (not fully tested but uploaded)
 this Switch makes sure that extra actions dont trigger a "MapActionText" or "MapBattle_pre-action phase"

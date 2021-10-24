@@ -15,3 +15,4 @@ which need to be inserted in the plugin param
 -> ill attach some info screenshoots for this aswell
 
 => it has also other upgrades but none of them have importent requirements like those above
+..if you need help with the setup pls ask in rpg mv forum

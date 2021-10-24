@@ -1,7 +1,7 @@
 # Srpg-plugins
  srpg plugins (rpg mv)
 
-IMPORTENT Info about the newest edited core Version:
+IMPORTANT Info about the newest edited core Version:
 
 -has EXA change, for more char frame usage
 needed IMGs are attached at this github

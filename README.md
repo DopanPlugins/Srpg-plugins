@@ -14,5 +14,23 @@ which need to be inserted in the plugin param
 (this Common Event should trigger the pre-action phase)
 -> ill attach some info screenshoots for this aswell
 
+![Screenshot_1](https://user-images.githubusercontent.com/72324675/138602017-a6f604f2-3d87-4b1e-ba14-eb8bf9e5c768.png)
+
+![Screenshot_3](https://user-images.githubusercontent.com/72324675/138602027-f8777cc6-1d9c-4c33-ab4b-0287284d9b2d.png)
+
+
+
 => it has also other upgrades but none of them have importent requirements like those above
 ..if you need help with the setup pls ask in rpg mv forum
+
+The MapActionText can easyly made with 1 Common event triggered from pre-action Phase 
+..with if condition(if mapbattle is ON )
+
+![Screenshot_4](https://user-images.githubusercontent.com/72324675/138602102-d713cbe1-ecbf-4e00-9a73-56025c96147f.png)
+
+
+![Screenshot_2](https://user-images.githubusercontent.com/72324675/138601922-73b61343-de76-4bd7-8c36-13860ffe8e0d.png)
+
+The "MFA switch" is a Switch that is aktivated by the newest update of MapForceAction (comming soon)
+this Switch makes sure that extra actions dont trigger a text or pre-action phase
+ (to avoid bugs)

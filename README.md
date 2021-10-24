@@ -34,6 +34,10 @@ The MapActionText can easyly made with 1 Common event triggered from pre-action 
 The "MFA switch" is a Switch that is aktivated by the newest update of MapForceAction (not fully tested but uploaded)
 this Switch makes sure that extra actions dont trigger a "MapActionText" or "MapBattle_pre-action phase"
  (to avoid bugs)
+ The switch should be deactivated in the "event after action":
+ ![Screenshot_1](https://user-images.githubusercontent.com/72324675/138607516-b1b584ac-5884-422b-93c0-fa582547a2b6.png)
+
+ 
  
  The MapForceAction Plugin allows us to make "duo combo skill", "double skills" or ,
  skills that trigger other units to use other skills on other targets..

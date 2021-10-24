@@ -67,8 +67,8 @@
  * the MFAisAktive Switch must be used to disable the PreActionPhase & MapActionText of the added skills
  * (by using "if conditions" that only use MapActionText&PreActionPhase when the Switch is OFF)
  * this switch will be activated from this Plugin & should be deactivated
- * in the "eventbefore battle"-common event that aktivates the MapBattlePreActionPhase
- * (that common event also should only trigger the PreActionPhase if the Switch is OFF)
+ * in the "event after action"..
+ * 
  *
  * Sry but this stuff is required! 
  *

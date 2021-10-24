@@ -35,8 +35,8 @@ The "MFA switch" is a Switch that is aktivated by the newest update of MapForceA
 this Switch makes sure that extra actions dont trigger a "MapActionText" or "MapBattle_pre-action phase"
  (to avoid bugs)
  
- The MapForceAction Plugin allows use to make "duo combo skill", "double skills" or ,
- skills that trigger other units to use other skills on oher targets..
+ The MapForceAction Plugin allows us to make "duo combo skill", "double skills" or ,
+ skills that trigger other units to use other skills on other targets..
  
- ===> currently i will mostly work on rework some of my plugins and to test other new plugins,..
+ ===> currently i will mostly work on rework&test some of my plugins and to test other new srpg-plugins,..
  cheers

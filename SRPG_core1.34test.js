@@ -3986,21 +3986,21 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
                         var sx = (0 + this.characterPatternX()) * pw;//dopan edit info Default=> // var sx = (6 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_X'); //dopan edit info Default=> // this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_X'); //dopan edit info Default=> // this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this.isTurnEndUnit() == true) {
                         var sx = (0 + this.characterPatternX()) * pw; //dopan edit info Default=> // var sx = (3 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_E'); //dopan edit info Default=> //this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_E'); //dopan edit info Default=> // this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (battlerArray[1].isAutoBattle()) {
                         var sx = (0 + this.characterPatternX()) * pw;//dopan edit info Default=> // var sx = (9 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_A'); //dopan edit info Default=> // this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_A'); //dopan edit info Default=> // this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this._turnEndSprite) {
@@ -6945,7 +6945,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		$gameSystem.clearSrpgStatusWindowNeedRefresh();
 		$gameSystem.clearSrpgBattleWindowNeedRefresh();
 
-		//make free actions work
+		// make free actions work
 		var addActionTimes = Number(action.item().meta.addActionTimes || 0);
 		if (addActionTimes > 0) {
 			user.SRPGActionTimesAdd(addActionTimes);
@@ -7053,7 +7053,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		}
 	};
 
-	// reset battle mode between skill
+	// reset battle mode between skills
 	var _srpgAfterAction = Scene_Map.prototype.srpgAfterAction;
 	Scene_Map.prototype.srpgAfterAction = function() {
 		$gameSystem.clearSRPGBattleMode();
@@ -7178,11 +7178,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var user = data.user;
 		var target = data.target;
 
-                //dopan edit -> makes sure that user is always displayed above target in mapbattle
-                user.event()._priorityType = 4;
-                target.event()._priorityType = 3;
-                //dopan edit end
-
 		switch (data.phase) {
 			// skill cost and casting animations
 			case 'start':
@@ -7284,7 +7279,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 					if (target.canUse(attackSkill) == true) {
 						target.performCounter();
 						this.srpgAddCounterAttack(user, target);
-
 					} else {
 						action.apply(target);
 					}

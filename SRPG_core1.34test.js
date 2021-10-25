@@ -1,7 +1,7 @@
 //=============================================================================
 // SRPG_core.js -SRPGコンバータMV-
-// バージョン   : 1.34 + Q
-// 最終更新日   : 2021/1/3
+// バージョン   : 1.32 + Q
+// 最終更新日   : 2020/10/8
 // 制作         : 神鏡学斗, Dr. Q
 // 配布元       : http://www.lemon-slice.net/
 // 制作協力 　　: アンチョビ様　
@@ -14,74 +14,183 @@
 //=============================================================================
 
 /*:
- * @plugindesc SRPG battle system (tactical battle system) on map.
- * @author Gakuto Mikagami, Dr. Q
- *
- * @param BasicParam
- * @desc Set basic parameters such as specifying the switch / variable to be used and setting the plug-in to be used together.
- * @default Basic functions related to the whole
- * 
- * @param WithYEP_BattleEngineCore
- * @parent BasicParam
- * @desc Set true when using with YEP_BattleEngineCore.
- * @type boolean
- * @default false
- *
- * @param WithCommunityBasic_CoreScript
- * @parent BasicParam
- * @desc Set true when using with the community version core script published in Atsmaru.
- * @type boolean
- * @default false
+ * @plugindesc SRPG battle system (tactical battle system) on map (edited Version 1.32).
+ * @author Gakuto Mikagami, Dr. Q (extraEdits by boomy & dopan)
  *
  * @param srpgTroopID
- * @parent BasicParam
  * @desc SRPGconverter use this troop ID.
  * @type number
  * @min 1
  * @default 1
  *
  * @param srpgBattleSwitchID
- * @parent BasicParam
  * @desc switch ID of 'in tactical battle' or 'not'. If using tactical battle system, this swith turn on。
  * @type switch
  * @default 1
  *
  * @param existActorVarID
- * @parent BasicParam
  * @desc variable ID of 'exist actor'. Exist is not death state and hide。
  * @type variable
  * @default 1
  *
  * @param existEnemyVarID
- * @parent BasicParam
  * @desc variable ID of 'exist enemy'. Exist is not death state and hide。
  * @type variable
  * @default 2
  *
  * @param turnVarID
- * @parent BasicParam
  * @desc variable ID of 'srpg turn'. first turn is 'turn 1'。
  * @type variable
  * @default 3
  *
  * @param activeEventID
- * @parent BasicParam
  * @desc variable ID of 'acting event ID'.
  * @type variable
  * @default 4
  *
  * @param targetEventID
- * @parent BasicParam
  * @desc variable ID of 'target event ID'. not only attack but also heal or assist.
  * @type variable
  * @default 5
  *
- * @param MapBattle
- * @desc Parameters related to map battles.
- * @default Map battle settings
- * 
+ * @param maxActorVarID
+ * @desc variable ID of the maximum number of actors participating in the battle. Set to 0 to disable.
+ * @type variable
+ * @default 0
+ *
+ * @param defaultMove
+ * @desc use this parameter if you don't set move in class or enemy note.
+ * @type number
+ * @min 0
+ * @default 4
+ *
+ * @param srpgBattleExpRate
+ * @desc if player can't defeat enemy, player get exp in this rate. set 0 to 1.0.
+ * @type number
+ * @decimals 2
+ * @min 0
+ * @max 1
+ * @default 0.4
+ *
+ * @param srpgBattleExpRateForActors
+ * @desc if player act for friends,player get exp in this rate(to next level). set 0 to 1.0. 
+ * @type number
+ * @decimals 2
+ * @min 0
+ * @max 1
+ * @default 0.1
+ *
+ * @param srpgBattleQuickLaunch
+ * @desc true is quick the battle start effect.(true / false)
+ * @type boolean
+ * @default true
+ *
+ * //-dopan edit start- for ActorbattleCommands
+ *
+ * @param srpgActorCommandAttackSwitchID
+ * @desc Switch ID:0 or Switch "false" ->*Enable*AttackCommand      Switch "true" ->*Disable*AttackCommand。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandSkillSwitchID
+ * @desc Switch ID:0 or Switch "false" ->*Enable*SkillCommands      Switch "true" ->*Disable*SkillCommands。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandItemSwitchID
+ * @desc Switch ID:0 or Switch "false" ->*Enable*ItemCommand      Switch "true" ->*Disable*ItemCommand。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandEquipSwitchID
+ * @desc Switch ID:0 or Switch "false" ->*Enable*EquipCommand      Switch "true" ->*Disable*EquipCommand。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandWaitSwitchID
+ * @desc Switch ID:0 or Switch "false" ->*Enable*WaitCommand      Switch "true" ->*Disable*WaitCommand。
+ * @type switch
+ * @default 0
+ *
+ * //-dopan edit end- for ActorbattleCommands
+ *
+ * @param srpgWinLoseConditionCommand
+ * @desc true is add command 'Win / Lose Condetion' in menu command.(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgBattleEndAllHeal
+ * @desc all heal actors when tactical battle end.(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgPredictionWindowMode
+ * @desc Change the display of the battle prediction window. (1: full / 2: only attack name / 3: not displayed)
+ * @type select
+ * @option Full
+ * @value 1
+ * @option Only attack name
+ * @value 2
+ * @option Not displayed
+ * @value 3
+ * @default 1
+ *
+ * @param srpgAutoBattleStateId
+ * @desc A state ID to be given when auto battle is selected. State is "automatic battle" & canceled 1 action(invalidated by 0).
+ * @type state
+ * @default 14
+ *
+ * @param srpgBestSearchRouteSize
+ * @desc If there is no target can be attacked, the closest route is searched. This is a searchable distance(invalidated by 0).
+ * @type number
+ * @min 0
+ * @default 20
+ *
+ * @param srpgDamageDirectionChange
+ * @desc When attacked, correct the direction towards the attacker.(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgSkipTargetForSelf
+ * @desc For actions targeting oneself, skip the target selection process.(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgRangeTerrainTag7
+ * @desc Make the terrain tag 7 that does not pass the range.(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param WithYEP_BattleEngineCore
+ * @desc Set true if you use YEP_BattleEngineCore.
+ * @type boolean
+ * @default false
+ *
+ * // boomys edit start // side view battler positions
+ *
+ * @param ActorHomeX
+ * @desc This formula determines the actor's home X position in SRPG mode
+ * YEP Default: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
+ * @default Graphics.width - 216 - index * 240
+ *
+ * @param ActorHomeY
+ * @desc This formula determines the actor's home Y position in SRPG mode
+ * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
+ * @default Graphics.height / 2 + 48 
+ *
+ * @param EnemyHomeX
+ * @desc This formula determines the enemy's home X position in SRPG mode
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc This formula determines the enemy's home Y position in SRPG mode
+ * SRPG Default: Graphics.height / 2 + 48
+ * @default Graphics.height / 2 + 48 
+ *
+ * // boomys edit end // side view battler positions
+ *
  * @param Use Map Battle
- * @parent MapBattle
  * @desc Default Map Battle usage
  * @type select
  * @option Always
@@ -95,98 +204,51 @@
  * @default 3
  *
  * @param Map Battle Switch
- * @parent MapBattle
  * @parent Use Map Battle
  * @desc Switch that activates map battle
  * @type switch
  * @default 0
  *
- * @param Animation Delay
- * @parent MapBattle
- * @desc Frames between animation start and skill effect(Map Battle)
+ * @param Animation Delay(Map Battle)
+ * @desc Frames between animation start and skill effect
  * Set to -1 to wait for all animations to finish
  * @type number
  * @min -1
- * @default -1
+ * @default 25
  *
- * @param BattleBasicParam
- * @desc Set basic numerical values such as move and acquisition rate of exp.
- * @default Basic numbers used in battle
  *
- * @param defaultMove
- * @parent BattleBasicParam
- * @desc use this parameter if you don't set move in class or enemy note.
- * @type number
- * @min 0
- * @default 4
+ * //-dopan edit start- for MapBattle
  *
- * @param srpgBattleExpRate
- * @parent BattleBasicParam
- * @desc if player can't defeat enemy, player get exp in this rate. set 0 to 1.0.
- * @type number
- * @decimals 2
- * @min 0
- * @max 1
- * @default 0.4
  *
- * @param srpgBattleExpRateForActors
- * @parent BattleBasicParam
- * @desc if player act for friends,player get exp in this rate(to next level). set 0 to 1.0. 
- * @type number
- * @decimals 2
- * @min 0
- * @max 1
- * @default 0.1
+ * @param BeforeMapBattleCE_ID
+ * @desc "Scene_Map.prototype.eventBeforeBattle.call(this);" Use only this Script in that CE.(better preActionPhase timing)
+ * 
+ * @type common_event
+ * @default 1
+ * 
  *
- * @param maxActorVarID
- * @parent BattleBasicParam
- * @desc variable ID of the maximum number of actors participating in the battle. Set to 0 to disable.
+ * @param Skill_CE_Timing_SwitchID
+ * @desc Switch ID:0 or Switch "false"->Default__Switch "true"->change timing (betwen PreActionPhase&CustomEx)
+ * @type switch
+ * @default 0 
+ *
+ * 
+ * @param ChangeAniDelaySwitch_ID 
+ * @desc Switch ID:0 or Switch "false" ->*Enable*animationDelay      Switch "true" ->delay=30。
+ * @type switch
+ * @default 0 
+ *
+ *
+ * @param ChangeAniDelayVarID
+ * @desc variable ID of ChangedDelay.Default if disabled is 30Frames. Set VarID to 0 to disable.
  * @type variable
  * @default 0
  *
- * @param srpgAutoBattleStateId
- * @parent BattleBasicParam
- * @desc A state ID to be given when auto battle is selected. State is "automatic battle" & canceled 1 action(invalidated by 0).
- * @type state
- * @default 14
  *
- * @param srpgBestSearchRouteSize
- * @parent BattleBasicParam
- * @desc If there is no target can be attacked, the closest route is searched. This is a searchable distance(invalidated by 0).
- * @type number
- * @min 0
- * @default 20
+ * //-dopan edit end-
  *
- * @param BattleExtensionParam
- * @desc Set extended functions such as screen effects and changing actor commands.
- * @default Extended battle capabilities
- * 
- * @param srpgActorCommandEquip
- * @parent BattleExtensionParam
- * @desc true is add command 'equip' in actor command.(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgWinLoseConditionCommand
- * @parent BattleExtensionParam
- * @desc true is add command 'Win / Lose Condetion' in menu command.(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgPredictionWindowMode
- * @parent BattleExtensionParam
- * @desc Change the display of the battle prediction window. (1: full / 2: only attack name / 3: not displayed)
- * @type select
- * @option Full
- * @value 1
- * @option Only attack name
- * @value 2
- * @option Not displayed
- * @value 3
- * @default 1
  *
  * @param useAgiAttackPlus
- * @parent BattleExtensionParam
  * @desc Use the mechanism that the one with higher agility attacks twice.
  * @type boolean
  * @default true
@@ -198,108 +260,57 @@
  * @min 1
  * @default 2
  *
- * @param srpgBattleQuickLaunch
- * @parent BattleExtensionParam
- * @desc true is quick the battle start effect.(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgBattleEndAllHeal
- * @parent BattleExtensionParam
- * @desc all heal actors when tactical battle end.(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgDamageDirectionChange
- * @parent BattleExtensionParam
- * @desc When attacked, correct the direction towards the attacker.(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgSkipTargetForSelf
- * @parent BattleExtensionParam
- * @desc For actions targeting oneself, skip the target selection process.(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgRangeTerrainTag7
- * @parent BattleExtensionParam
- * @desc Make the terrain tag 7 that does not pass the range.(true / false)
- * @type boolean
- * @default true
- *
- * @param SRPGTerm
- * @desc Set terms such as "standby" and "move".
- * @default Terms used in SRPG battle
- *
  * @param enemyDefaultClass
- * @parent SRPGTerm
  * @desc If you don't set class in enemy note, use this name.
  * @default Enemy
  *
  * @param textSrpgEquip
- * @parent SRPGTerm
  * @desc Name of weapon. Used in SRPG state window.
  * @default Weapon
  *
- * @param textSrpgNone
- * @parent SRPGTerm
- * @desc Term for nothing equipped on a unit.
- * @default None
- *
  * @param textSrpgMove
- * @parent SRPGTerm
  * @desc Name of move range. Used in SRPG state window.
  * @default Move
  *
  * @param textSrpgRange
- * @parent SRPGTerm
  * @desc Name of attack range. Used in SRPG state window.
  * @default Range
  *
  * @param textSrpgWait
- * @parent SRPGTerm
- * @desc Name of standby. Used in SRPG state window.
- * @default Standby
+ * @desc Name of stand. Used in SRPG state window.
+ * @default Stand
  *
  * @param textSrpgWinLoseCondition
- * @parent SRPGTerm
  * @desc A term used to describe the win / loss conditions. It is displayed in the menu command window.
  * @default Win / loss conditions
  *
  * @param textSrpgWinCondition
- * @parent SRPGTerm
  * @desc A term used to describe the win conditions. It is displayed in the win / loss conditions window.
  * @default Win conditions
  *
  * @param textSrpgLoseCondition
- * @parent SRPGTerm
  * @desc A term used to describe the loss conditions. It is displayed in the win / loss conditions window.
  * @default Loss conditions
  *
  * @param textSrpgTurnEnd
- * @parent SRPGTerm
  * @desc Name of turn end. Used in menu window.
  * @default Turn End
  *
  * @param textSrpgAutoBattle
- * @parent SRPGTerm
  * @desc Name of auto battle. Used in menu window.
  * @default Auto Battle
  *
  * @param textSrpgDamage
- * @parent SRPGTerm
  * @desc Name of damage in the prediction window.
  * @default Damage
  *
  * @param textSrpgHealing
- * @parent SRPGTerm
  * @desc Name of healing in the prediction window.
  * @default Healing
  *
- * @param SRPGFiles
- * @desc Specify images and sound effects to use in battle.
- * @default Image and SE settings used in SRPG battles
+ * @param textSrpgNone
+ * @desc Term for nothing equipped on a unit.
+ * @default None
  *
  * @param srpgSet
  * @desc Spriteset for cursor and SRPG system icons
@@ -349,7 +360,13 @@
  * The above plugins are already built into SRPG_core.js, so you don't need to install them again.
  * When using SRPG_AgiAttackPlus and SRPGconverter_with_YEP_BattleEngineCore, 
  * please turn on the function from the plug-in parameter.
- * 
+ *
+ *
+ * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
+ *   (dopan edit)     => if No Skillnote is used or SkillNote is NOT "false" , AgiAtt+ will work normal on that Skill
+ *
+ *
+ *
  * plugin command:
  *   SRPGBattle Start   # start tactical battle.
  *   SRPGBattle End     # end tactical battle.
@@ -432,27 +449,26 @@
  *   <srpgThroughTag:X> # unit can go through tiles with terrain tags less than X(except for terrain tag 0)
  *
  * Event command => script:
- *   this.EventDistance(VariableID, EventID, EventID);   # Store the distance between events in a variable.
- *   this.ActorDistance(VariableID, ActorID, ActorID);   # Store the distance between actors in a variable.
- *   this.playerMoveTo(X, Y);                            # Move the cursor (player) to the coordinates (X, Y).
- *   this.addActor(EventID, ActorID);                    # Make the event with the specified ID the actor.
- *   this.addEnemy(EventID, EnemyID);                    # Make the event with the specified ID the enemy.
- *   this.setBattleMode(EventID, 'mode');                # Change the acting pattern of the event with the specified ID.
- *   this.setTargetId(EventID, ID);                      # Change the target ID of the event with the specified ID.
+ *   this.EventDistance(VariableID, EventID, EventID); # Store the distance between events in a variable.
+ *   this.ActorDistance(VariableID, ActorID, ActorID); # Store the distance between actors in a variable.
+ *   this.playerMoveTo(X, Y);            # Move the cursor (player) to the coordinates (X, Y).
+ *   this.addActor(EventID, ActorID);    # Make the event with the specified ID the actor.
+ *   this.addEnemy(EventID, EnemyID);    # Make the event with the specified ID the enemy.
+ *   this.setBattleMode(EventID, 'mode');# Change the acting pattern of the event with the specified ID.
+ *   this.setTargetId(EventID, ID);      # Change the target ID of the event with the specified ID.
  *   this.fromActorMinimumDistance(VariableID, EventID); # Stores the distance between the specified event and the nearest actor
  *                                                       # among all actors in the variable.
- *   this.isUnitDead(SwitchID, EventID);                 # Stores in the switch whether the event with the specified ID is dead or not.
- *   this.isEventIdXy(VariableID, X, Y);                 # Stores the event ID of the specified coordinates (X, Y) in the variable.
- *   this.checkRegionId(switcheID, regionID);            # Stores in the switch whether an actor is on the specified region ID.
- *   this.unitRecoverAll(EventID);                       # Full recovery of the unit with the specified event ID (only when it is alive).
- *   this.unitRevive(EventID);                           # Revive of the unit with the specified event ID (only when it is dead).
- *   this.unitAddState(EventId, StateId);                # Add the state of the ID specified to the unit with the specified event ID.
- *   this.unitRemoveState(EventId, StateId);             # Remove the state of the ID specified of unit with the specified event ID.
- *   this.turnEnd();                                     # End player's turn(Same 'Turn End' in menu).
- *   this.isSubPhaseNormal(SwitchID);                    # Whether the player selects the unit to be operated (ON is the same as when the menu can be opened). 
- *   $gameSystem.clearSrpgWinLoseCondition();            # Reset the win / loss conditions. Execute before setting a new condition.
- *   $gameSystem.setSrpgWinCondition('text');            # Set win conditions. If you want to describe multiple conditions, execute it multiple times.
- *   $gameSystem.setSrpgLoseCondition('text');           # Set lose conditions. If you want to describe multiple conditions, execute it multiple times.
+ *   this.isUnitDead(SwitchID, EventID); # Stores in the switch whether the event with the specified ID is dead or not.
+ *   this.isEventIdXy(VariableID, X, Y); # Stores the event ID of the specified coordinates (X, Y) in the variable.
+ *   this.checkRegionId(switcheID, regionID); # Stores in the switch whether an actor is on the specified region ID.
+ *   this.unitRecoverAll(EventID);       # Full recovery of the unit with the specified event ID (only when it is alive).
+ *   this.unitRevive(EventID);           # Revive of the unit with the specified event ID (only when it is dead).
+ *   this.unitAddState(EventId, StateId);# Add the state of the ID specified to the unit with the specified event ID.
+ *   this.turnEnd();                     # End player's turn(Same 'Turn End' in menu).
+ *   this.isSubPhaseNormal(SwitchID);    # Whether the player selects the unit to be operated (ON is the same as when the menu can be opened). 
+ *   $gameSystem.clearSrpgWinLoseCondition();    # Reset the win / loss conditions. Execute before setting a new condition.
+ *   $gameSystem.setSrpgWinCondition('text');    # Set win conditions. If you want to describe multiple conditions, execute it multiple times.
+ *   $gameSystem.setSrpgLoseCondition('text');   # Set lose conditions. If you want to describe multiple conditions, execute it multiple times.
  *
  * Dr. Q's modifications:
  * - new windows, sprites, etc. are made available to extension plugins
@@ -504,9 +520,7 @@
  * but if you introduce this plug-in, you will act in the order of 
  * attacker → defender → agile high character additional attack.
  * Actions targeted on your side or yourself will not act twice.
- * 
- * New skill tags:
- * <doubleAction:false>    unit will not act twice with that skill.
+ * Also, if you enter <doubleAction: false> in the note of skill, it will not act twice.
  * 
  * By changing srpgAgilityAffectsRatio you can change the probability of attack twice.
  * Set "Generate 100% if X times or more", while the probability changes according to the difference in agility.
@@ -522,71 +536,178 @@
  * @plugindesc マップ上でSRPG（タクティクス）方式の戦闘を実行します。
  * @author 神鏡学斗
  *
- * @param BasicParam
- * @desc 使用するスイッチ・変数の指定や併用するプラグインの設定など基本的なパラメータを設定します。
- * @default 全体にかかわる基本的な機能
- * 
- * @param WithYEP_BattleEngineCore
- * @parent BasicParam
- * @desc YEP_BattleEngineCoreと併用する場合はtrueに設定してください。
- * @type boolean
- * @default false
- * 
- * @param WithCommunityBasic_CoreScript
- * @parent BasicParam
- * @desc アツマールで公開されているコミュニティ版コアスクリプトと併用する場合はtrueに設定してください。
- * @type boolean
- * @default false
- * 
  * @param srpgTroopID
- * @parent BasicParam
  * @desc SRPGコンバータが占有するトループIDです。SRPG戦闘では、このIDのトループが使用されます。
  * @type number
  * @min 1
  * @default 1
  *
  * @param srpgBattleSwitchID
- * @parent BasicParam
  * @desc SRPG戦闘中であるかを格納するスイッチのＩＤを指定します。戦闘中はONになります。
  * @type switch
  * @default 1
  *
  * @param existActorVarID
- * @parent BasicParam
  * @desc 存在しているアクターの人数が代入される変数のＩＤを指定します。存在している＝戦闘不能・隠れでない。
  * @type variable
  * @default 1
  *
  * @param existEnemyVarID
- * @parent BasicParam
  * @desc 存在しているエネミーの人数が代入される変数のＩＤを指定します。存在している＝戦闘不能・隠れでない。
  * @type variable
  * @default 2
  *
  * @param turnVarID
- * @parent BasicParam
  * @desc 経過ターン数が代入される変数のＩＤを指定します。最初のターンは『ターン１』です。
  * @type variable
  * @default 3
  *
  * @param activeEventID
- * @parent BasicParam
  * @desc 行動中のユニットのイベントＩＤが代入される変数のＩＤを指定します。
  * @type variable
  * @default 4
  *
  * @param targetEventID
- * @parent BasicParam
  * @desc 攻撃対象のユニットのイベントＩＤが代入される変数のＩＤを指定します。回復や補助も含みます。
  * @type variable
  * @default 5
  *
- * @param MapBattle
- * @desc マップバトルに関係するパラメータです。
- * @default マップバトルの設定
+ * @param maxActorVarID
+ * @desc 戦闘に参加するアクターの最大数を設定する変数のIDを指定します。０で無効。
+ * @type variable
+ * @default 0
+ *
+ * @param defaultMove
+ * @desc クラスやエネミーのメモで移動力が設定されていない場合、この値が適用されます。
+ * @type number
+ * @min 0
+ * @default 4
+ *
+ * @param srpgBattleExpRate
+ * @desc 敵を倒さなかった時に、設定された経験値の何割を入手するか。0 ～ 1.0で設定。
+ * @type number
+ * @decimals 2
+ * @min 0
+ * @max 1
+ * @default 0.4
+ *
+ * @param srpgBattleExpRateForActors
+ * @desc 味方に対して行動した時に、レベルアップに必要な経験値の何割を入手するか。0 ～ 1.0で設定。
+ * @type number
+ * @decimals 2
+ * @min 0
+ * @max 1
+ * @default 0.1
+ *
+ * @param srpgBattleQuickLaunch
+ * @desc 戦闘開始エフェクトを高速化します。falseだと通常と同じになります。(true / false)
+ * @type boolean
+ * @default true
+ *
+ * //dopan edit start 
+ * @param srpgActorCommandAttackSwitchID
+ * @desc スイッチ ID：0またはスイッチ「false」-> *有効* AttackCommandスイッチ「true」-> *無効* AttackCommand。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandSkillSwitchID
+ * @desc スイッチID：0またはスイッチ「false」-> *有効* SkillCommandsスイッチ「true」-> *無効* SkillCommands。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandItemSwitchID
+ * @desc スイッチID：0またはスイッチ「false」-> *有効* ItemCommandスイッチ「true」-> *無効* ItemCommand。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandEquipSwitchID
+ * @desc スイッチID：0またはスイッチ「false」-> *有効* EquipCommandスイッチ「true」-> *無効* EquipCommand。
+ * @type switch
+ * @default 0
+ *
+ * @param srpgActorCommandWaitSwitchID
+ * @desc スイッチID：0またはスイッチ「false」-> *有効* WaitCommandスイッチ「true」-> *無効* WaitCommand。
+ * @type switch
+ * @default 0
+ * //dopan edit end 
+ *
+ * @param srpgWinLoseConditionCommand
+ * @desc メニューコマンドに『勝敗条件』を追加します。(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgBattleEndAllHeal
+ * @desc 戦闘終了後に自動的に味方全員を全回復します。falseだと自動回復しません。(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgPredictionWindowMode
+ * @desc 戦闘予測ウィンドウの表示を変更します。(1:フル / 2:攻撃名のみ / 3:表示なし)
+ * @type select
+ * @option フル
+ * @value 1
+ * @option 攻撃名のみ
+ * @value 2
+ * @option 表示なし
+ * @value 3
+ * @default 1
+ *
+ * @param srpgAutoBattleStateId
+ * @desc オート戦闘が選ばれた時に付与するステートのIDです。1行動で解除・自動戦闘のステートを使います(0で無効化)。
+ * @type state
+ * @default 14
+ *
+ * @param srpgBestSearchRouteSize
+ * @desc 攻撃可能な対象がいない時、最も近い敵までのルートを探索します。その索敵距離です（0で無効化）。
+ * @type number
+ * @min 0
+ * @default 20
+ *
+ * @param srpgDamageDirectionChange
+ * @desc 攻撃を受けた際に相手の方へ向きを補正します。(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgSkipTargetForSelf
+ * @desc 自分自身を対象とする行動では対象選択の処理をスキップします。(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param srpgRangeTerrainTag7
+ * @desc 地形タグ７を射程が通らないタイルにします。(true / false)
+ * @type boolean
+ * @default true
+ *
+ * @param WithYEP_BattleEngineCore
+ * @desc YEP_BattleEngineCoreと併用する場合はtrueに設定してください。
+ * @type boolean
+ * @default false
+ *
+ * // boomys edit start // side view battler positions
+ *
+ * @param ActorHomeX
+ * @desc アクタースプライトの基準位置
+ * YEP Default: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
+ * @default Graphics.width - 216 - index * 240
+ *
+ * @param ActorHomeY
+ * @desc アクタースプライトの基準位置
+ * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
+ * @default Graphics.height / 2 + 48 
+ *
+ * @param EnemyHomeX
+ * @desc この式は、SRPGモードでの敵のホームX位置を決定します
+ * SRPG Default: 200 + i
+ * @default 216 + index * 240
+ *
+ * @param EnemyHomeY
+ * @desc この式は、SRPGモードでの敵のホームY位置を決定します
+ * SRPG Default: Graphics.height / 2 + 48
+ * @default Graphics.height / 2 + 48 
+ *
+ * // boomys edit end // side view battler positions
  *
  * @param Use Map Battle
- * @parent MapBattle
  * @desc マップバトルを使用するかどうか
  * @type select
  * @option Always
@@ -605,92 +726,46 @@
  * @type switch
  * @default 0
  *
- * @param Animation Delay
- * @parent MapBattle
- * @desc アニメーション～効果表示までの待ち時間(Map Battle)
+ * @param Animation Delay(Map Battle)
+ * @desc アニメーション開始とスキル効果の表示までの待ち時間
  * -1に設定すると、アニメーションが完了するまで待つ
  * @type number
  * @min -1
- * @default -1
+ * @default 25
  *
- * @param BattleBasicParam
- * @desc 移動力や経験値の入手割合など基本的な数値を設定します。
- * @default 戦闘で使用する基本的数値
  *
- * @param defaultMove
- * @parent BattleBasicParam
- * @desc クラスやエネミーのメモで移動力が設定されていない場合、この値が適用されます。
- * @type number
- * @min 0
- * @default 4
+ * //-dopan edit start--dopan編集開始-
  *
- * @param srpgBattleExpRate
- * @parent BattleBasicParam
- * @desc 敵を倒さなかった時に、設定された経験値の何割を入手するか。0 ～ 1.0で設定。
- * @type number
- * @decimals 2
- * @min 0
- * @max 1
- * @default 0.4
  *
- * @param srpgBattleExpRateForActors
- * @parent BattleBasicParam
- * @desc 味方に対して行動した時に、レベルアップに必要な経験値の何割を入手するか。0 ～ 1.0で設定。
- * @type number
- * @decimals 2
- * @min 0
- * @max 1
- * @default 0.1
+ * @param BeforeMapBattleCE_ID
+ * @desc "Scene Map.prototype.event Before Battle.call（this）;"その一般的なイベントでは、このスクリプトのみを使用してください（プレアクティブフェーズのタイミングの改善）
  * 
- * @param maxActorVarID
- * @parent BattleBasicParam
- * @desc 戦闘に参加するアクターの最大数を設定する変数のIDを指定します。０で無効。
+ * @type common_event
+ * @default 1
+ * 
+ *
+ * @param Skill_CE_Timing_SwitchID
+ * @desc スイッチID：0またはスイッチ「false」-> Default__Switch「true」->タイミングの変更（アクション前フェーズとCustomExの間）
+ * @type switch
+ * @default 0 
+ *
+ * 
+ * @param ChangeAniDelaySwitch_ID 
+ * @desc スイッチID：0またはスイッチ「false」-> *有効* animationDelayスイッチ「true」->遅延= 30。
+ * @type switch
+ * @default 0 
+ *
+ *
+ * @param ChangeAniDelayVarID
+ * @desc 無効の場合のChangedDelay.Defaultの変数IDは30Framesです。無効にするには、VarIDを0に設定します。
  * @type variable
  * @default 0
  *
- * @param srpgAutoBattleStateId
- * @parent BattleBasicParam
- * @desc オート戦闘が選ばれた時に付与するステートのIDです。1行動で解除・自動戦闘のステートを使います(0で無効化)。
- * @type state
- * @default 14
  *
- * @param srpgBestSearchRouteSize
- * @parent BattleBasicParam
- * @desc 攻撃可能な対象がいない時、最も近い敵までのルートを探索します。その索敵距離です（0で無効化）。
- * @type number
- * @min 0
- * @default 20
+ * //-dopan edit end--dopan編集終了-
  *
- * @param BattleExtensionParam
- * @desc 画面の演出やアクターコマンドの変更など拡張的な機能を設定します。
- * @default 戦闘の拡張的な機能
  * 
- * @param srpgActorCommandEquip
- * @parent BattleExtensionParam
- * @desc アクターコマンドに『装備』を追加します。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgWinLoseConditionCommand
- * @parent BattleExtensionParam
- * @desc メニューコマンドに『勝敗条件』を追加します。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgPredictionWindowMode
- * @parent BattleExtensionParam
- * @desc 戦闘予測ウィンドウの表示を変更します。(1:フル / 2:攻撃名のみ / 3:表示なし)
- * @type select
- * @option フル
- * @value 1
- * @option 攻撃名のみ
- * @value 2
- * @option 表示なし
- * @value 3
- * @default 1
- *
  * @param useAgiAttackPlus
- * @parent BattleExtensionParam
  * @desc 敏捷が高い方が２回攻撃する仕組みを使用します。
  * @type boolean
  * @default false
@@ -702,111 +777,59 @@
  * @min 1
  * @default 2
  *
- * @param srpgBattleQuickLaunch
- * @parent BattleExtensionParam
- * @desc 戦闘開始エフェクトを高速化します。falseだと通常と同じになります。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgBattleEndAllHeal
- * @parent BattleExtensionParam
- * @desc 戦闘終了後に自動的に味方全員を全回復します。falseだと自動回復しません。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgDamageDirectionChange
- * @parent BattleExtensionParam
- * @desc 攻撃を受けた際に相手の方へ向きを補正します。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgSkipTargetForSelf
- * @parent BattleExtensionParam
- * @desc 自分自身を対象とする行動では対象選択の処理をスキップします。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgRangeTerrainTag7
- * @parent BattleExtensionParam
- * @desc 地形タグ７を射程が通らないタイルにします。(true / false)
- * @type boolean
- * @default true
- *
- * @param SRPGTerm
- * @desc 『待機』や『移動力』などの用語を設定します。
- * @default SRPG戦闘で使用する用語
- *
  * @param enemyDefaultClass
- * @parent SRPGTerm
  * @desc エネミーに職業（srpgClass）が設定されていない場合、ここの名前が表示されます。
  * @default エネミー
  *
  * @param textSrpgEquip
- * @parent SRPGTerm
  * @desc 装備（武器）を表す用語です。ＳＲＰＧのステータスウィンドウで表示されます。
  * @default 装備
  *
- * @param textSrpgNone
- * @parent SRPGTerm
- * @desc 装備が無い時に表示される用語
- * @default なし
- *
  * @param textSrpgMove
- * @parent SRPGTerm
  * @desc 移動力を表す用語です。ＳＲＰＧのステータスウィンドウで表示されます。
  * @default 移動力
  *
  * @param textSrpgRange
- * @parent SRPGTerm
  * @desc 攻撃射程を表す用語です。ＳＲＰＧのステータスウィンドウで表示されます。
  * @default 射程
  *
  * @param textSrpgWait
- * @parent SRPGTerm
  * @desc 待機を表す用語です。アクターコマンドウィンドウで表示されます。
  * @default 待機
  *
  * @param textSrpgWinLoseCondition
- * @parent SRPGTerm
  * @desc 勝敗条件を表す用語です。メニューコマンドウィンドウで表示されます。
  * @default 勝敗条件
  *
  * @param textSrpgWinCondition
- * @parent SRPGTerm
  * @desc 勝利条件を表す用語です。勝敗条件ウィンドウで表示されます。
  * @default 勝利条件
  *
  * @param textSrpgLoseCondition
- * @parent SRPGTerm
  * @desc 敗北条件を表す用語です。勝敗条件ウィンドウで表示されます。
  * @default 敗北条件
  *
  * @param textSrpgTurnEnd
- * @parent SRPGTerm
  * @desc ターン終了を表す用語です。メニュー画面で表示されます。
  * @default ターン終了
  *
  * @param textSrpgAutoBattle
- * @parent SRPGTerm
  * @desc オート戦闘を表す用語です。メニュー画面で表示されます。
  * @default オート戦闘
  *
  * @param textSrpgDamage
- * @parent SRPGTerm
  * @desc 戦闘予測ウィンドウで表示するダメージの用語
  * @default ダメージ
  *
  * @param textSrpgHealing
- * @parent SRPGTerm
  * @desc 戦闘予測ウィンドウで表示する回復の用語
  * @default 回復
  *
- * @param SRPGFiles
- * @desc 戦闘で使用する画像や効果音を指定します。
- * @default SRPG戦闘で使用する画像やＳＥの設定
+ * @param textSrpgNone
+ * @desc 装備が無い時に表示される用語
+ * @default なし
  *
  * @param srpgSet
- * @parent SRPGFiles
  * @desc SRPG戦闘で使うカーソルなどのキャラクター画像のファイル名
  * @type file
  * @dir img/characters/
@@ -814,7 +837,6 @@
  * @default srpg_set
  *
  * @param rewardSound
- * @parent SRPGFiles
  * @desc リザルトウィンドウで使用する効果音のファイル名
  * @type file
  * @dir audio/se/
@@ -822,7 +844,6 @@
  * @default Item3
  *
  * @param expSound
- * @parent SRPGFiles
  * @desc リザルトウィンドウでレベルアップ時に使用する効果音のファイル名
  * @type file
  * @dir audio/se/
@@ -857,6 +878,9 @@
  * 改めて導入する必要はありません。
  * SRPG_AgiAttackPlus、SRPGconverter_with_YEP_BattleEngineCoreを使用する際は
  * プラグインパラメータからONにしてください。
+ *
+ * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
+ *    (dopan edit)    => if No Skillnote is used or SkillNote is NOT false , AgiAtt+ will work normal on that Skill
  *
  * プラグインコマンド:
  *   SRPGBattle Start   # SRPG戦闘を開始する。
@@ -937,26 +961,26 @@
  *   <srpgThroughTag:X> # X以下の地形タグが設定されたタイルを通過できます（地形タグ 0 には無効）。
  *
  * イベントコマンド => スクリプト:
- *   this.EventDistance(VariableID, EventID, EventID);   # 指定したＩＤのイベント間の距離を変数に格納します。
- *   this.ActorDistance(VariableID, ActorID, ActorID);   # 指定したＩＤのアクター間の距離を変数に格納します。
- *   this.playerMoveTo(X, Y);                            # カーソル（プレイヤー）を座標(X,Y)に移動させます。
- *   this.addActor(EventID, ActorID);                    # 指定したＩＤのイベントをアクターにします。
- *   this.addEnemy(EventID, EnemyID);                    # 指定したＩＤのイベントをエネミーにします。
- *   this.setBattleMode(EventID, 'mode');                # 指定したＩＤのイベントの行動パターンを変更します。
- *   this.setTargetId(EventID, ID);                      # 指定したＩＤのイベントのターゲットＩＤを変更します。
- *   this.fromActorMinimumDistance(VariableID, EventID); # 指定したイベントと全てのアクターの中で最も近いアクターとの距離を変数に格納します。
- *   this.isUnitDead(SwitchID, EventID);                 # 指定したＩＤのイベントが戦闘不能かどうかをスイッチに格納します。
- *   this.isEventIdXy(VariableID, X, Y);                 # 指定した座標(X, Y)のイベントＩＤを変数に格納します。
- *   this.checkRegionId(switcheID, regionID);            # 指定したリージョンID上にアクターがいるか判定してスイッチに格納します。
- *   this.unitRecoverAll(EventID);                       # 指定したイベントＩＤのユニットを全回復します（生存している時のみ）。
- *   this.unitRevive(EventID);                           # 指定したイベントＩＤのユニットを復活します（戦闘不能時のみ）。
- *   this.unitAddState(EventId, StateId);                # 指定したイベントＩＤのユニットに指定したＩＤのステートを付与します。
- *   this.unitRemoveState(EventId, StateId);             # 指定したイベントＩＤのユニットの指定したＩＤのステートを解除します。
- *   this.turnEnd();                                     # プレイヤーのターンを終了します（メニューの「ターン終了」と同じ機能）
- *   this.isSubPhaseNormal(SwitchID);                    # 操作するユニットを選択する状態かをスイッチに格納します（ONだとメニューが開ける状態と同じ）。
- *   $gameSystem.clearSrpgWinLoseCondition();            # 勝敗条件をリセットします。新しい条件を設定する前に実行してください。
- *   $gameSystem.setSrpgWinCondition('text');            # 勝利条件をセットします（textに文字列）。複数の条件を記述する場合は、複数回実行してください。
- *   $gameSystem.setSrpgLoseCondition('text');           # 敗北条件をセットします（textに文字列）。複数の条件を記述する場合は、複数回実行してください。
+ *   this.EventDistance(VariableID, EventID, EventID); # 指定したＩＤのイベント間の距離を変数に格納します。
+ *   this.ActorDistance(VariableID, ActorID, ActorID); # 指定したＩＤのアクター間の距離を変数に格納します。
+ *   this.playerMoveTo(X, Y);            # カーソル（プレイヤー）を座標(X,Y)に移動させます。
+ *   this.addActor(EventID, ActorID);    # 指定したＩＤのイベントをアクターにします。
+ *   this.addEnemy(EventID, EnemyID);    # 指定したＩＤのイベントをエネミーにします。
+ *   this.setBattleMode(EventID, 'mode');# 指定したＩＤのイベントの行動パターンを変更します。
+ *   this.setTargetId(EventID, ID);      # 指定したＩＤのイベントのターゲットＩＤを変更します。
+ *   this.fromActorMinimumDistance(VariableID, EventID); # 指定したイベントと全てのアクターの中で
+ *                                                       # 最も近いアクターとの距離を変数に格納します。
+ *   this.isUnitDead(SwitchID, EventID); # 指定したＩＤのイベントが戦闘不能かどうかをスイッチに格納します。
+ *   this.isEventIdXy(VariableID, X, Y); # 指定した座標(X, Y)のイベントＩＤを変数に格納します。
+ *   this.checkRegionId(switcheID, regionID); # 指定したリージョンID上にアクターがいるか判定してスイッチに格納します。
+ *   this.unitRecoverAll(EventID);       # 指定したイベントＩＤのユニットを全回復します（生存している時のみ）。
+ *   this.unitRevive(EventID);           # 指定したイベントＩＤのユニットを復活します（戦闘不能時のみ）。
+ *   this.unitAddState(EventId, StateId);# 指定したイベントＩＤのユニットに指定したＩＤのステートを付与します。
+ *   this.turnEnd();                     # プレイヤーのターンを終了します（メニューの「ターン終了」と同じ機能）
+ *   this.isSubPhaseNormal(SwitchID);    # 操作するユニットを選択する状態かをスイッチに格納します（ONだとメニューが開ける状態と同じ）。
+ *   $gameSystem.clearSrpgWinLoseCondition();    # 勝敗条件をリセットします。新しい条件を設定する前に実行してください。
+ *   $gameSystem.setSrpgWinCondition('text');    # 勝利条件をセットします（textに文字列）。複数の条件を記述する場合は、複数回実行してください。
+ *   $gameSystem.setSrpgLoseCondition('text');   # 敗北条件をセットします（textに文字列）。複数の条件を記述する場合は、複数回実行してください。
  *
  *
  * == マップバトル ======================================================================
@@ -998,9 +1022,7 @@
  * このプラグインオンにすると攻撃側→防御側→敏捷の高い方の追加攻撃という順番で
  * 行動するようになります。
  * 味方や自分自身を対象とする行動は2回行動を行いません。
- * 
- * 新規のスキルのメモ欄:
- * <doubleAction:false>　　そのスキルでは2回行動しなくなります。
+ * また、スキルのメモに<doubleAction:false>と記入すると2回行動しなくなります。
  * 
  * srpgAgilityAffectsRatioを変えることで2回攻撃の発生率を変えられます。
  * 「X倍以上で100%発生する」と設定し、その間は敏捷性の差に応じて確率が変わります。
@@ -1033,7 +1055,11 @@
     var _textSrpgTurnEnd = parameters['textSrpgTurnEnd'] || 'ターン終了';
     var _textSrpgAutoBattle = parameters['textSrpgAutoBattle'] || 'オート戦闘';
     var _srpgBattleQuickLaunch = parameters['srpgBattleQuickLaunch'] || 'true';
-    var _srpgActorCommandEquip = parameters['srpgActorCommandEquip'] || 'true';
+    var _srpgActorCommandAttackSwitchID = Number(parameters['srpgActorCommandAttackSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandSkillSwitchID = Number(parameters['srpgActorCommandSkillSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandItemSwitchID = Number(parameters['srpgActorCommandItemSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandEquipSwitchID = Number(parameters['srpgActorCommandEquipSwitchID'] || 0); //dopans edit
+    var _srpgActorCommandWaitSwitchID = Number(parameters['srpgActorCommandWaitSwitchID'] || 0); //dopans edit
     var _srpgBattleEndAllHeal = parameters['srpgBattleEndAllHeal'] || 'true';
     var _srpgStandUnitSkip = 'true';
     var _srpgPredictionWindowMode = Number(parameters['srpgPredictionWindowMode'] || 1);
@@ -1055,11 +1081,20 @@
     var _useMapBattle = Number(parameters['Use Map Battle'] || 3);
     var _mapBattleSwitch = Number(parameters['Map Battle Switch'] || 0);
     var _animDelay = Number(parameters['Animation Delay'] || -1);
+    var _BeforeMapBattleCE = Number(parameters['BeforeMapBattleCE_ID'] || 1);  //dopans edit 
+    var _changeAnimationDelaySwitchID = Number(parameters['ChangeAniDelaySwitch_ID'] || 0); //dopans edit
+    var _changeAniDelayVarID = Number(parameters['ChangeAniDelayVarID'] || 0);  //dopans edit
+    var _changed_Skill_CE_Timing = Number(parameters['Skill_CE_Timing_SwitchID'] || 0);  //dopans edit
     var _srpgUseAgiAttackPlus = parameters['useAgiAttackPlus'] || 'true';
     var _srpgAgilityAffectsRatio = Number(parameters['srpgAgilityAffectsRatio'] || 2);
     var _AAPwithYEP_BattleEngineCore = parameters['WithYEP_BattleEngineCore'] || 'false';
-    var _AAPwithCommunityBasic_CoreScript = parameters['WithCommunityBasic_CoreScript'] || 'false';
-
+    var index = 0 ; // dopan info -> this is needed for boomys next edit
+    var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; //boomys edit
+    var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48;  //boomys edit
+    var _enemyHomeX = parameters['EnemyHomeX'] || 216 + index * 240; //boomys edit
+    var _enemyHomeY = parameters['EnemyHomeY'] || Graphics.height / 2 + 48; //boomys edit
+	
+	
     var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
@@ -2139,7 +2174,6 @@
                 (this.srpgSkillRange(item) < $gameTemp.SrpgDistance() ||
                 this.srpgSkillMinRange(item) > $gameTemp.SrpgDistance() ||
                 this.SrpgSpecialRange(item) == false ||
-                this.isTargetInRange(item) == false ||
                 (this._srpgActionTiming == 1 && this.srpgWeaponCounter() == false) ||
                 (item.meta.notUseAfterMove && ($gameTemp.originalPos()[0] != $gameTemp.activeEvent().posX() ||
                  $gameTemp.originalPos()[1] != $gameTemp.activeEvent().posY()))
@@ -2148,20 +2182,6 @@
             }
         }
         return _SRPG_Game_BattlerBase_canUse.call(this, item);
-    };
-
-
-    // 対象のイベントが射程範囲内にいるかの判定
-    Game_BattlerBase.prototype.isTargetInRange = function(item) {
-        var rangeList = $gameTemp.rangeList();
-        var target = $gameTemp.targetEvent();
-        if (item.scope === 11) return true;
-        if (!target) return false;
-        for (var i = 0; i < rangeList.length; i++) {
-            var pos =  rangeList[i];
-            if (target.posX() == pos[0] && target.posY() == pos[1]) return true;
-        }
-        return false;
     };
 
     // ステートのターン経過処理（ＳＲＰＧ用）
@@ -2323,6 +2343,12 @@
             this.removeBuffsAuto();
             this.clearResult();
             this.setSrpgTurnEnd(false);
+	    //Buff & States Core Fix ,contributed by boomy
+            if(Imported.YEP_BuffsStatesCore !== undefined) {
+               if(Imported.YEP_BuffsStatesCore) {
+                  if (this.meetTurnEndStateEffectsConditions()) this.onTurnEndStateEffects();
+               }
+            } //Buff & States Core Fix ,edit end 
         } else {
             return _SRPG_Game_Battler_onTurnEnd.call(this);
         }
@@ -2910,7 +2936,9 @@
             this._enemies = [];
             for (var i = 0; i < this.SrpgBattleEnemys().length; i++) {
                 var enemy = this.SrpgBattleEnemys()[i];
-                enemy.setScreenXy(200 + 240 * i, Graphics.height / 2 + 48);
+     //dopan edit info //about boomys edit,default was => "enemy.setScreenXy(200 + 240 * i, Graphics.height / 2 + 48); "    
+		  var index = i; // boomys edit
+                enemy.setScreenXy(eval(_enemyHomeX), eval(_enemyHomeY)); // boomys edit
                 this._enemies.push(enemy);
             }
             this.makeUniqueNames();
@@ -2918,6 +2946,7 @@
             _SRPG_Game_Troop_setup.call(this, troopId);
         }
     };
+
 
     // EXPを返す
     var _SRPG_Game_Troop_expTotal = Game_Troop.prototype.expTotal;
@@ -3012,9 +3041,9 @@
         if (this.isSrpgCollidedWithEvents(x2, y2)) {
             return false;
         }
-        //if (this.isThrough()) {
-        //    return true;
-        //}
+        if (this.isThrough()) {
+            return true;
+        }
         if (($gameMap.terrainTag(x2, y2) > 0 && $gameMap.terrainTag(x2, y2) <= tag) ||
             ($gameMap.terrainTag(x, y) > 0 && $gameMap.terrainTag(x, y) <= tag &&
              $gameMap.isPassable(x2, y2, this.reverseDir(d)))) {
@@ -3258,46 +3287,42 @@
             }
         }
     };
-
+/*
     //移動可能かを判定する（イベント出現時用）
-    Game_CharacterBase.prototype.srpgAppearCanPass = function(x, y, d, tag) {
+    Game_CharacterBase.prototype.srpgAppearCanPass = function(x, y, d) {
         var x2 = $gameMap.roundXWithDirection(x, d);
         var y2 = $gameMap.roundYWithDirection(y, d);
         if (!$gameMap.isValid(x2, y2)) {
             return false;
-        }
-        if (($gameMap.terrainTag(x2, y2) > 0 && $gameMap.terrainTag(x2, y2) <= tag) ||
-            ($gameMap.terrainTag(x, y) > 0 && $gameMap.terrainTag(x, y) <= tag &&
-             $gameMap.isPassable(x2, y2, this.reverseDir(d)))) {
-            return true;
         }
         if (!this.isMapPassable(x, y, d)) {
             return false;
         }
         return true;
     };
+*/
 
     //出現可能場所の計算
-    Game_CharacterBase.prototype.makeAppearPoint = function(event, x, y, tag, previous) {
+    Game_CharacterBase.prototype.makeAppearPoint = function(event, x, y, tag) {
         var events = $gameMap.eventsXyNt(x, y);
         if (events.length == 0 || (events.length == 1 && events[0] == event)) {
             return [x,y];
         }
         //上方向を探索
-        if (this.srpgAppearCanPass(x, y, 8, tag) && previous !== 2) {
-            return this.makeAppearPoint(event, x, y - 1, tag, 8);
+        if (this.srpgMoveCanPass(x, y, 8, tag)) {
+            return this.makeAppearPoint(event, x, y - 1, tag);
         }
         //右方向を探索
-        if (this.srpgAppearCanPass(x, y, 6, tag) && previous !== 4) {
-            return this.makeAppearPoint(event, x + 1, y, tag, 6);
+        if (this.srpgMoveCanPass(x, y, 6, tag)) {
+            return this.makeAppearPoint(event, x + 1, y, tag);
         }
         //左方向を探索
-        if (this.srpgAppearCanPass(x, y, 4, tag) && previous !== 6) {
-            return this.makeAppearPoint(event, x - 1, y, tag, 4);
+        if (this.srpgMoveCanPass(x, y, 4, tag)) {
+            return this.makeAppearPoint(event, x - 1, y, tag);
         }
         //下方向を探索
-        if (this.srpgAppearCanPass(x, y, 2, tag) && previous !== 8) {
-            return this.makeAppearPoint(event, x, y + 1, tag, 2);
+        if (this.srpgMoveCanPass(x, y, 2, tag)) {
+            return this.makeAppearPoint(event, x, y + 1, tag);
         }
     };
 
@@ -3678,7 +3703,6 @@
             if (event.isStarting()) {
                 event.clearStartingFlag();
                 this._interpreter.setup(event.list(), event.eventId());
-                if (_AAPwithCommunityBasic_CoreScript == true) this._interpreter.setEventInfo(event.getEventInfo());
                 return true;
             }
         }
@@ -3891,17 +3915,6 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
     return true;
 };
 
-// 指定したイベントＩＤのユニットを指定したステートを解除する
-Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
-    var battlerArray = $gameSystem.EventToUnit(eventId);
-    var event = $gameMap.event(eventId);
-    if (battlerArray && event && (battlerArray[0] === 'actor' || battlerArray[0] === 'enemy')) {
-        battlerArray[1].removeState(stateId);
-        battlerArray[1].clearResult();
-    }
-    return true;
-};
-
 // ターン終了を行う（メニューの「ターン終了」と同じ）
     Game_Interpreter.prototype.turnEnd = function() {
         $gameTemp.setTurnEndFlag(true);
@@ -3925,7 +3938,8 @@ Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
     var _SRPG_Sprite_Actor_setActorHome = Sprite_Actor.prototype.setActorHome;
     Sprite_Actor.prototype.setActorHome = function(index) {
         if ($gameSystem.isSRPGMode() == true) {
-            this.setHome(Graphics.width - 216 - index * 240, Graphics.height / 2 + 48);
+            //boomys edit // default was "this.setHome(Graphics.width - 216 - index * 240, Graphics.height / 2 + 48);"
+            this.setHome(eval(_actorHomeX), eval(_actorHomeY)); //boomys edit 
         } else {
             _SRPG_Sprite_Actor_setActorHome.call(this, index);
         }
@@ -3969,24 +3983,24 @@ Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
                 if ((battlerArray[0] === 'actor' || battlerArray[0] === 'enemy') &&
                     battlerArray[1].isAlive()) {
                     if (battlerArray[1].isRestricted()) {
-                        var sx = (6 + this.characterPatternX()) * pw;
+                        var sx = (0 + this.characterPatternX()) * pw;//dopan edit info Default=> // var sx = (6 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_X'); //dopan edit info Default=> // this._turnEndSprite.bitmap = this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this.isTurnEndUnit() == true) {
-                        var sx = (3 + this.characterPatternX()) * pw;
+                        var sx = (0 + this.characterPatternX()) * pw; //dopan edit info Default=> // var sx = (3 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_E'); //dopan edit info Default=> //this._turnEndSprite.bitmap = this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (battlerArray[1].isAutoBattle()) {
-                        var sx = (9 + this.characterPatternX()) * pw;
+                        var sx = (0 + this.characterPatternX()) * pw;//dopan edit info Default=> // var sx = (9 + this.characterPatternX()) * pw;
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_A'); //dopan edit info Default=> // this._turnEndSprite.bitmap = this._turnEndBitmap;
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this._turnEndSprite) {
@@ -4977,13 +4991,21 @@ Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
     Window_ActorCommand.prototype.makeCommandList = function() {
         if ($gameSystem.isSRPGMode() == true) {
             if (this._actor) {
-                this.addAttackCommand();
-                this.addSkillCommands();
-                this.addItemCommand();
-                if (_srpgActorCommandEquip == 'true') {
+                if (_srpgActorCommandAttackSwitchID === 0 || ($gameSwitches.value(_srpgActorCommandAttackSwitchID)===false)) {
+                    this.addAttackCommand();
+                }
+                if (_srpgActorCommandSkillSwitchID === 0 || ($gameSwitches.value(_srpgActorCommandSkillSwitchID)===false)) {
+                    this.addSkillCommands();
+                }
+                if (_srpgActorCommandItemSwitchID === 0 || ($gameSwitches.value(_srpgActorCommandItemSwitchID)===false)) {
+                    this.addItemCommand();
+                }
+                if (_srpgActorCommandEquipSwitchID === 0 || ($gameSwitches.value(_srpgActorCommandEquipSwitchID)===false)) {
                     this.addEquipCommand();
                 }
-                this.addWaitCommand();
+                if (_srpgActorCommandWaitSwitchID === 0 || ($gameSwitches.value(_srpgActorCommandWaitSwitchID)===false)) {
+                    this.addWaitCommand();
+                }
             }
         } else {
             _SRPG_Window_ActorCommand_makeCommandList.call(this);
@@ -6568,7 +6590,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
         this._srpgBattleStatusWindowLeft = null;
         this._srpgBattleStatusWindowRight = null;
         this._srpgBattleResultWindow = null;
-        this._srpgBattleResultWindowCount = 0;
     };
 
     //ステータスウィンドウのセット
@@ -6624,11 +6645,16 @@ Window_WinLoseCondition.prototype.refresh = function() {
             this._logWindow.push('pushBaseLine');
             if (Math.random() < this._action.itemCnt(target)) {
                 var attackSkill = $dataSkills[target.attackSkillId()];
-                if (target.canUse(attackSkill) == true) {
-                    this.invokeCounterAttack(subject, target);
-                } else {
-                    this.invokeNormalAction(subject, target);
-                }
+		// boomys edit Start // fix counter if not using SRPG mode
+                if ($gameSystem.isSRPGMode() == true) {
+		    if (target.canUse(attackSkill) == true) {
+                        this.invokeCounterAttack(subject, target);
+                    } else {
+                        this.invokeNormalAction(subject, target);
+                    }
+		} else {
+		    this.invokeCounterAttack(subject, target);	
+		} // boomys edit end // fix counter if not using SRPG mode
             } else if (Math.random() < this._action.itemMrf(target)) {
                 this.invokeMagicReflection(subject, target);
             } else {
@@ -6713,7 +6739,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
         se.volume = 90;
         AudioManager.playSe(se);
         this._srpgBattleResultWindow.open();
-        this._srpgBattleResultWindowCount = 60;
         this.gainRewards();
     };
 
@@ -6746,12 +6771,9 @@ Window_WinLoseCondition.prototype.refresh = function() {
             if ($gameSystem.isSubBattlePhase() === 'after_battle') {
                 SceneManager.pop();
                 this._phase = null;
-            } else if (this._srpgBattleResultWindow.isChangeExp() == false) {
-                if (this._srpgBattleResultWindowCount <= 0 ||
-                    Input.isPressed('ok') || TouchInput.isPressed()) {
-                    this.endBattle(3);
-                }
-                this._srpgBattleResultWindowCount -= 1;
+            } else if (this._srpgBattleResultWindow.isChangeExp() == false &&
+                (Input.isPressed('ok') || TouchInput.isPressed())) {
+                this.endBattle(3);
             }
         } else {
             _SRPG_BattleManager_updateBattleEnd.call(this);
@@ -6901,7 +6923,9 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var target = targetArray[1];
 		var action = user.action(0);
 		var reaction = null;
-
+                //get data for activeSkil
+                var activeSkill = user._actions[0]._item._itemId;
+		
 		// check if we're using map battle on this skill
 		if (action && action.item()) {
 			var mapBattleTag = action.item().meta.mapBattle;
@@ -6920,16 +6944,19 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		// pre-skill setup
 		$gameSystem.clearSrpgStatusWindowNeedRefresh();
 		$gameSystem.clearSrpgBattleWindowNeedRefresh();
-		this._srpgBattleResultWindowCount = 0;
 
-		// make free actions work
+		//make free actions work
 		var addActionTimes = Number(action.item().meta.addActionTimes || 0);
 		if (addActionTimes > 0) {
 			user.SRPGActionTimesAdd(addActionTimes);
 		}
 
 		this.preBattleSetDirection();
-		this.eventBeforeBattle();
+		
+                // EDIT dopan (for better PreActionPhase Timing)
+		$gameTemp.reserveCommonEvent(_BeforeMapBattleCE); //defaut was ->// this.eventBeforeBattle();
+                // EDIT dopan (this CE = "_BeforeMapBattleCE" ,needs only Script..
+		//..=> "Scene_Map.prototype.eventBeforeBattle.call(this);" ,in it and nothing else!)
 
 		// set up the troop and the battle party
 		$gameTroop.clearSrpgBattleEnemys();
@@ -6952,12 +6979,14 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			reaction.setSubject(target);
 			reaction.setAttack();
 			var actFirst = (reaction.speed() > action.speed());
-			if (_srpgUseAgiAttackPlus == 'true') actFirst = false;
+                        // dopan edit added "check- meta.AgiExtra"
+			if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
 			this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
 
-                // agi attack plus
-                if (_srpgUseAgiAttackPlus == 'true') {
+                // agi attack plus 
+                // dopan edit added "check- meta.AgiExtra"
+                if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
                     if (user.agi >= target.agi) {
                         var firstBattler = user;
                         var secondBattler = target;
@@ -6982,7 +7011,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                             this.srpgAddMapSkill(agiAction, firstBattler, secondBattler)
                         }
                     }
-                }
+                }		
 	};
 
 	// work through the queue of attacks
@@ -6995,11 +7024,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		!$gameSystem.useMapBattle()) {
 			return;
 		}
-		
-		// return when event running
-		if ($gameMap.isEventRunning() == true) {
-            		return;
-        	}
 
 		// update map skills
 		if (!this.waitingForSkill() && !this._srpgBattleResultWindow.isChangeExp()) {
@@ -7017,14 +7041,11 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				if ($gameTroop.members()[1] && $gameTroop.members()[1].isAlive()) $gameTroop.members()[1].onAllActionsEnd();
 				var showResults = this.processSrpgVictory();
 				if (!showResults) $gameSystem.setSubBattlePhase('after_battle');
-			} else if (this._srpgBattleResultWindow.isOpen()) {
-				if (Input.isPressed('ok') || Input.isPressed('cancel') ||
-				TouchInput.isPressed() || TouchInput.isCancelled() ||
-				this._srpgBattleResultWindowCount <= 0) {
-					this._srpgBattleResultWindow.close();
-					$gameSystem.setSubBattlePhase('after_battle');
-				}
-				this._srpgBattleResultWindowCount -= 1;
+			} else if (this._srpgBattleResultWindow.isOpen() &&
+			(Input.isPressed('ok') || Input.isPressed('cancel') ||
+			TouchInput.isPressed() || TouchInput.isCancelled())) {
+				this._srpgBattleResultWindow.close();
+				$gameSystem.setSubBattlePhase('after_battle');
 			}
 		} else {
 			// time-based waiting
@@ -7032,7 +7053,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		}
 	};
 
-	// reset battle mode between skills
+	// reset battle mode between skill
 	var _srpgAfterAction = Scene_Map.prototype.srpgAfterAction;
 	Scene_Map.prototype.srpgAfterAction = function() {
 		$gameSystem.clearSRPGBattleMode();
@@ -7071,8 +7092,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			if (!target) return false;
 			if (target.isAnimationPlaying() || !target.isStopping()) return true;
 		} else if (this.skillWait() > 0) return true;
-
-		if (this._waitCount > 0) return true;
 
 		return false;
 	};
@@ -7159,6 +7178,11 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var user = data.user;
 		var target = data.target;
 
+                //dopan edit -> makes sure that user is always displayed above target in mapbattle
+                user.event()._priorityType = 4;
+                target.event()._priorityType = 3;
+                //dopan edit end
+
 		switch (data.phase) {
 			// skill cost and casting animations
 			case 'start':
@@ -7167,6 +7191,14 @@ Window_WinLoseCondition.prototype.refresh = function() {
 					this._srpgSkillList.unshift(data);
 					break;
 				}
+				// Control Skill CE Timing // dopan Edit
+				if (!$gameSwitches.value(_changed_Skill_CE_Timing)) {
+                                    // nothing
+				}
+				if ($gameSwitches.value(_changed_Skill_CE_Timing)) {
+                                    action.applyGlobal(); // dopan Edit (set Skill CE before Action)
+				}
+				//
 				user.useItem(action.item());
 				if (!$gameTemp.isFirstAction || $gameTemp.isFirstAction()) {
 					var castAnim = false;
@@ -7217,7 +7249,21 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				// time-based delay
 				var delay = _animDelay;
 				if (action.item().meta.animationDelay) delay = Number(action.item().meta.animationDelay);
-				if (delay >= 0) this.setSkillWait(delay);
+				if (delay >= 0) {                 //dopan edit starts with " {"
+                                    if (_changeAnimationDelaySwitchID == 0 || ($gameSwitches.value(_changeAnimationDelaySwitchID)==false)) { 
+                                        this.setSkillWait(delay); //dopan edit:Default is this line instead of edit start = " {"
+                                    }  
+                                    if ($gameSwitches.value(_changeAnimationDelaySwitchID)==true) {
+                                        if (_changeAniDelayVarID >= 1) {
+                                            delay = ($gameVariables.value(_changeAniDelayVarID));                                                                                          
+                                            this.setSkillWait(delay);
+                                        } 
+                                        if (_changeAniDelayVarID == 0) {  
+                                            delay = 30;
+                                            this.setSkillWait(delay);
+                                        }               
+                                    }
+                                }                                 //dopan edit end
 				break;
 
 			// apply skill effects
@@ -7238,6 +7284,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 					if (target.canUse(attackSkill) == true) {
 						target.performCounter();
 						this.srpgAddCounterAttack(user, target);
+
 					} else {
 						action.apply(target);
 					}
@@ -7248,7 +7295,14 @@ Window_WinLoseCondition.prototype.refresh = function() {
 
 			// run the common events and such
 			case 'global':
-				action.applyGlobal();
+                                // Control Skill CE Timing // dopan Edit start
+				if (!$gameSwitches.value(_changed_Skill_CE_Timing)) {
+                                action.applyGlobal(); // dopan Edit ->this is Default
+				}
+				if ($gameSwitches.value(_changed_Skill_CE_Timing)) {
+                                // nothing // this happens at "case 'start':" now..
+				}
+				// dopan Edit End
 				data.phase = 'end';
 				this._srpgSkillList.unshift(data);
 				break;
@@ -7258,7 +7312,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			case 'end':
 				user.setLastTarget(target);
 				user.removeCurrentAction();
-				this._waitCount = 20;
+				this._waitCount = 30;
 				break;
 		}
 
@@ -7358,7 +7412,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				se.volume = 90;
 				AudioManager.playSe(se);
 				this._srpgBattleResultWindow.open();
-				this._srpgBattleResultWindowCount = 60;
 				this.gainRewards();
 				return true;
 			}
@@ -7495,7 +7548,10 @@ Window_Options.prototype.addGeneralOptions = function() {
 //====================================================================
     var _SRPG_AAP_Game_Action_speed = Game_Action.prototype.speed;
     Game_Action.prototype.speed = function() {
-        if ($gameSystem.isSRPGMode() == true && _srpgUseAgiAttackPlus == 'true') {
+        // dopan edit added var data & "check- meta.AgiExtra"
+        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; // dopan edit
+        var activeSkill = user._actions[0]._item._itemId; // dopan edit
+        if (($gameSystem.isSRPGMode() == true) && (_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
             return this.subject().agi;
         } else {
             return _SRPG_AAP_Game_Action_speed.call(this);
@@ -7540,7 +7596,13 @@ Window_Options.prototype.addGeneralOptions = function() {
     var _SRPG_AAP_BattleManager_makeActionOrders = BattleManager.makeActionOrders;
     BattleManager.makeActionOrders = function() {
         _SRPG_AAP_BattleManager_makeActionOrders.call(this);
-        if (!_srpgUseAgiAttackPlus) return;
+        // agi attack plus ->edited by dopan added var data & "check- meta.AgiExtra"
+        // SideNote: "<AgiExtra:true/false>" -> "true" is default if no SkillNote is used
+        // dopan Edit :  get data of "active Skill" Skill_ID
+        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; //dopan edit
+        var activeSkill = user._actions[0]._item._itemId; //dopan edit
+        // dopan edit added "check- meta.AgiExtra"
+        if ((!_srpgUseAgiAttackPlus) || ($dataSkills[activeSkill].meta.AgiExtra == "false")) return;
         var battlers = this._actionBattlers;
         var firstBattler = battlers[0];
         if (!firstBattler.currentAction() || !firstBattler.currentAction().item()) {

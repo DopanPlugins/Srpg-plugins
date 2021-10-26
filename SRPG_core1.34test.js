@@ -291,22 +291,30 @@
  *
  * // boomys edit start // side view battler positions
  *
+ * @param SV battler Positions
+ * @desc Parameters related to SV battler Positions.
+ * @default SV battler settings
+ *
  * @param ActorHomeX
+ * @parent SV battler Positions
  * @desc This formula determines the actor's home X position in SRPG mode
  * YEP Default: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
  * @default Graphics.width - 216 - index * 240
  *
  * @param ActorHomeY
+ * @parent SV battler Positions
  * @desc This formula determines the actor's home Y position in SRPG mode
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
  * @default Graphics.height / 2 + 48 
  *
  * @param EnemyHomeX
+ * @parent SV battler Positions
  * @desc This formula determines the enemy's home X position in SRPG mode
  * SRPG Default: 200 + i
  * @default 216 + index * 240
  *
  * @param EnemyHomeY
+ * @parent SV battler Positions
  * @desc This formula determines the enemy's home Y position in SRPG mode
  * SRPG Default: Graphics.height / 2 + 48
  * @default Graphics.height / 2 + 48 
@@ -674,22 +682,30 @@
  *
  * // boomys edit start // side view battler positions
  *
+ * @param SV battler Positions
+ * @desc Parameters related to SV battler Positions.
+ * @default SV battler settings
+ *
  * @param ActorHomeX
+ * @parent SV battler Positions
  * @desc アクタースプライトの基準位置
  * YEP Default: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
  * @default Graphics.width - 216 - index * 240
  *
  * @param ActorHomeY
+ * @parent SV battler Positions
  * @desc アクタースプライトの基準位置
  * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
  * @default Graphics.height / 2 + 48 
  *
  * @param EnemyHomeX
+ * @parent SV battler Positions
  * @desc この式は、SRPGモードでの敵のホームX位置を決定します
  * SRPG Default: 200 + i
  * @default 216 + index * 240
  *
  * @param EnemyHomeY
+ * @parent SV battler Positions
  * @desc この式は、SRPGモードでの敵のホームY位置を決定します
  * SRPG Default: Graphics.height / 2 + 48
  * @default Graphics.height / 2 + 48 

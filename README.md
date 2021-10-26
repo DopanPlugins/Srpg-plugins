@@ -1,4 +1,4 @@
-# Srpg-plugins
+# edited Srpg Core-plugins & other infos
  srpg plugins (rpg mv)
 
 IMPORTANT Info about the newest edited core Version:

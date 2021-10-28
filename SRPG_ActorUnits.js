@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_ActorUnits.js
 //=============================================================================
 /*:
@@ -2539,7 +2539,7 @@
 
 //-- next function-->(...)
 
-//--------------------------------------------------------------------------------------------$gameActors.actor(aid)._actorId
+//--------------------------------------------------------------------------------------------
 
 // sets Event Ids of All Actors(max 100) to the Variables from SRPG_ActorUnits.js-Param,if _switchAID"true".
 
@@ -2549,506 +2549,506 @@
                       var battleunit = $gameSystem.EventToUnit([i]);
                       var eventunit = $gameMap.event([i]);                         
                            if (battleunit && eventunit && (battleunit[0] === 'actor')) {
-                               var actorunit = 1; actorunit === battleunit[1]._actorId;
+                               var actorunit = battleunit[1]._actorId;
 
                                if (actorunit === 1) {
                                    if (($gameSwitches.value(_switch1AID)) && ($gameVariables.value(_var1AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var1AID), eventunit._eventId); $gameSwitches.setValue((_var1AID), false)
+                                        $gameVariables.setValue((_var1AID), eventunit._eventId); $gameSwitches.setValue((_switch1AID), false)
                                    }                       
                                }
                                if (actorunit === 2) {
                                    if (($gameSwitches.value(_switch2AID)) && ($gameVariables.value(_var2AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var2AID), eventunit._eventId); $gameSwitches.setValue((_var2AID), false)
+                                        $gameVariables.setValue((_var2AID), eventunit._eventId); $gameSwitches.setValue((_switch2AID), false)
                                    } 
                                }
                                if (actorunit === 3) {
                                    if (($gameSwitches.value(_switch3AID)) && ($gameVariables.value(_var3AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var3AID), eventunit._eventId); $gameSwitches.setValue((_var3AID), false)
+                                        $gameVariables.setValue((_var3AID), eventunit._eventId); $gameSwitches.setValue((_switch3AID), false)
                                    }                      
                                }
                                if (actorunit === 4) {
                                    if (($gameSwitches.value(_switch4AID)) && ($gameVariables.value(_var4AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var4AID), eventunit._eventId); $gameSwitches.setValue((_var4AID), false)
+                                        $gameVariables.setValue((_var4AID), eventunit._eventId); $gameSwitches.setValue((_switch4AID), false)
                                    } 
                                }
                                if (actorunit === 5) {
                                    if (($gameSwitches.value(_switch5AID)) && ($gameVariables.value(_var5AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var5AID), eventunit._eventId); $gameSwitches.setValue((_var5AID), false)
+                                        $gameVariables.setValue((_var5AID), eventunit._eventId); $gameSwitches.setValue((_switch5AID), false)
                                    }                       
                                }
                                if (actorunit === 6) {
                                    if (($gameSwitches.value(_switch6AID)) && ($gameVariables.value(_var6AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var6AID), eventunit._eventId); $gameSwitches.setValue((_var6AID), false)
+                                        $gameVariables.setValue((_var6AID), eventunit._eventId); $gameSwitches.setValue((_switch6AID), false)
                                    } 
                                }
                                if (actorunit === 7) {
                                    if (($gameSwitches.value(_switch7AID)) && ($gameVariables.value(_var7AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var7AID), eventunit._eventId); $gameSwitches.setValue((_var7AID), false)
+                                        $gameVariables.setValue((_var7AID), eventunit._eventId); $gameSwitches.setValue((_switch7AID), false)
                                    }                        
                                }
                                if (actorunit === 8) {
                                    if (($gameSwitches.value(_switch8AID)) && ($gameVariables.value(_var8AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var8AID), eventunit._eventId); $gameSwitches.setValue((_var8AID), false)
+                                        $gameVariables.setValue((_var8AID), eventunit._eventId); $gameSwitches.setValue((_switch8AID), false)
                                    } 
                                }
                                if (actorunit === 9) {
                                    if (($gameSwitches.value(_switch9AID)) && ($gameVariables.value(_var9AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var9AID), eventunit._eventId); $gameSwitches.setValue((_var9AID), false)
+                                        $gameVariables.setValue((_var9AID), eventunit._eventId); $gameSwitches.setValue((_switch9AID), false)
                                    }                       
                                }
                                if (actorunit === 10) {
                                    if (($gameSwitches.value(_switch10AID)) && ($gameVariables.value(_var10AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var10AID), eventunit._eventId); $gameSwitches.setValue((_var10AID), false)
+                                        $gameVariables.setValue((_var10AID), eventunit._eventId); $gameSwitches.setValue((_switch10AID), false)
                                    } 
                                }
                                if (actorunit === 11) {
                                    if (($gameSwitches.value(_switch11AID)) && ($gameVariables.value(_var11AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var11AID), eventunit._eventId); $gameSwitches.setValue((_var11AID), false)
+                                        $gameVariables.setValue((_var11AID), eventunit._eventId); $gameSwitches.setValue((_switch11AID), false)
                                    }                       
                                }
                                if (actorunit === 12) {
                                    if (($gameSwitches.value(_switch12AID)) && ($gameVariables.value(_var12AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var12AID), eventunit._eventId); $gameSwitches.setValue((_var12AID), false)
+                                        $gameVariables.setValue((_var12AID), eventunit._eventId); $gameSwitches.setValue((_switch12AID), false)
                                    } 
                                }
                                if (actorunit === 13) {
                                    if (($gameSwitches.value(_switch13AID)) && ($gameVariables.value(_var13AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var13AID), eventunit._eventId); $gameSwitches.setValue((_var13AID), false)
+                                        $gameVariables.setValue((_var13AID), eventunit._eventId); $gameSwitches.setValue((_switch13AID), false)
                                    }                      
                                }
                                if (actorunit === 14) {
                                    if (($gameSwitches.value(_switch14AID)) && ($gameVariables.value(_var14AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var14AID), eventunit._eventId); $gameSwitches.setValue((_var14AID), false)
+                                        $gameVariables.setValue((_var14AID), eventunit._eventId); $gameSwitches.setValue((_switch14AID), false)
                                    } 
                                }
                                if (actorunit === 15) {
                                    if (($gameSwitches.value(_switch15AID)) && ($gameVariables.value(_var15AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var15AID), eventunit._eventId); $gameSwitches.setValue((_var15AID), false)
+                                        $gameVariables.setValue((_var15AID), eventunit._eventId); $gameSwitches.setValue((_switch15AID), false)
                                    }                       
                                }
                                if (actorunit === 16) {
                                    if (($gameSwitches.value(_switch16AID)) && ($gameVariables.value(_var16AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var16AID), eventunit._eventId); $gameSwitches.setValue((_var16AID), false)
+                                        $gameVariables.setValue((_var16AID), eventunit._eventId); $gameSwitches.setValue((_switch16AID), false)
                                    } 
                                }
                                if (actorunit === 17) {
                                    if (($gameSwitches.value(_switch17AID)) && ($gameVariables.value(_var17AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var17AID), eventunit._eventId); $gameSwitches.setValue((_var17AID), false)
+                                        $gameVariables.setValue((_var17AID), eventunit._eventId); $gameSwitches.setValue((_switch17AID), false)
                                    }                        
                                }
                                if (actorunit === 18) {
                                    if (($gameSwitches.value(_switch18AID)) && ($gameVariables.value(_var18AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var18AID), eventunit._eventId); $gameSwitches.setValue((_var18AID), false)
+                                        $gameVariables.setValue((_var18AID), eventunit._eventId); $gameSwitches.setValue((_switch18AID), false)
                                    } 
                                }
                                if (actorunit === 19) {
                                    if (($gameSwitches.value(_switch19AID)) && ($gameVariables.value(_var19AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var19AID), eventunit._eventId); $gameSwitches.setValue((_var19AID), false)
+                                        $gameVariables.setValue((_var19AID), eventunit._eventId); $gameSwitches.setValue((_switch19AID), false)
                                    }                       
                                }
                                if (actorunit === 20) {
                                    if (($gameSwitches.value(_switch20AID)) && ($gameVariables.value(_var20AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var20AID), eventunit._eventId); $gameSwitches.setValue((_var20AID), false)
+                                        $gameVariables.setValue((_var20AID), eventunit._eventId); $gameSwitches.setValue((_switch20AID), false)
                                    } 
                                }
                                if (actorunit === 21) {
                                    if (($gameSwitches.value(_switch21AID)) && ($gameVariables.value(_var21AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var21AID), eventunit._eventId); $gameSwitches.setValue((_var21AID), false)
+                                        $gameVariables.setValue((_var21AID), eventunit._eventId); $gameSwitches.setValue((_switch21AID), false)
                                    }                       
                                }
                                if (actorunit === 22) {
                                    if (($gameSwitches.value(_switch22AID)) && ($gameVariables.value(_var22AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var22AID), eventunit._eventId); $gameSwitches.setValue((_var22AID), false)
+                                        $gameVariables.setValue((_var22AID), eventunit._eventId); $gameSwitches.setValue((_switch22AID), false)
                                    } 
                                }
                                if (actorunit === 23) {
                                    if (($gameSwitches.value(_switch23AID)) && ($gameVariables.value(_var23AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var23AID), eventunit._eventId); $gameSwitches.setValue((_var23AID), false)
+                                        $gameVariables.setValue((_var23AID), eventunit._eventId); $gameSwitches.setValue((_switch23AID), false)
                                    }                      
                                }
                                if (actorunit === 24) {
                                    if (($gameSwitches.value(_switch24AID)) && ($gameVariables.value(_var24AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var24AID), eventunit._eventId); $gameSwitches.setValue((_var24AID), false)
+                                        $gameVariables.setValue((_var24AID), eventunit._eventId); $gameSwitches.setValue((_switch24AID), false)
                                    } 
                                }
                                if (actorunit === 25) {
                                    if (($gameSwitches.value(_switch25AID)) && ($gameVariables.value(_var25AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var25AID), eventunit._eventId); $gameSwitches.setValue((_var25AID), false)
+                                        $gameVariables.setValue((_var25AID), eventunit._eventId); $gameSwitches.setValue((_switch25AID), false)
                                    }                       
                                }
                                if (actorunit === 26) {
                                    if (($gameSwitches.value(_switch26AID)) && ($gameVariables.value(_var26AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var26AID), eventunit._eventId); $gameSwitches.setValue((_var26AID), false)
+                                        $gameVariables.setValue((_var26AID), eventunit._eventId); $gameSwitches.setValue((_switch26AID), false)
                                    } 
                                }
                                if (actorunit === 27) {
                                    if (($gameSwitches.value(_switch27AID)) && ($gameVariables.value(_var27AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var27AID), eventunit._eventId); $gameSwitches.setValue((_var27AID), false)
+                                        $gameVariables.setValue((_var27AID), eventunit._eventId); $gameSwitches.setValue((_switch27AID), false)
                                    }                        
                                }
                                if (actorunit === 28) {
                                    if (($gameSwitches.value(_switch28AID)) && ($gameVariables.value(_var28AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var28AID), eventunit._eventId); $gameSwitches.setValue((_var28AID), false)
+                                        $gameVariables.setValue((_var28AID), eventunit._eventId); $gameSwitches.setValue((_switch28AID), false)
                                    } 
                                }
                                if (actorunit === 29) {
                                    if (($gameSwitches.value(_switch29AID)) && ($gameVariables.value(_var29AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var29AID), eventunit._eventId); $gameSwitches.setValue((_var29AID), false)
+                                        $gameVariables.setValue((_var29AID), eventunit._eventId); $gameSwitches.setValue((_switch29AID), false)
                                    }                       
                                }
                                if (actorunit === 30) {
                                    if (($gameSwitches.value(_switch30AID)) && ($gameVariables.value(_var30AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var30AID), eventunit._eventId); $gameSwitches.setValue((_var30AID), false)
+                                        $gameVariables.setValue((_var30AID), eventunit._eventId); $gameSwitches.setValue((_switch30AID), false)
                                    } 
                                }
                                if (actorunit === 31) {
                                    if (($gameSwitches.value(_switch31AID)) && ($gameVariables.value(_var31AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var31AID), eventunit._eventId); $gameSwitches.setValue((_var31AID), false)
+                                        $gameVariables.setValue((_var31AID), eventunit._eventId); $gameSwitches.setValue((_switch31AID), false)
                                    }                       
                                }
                                if (actorunit === 32) {
                                    if (($gameSwitches.value(_switch32AID)) && ($gameVariables.value(_var32AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var32AID), eventunit._eventId); $gameSwitches.setValue((_var32AID), false)
+                                        $gameVariables.setValue((_var32AID), eventunit._eventId); $gameSwitches.setValue((_switch32AID), false)
                                    } 
                                }
                                if (actorunit === 33) {
                                    if (($gameSwitches.value(_switch33AID)) && ($gameVariables.value(_var33AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var33AID), eventunit._eventId); $gameSwitches.setValue((_var33AID), false)
+                                        $gameVariables.setValue((_var33AID), eventunit._eventId); $gameSwitches.setValue((_switch33AID), false)
                                    }                      
                                }
                                if (actorunit === 34) {
                                    if (($gameSwitches.value(_switch34AID)) && ($gameVariables.value(_var34AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var34AID), eventunit._eventId); $gameSwitches.setValue((_var34AID), false)
+                                        $gameVariables.setValue((_var34AID), eventunit._eventId); $gameSwitches.setValue((_switch34AID), false)
                                    } 
                                }
                                if (actorunit === 35) {
                                    if (($gameSwitches.value(_switch35AID)) && ($gameVariables.value(_var35AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var35AID), eventunit._eventId); $gameSwitches.setValue((_var35AID), false)
+                                        $gameVariables.setValue((_var35AID), eventunit._eventId); $gameSwitches.setValue((_switch35AID), false)
                                    }                       
                                }
                                if (actorunit === 36) {
                                    if (($gameSwitches.value(_switch36AID)) && ($gameVariables.value(_var36AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var36AID), eventunit._eventId); $gameSwitches.setValue((_var36AID), false)
+                                        $gameVariables.setValue((_var36AID), eventunit._eventId); $gameSwitches.setValue((_switch36AID), false)
                                    } 
                                }
                                if (actorunit === 37) {
                                    if (($gameSwitches.value(_switch37AID)) && ($gameVariables.value(_var37AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var37AID), eventunit._eventId); $gameSwitches.setValue((_var37AID), false)
+                                        $gameVariables.setValue((_var37AID), eventunit._eventId); $gameSwitches.setValue((_switch37AID), false)
                                    }                        
                                }
                                if (actorunit === 38) {
                                    if (($gameSwitches.value(_switch38AID)) && ($gameVariables.value(_var38AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var38AID), eventunit._eventId); $gameSwitches.setValue((_var38AID), false)
+                                        $gameVariables.setValue((_var38AID), eventunit._eventId); $gameSwitches.setValue((_switch38AID), false)
                                    } 
                                }
                                if (actorunit === 39) {
                                    if (($gameSwitches.value(_switch39AID)) && ($gameVariables.value(_var39AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var39AID), eventunit._eventId); $gameSwitches.setValue((_var39AID), false)
+                                        $gameVariables.setValue((_var39AID), eventunit._eventId); $gameSwitches.setValue((_switch39AID), false)
                                    }                       
                                }
                                if (actorunit === 40) {
                                    if (($gameSwitches.value(_switch40AID)) && ($gameVariables.value(_var40AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var40AID), eventunit._eventId); $gameSwitches.setValue((_var40AID), false)
+                                        $gameVariables.setValue((_var40AID), eventunit._eventId); $gameSwitches.setValue((_switch40AID), false)
                                    } 
                                }
                                if (actorunit === 41) {
                                    if (($gameSwitches.value(_switch41AID)) && ($gameVariables.value(_var41AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var41AID), eventunit._eventId); $gameSwitches.setValue((_var41AID), false)
+                                        $gameVariables.setValue((_var41AID), eventunit._eventId); $gameSwitches.setValue((_switch41AID), false)
                                    }                       
                                }
                                if (actorunit === 42) {
                                    if (($gameSwitches.value(_switch42AID)) && ($gameVariables.value(_var42AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var42AID), eventunit._eventId); $gameSwitches.setValue((_var42AID), false)
+                                        $gameVariables.setValue((_var42AID), eventunit._eventId); $gameSwitches.setValue((_switch42AID), false)
                                    } 
                                }
                                if (actorunit === 43) {
                                    if (($gameSwitches.value(_switch43AID)) && ($gameVariables.value(_var43AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var43AID), eventunit._eventId); $gameSwitches.setValue((_var43AID), false)
+                                        $gameVariables.setValue((_var43AID), eventunit._eventId); $gameSwitches.setValue((_switch43AID), false)
                                    }                      
                                }
                                if (actorunit === 44) {
                                    if (($gameSwitches.value(_switch44AID)) && ($gameVariables.value(_var44AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var44AID), eventunit._eventId); $gameSwitches.setValue((_var44AID), false)
+                                        $gameVariables.setValue((_var44AID), eventunit._eventId); $gameSwitches.setValue((_switch44AID), false)
                                    } 
                                }
                                if (actorunit === 45) {
                                    if (($gameSwitches.value(_switch45AID)) && ($gameVariables.value(_var45AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var45AID), eventunit._eventId); $gameSwitches.setValue((_var45AID), false)
+                                        $gameVariables.setValue((_var45AID), eventunit._eventId); $gameSwitches.setValue((_switch45AID), false)
                                    }                       
                                }
                                if (actorunit === 46) {
                                    if (($gameSwitches.value(_switch46AID)) && ($gameVariables.value(_var46AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var46AID), eventunit._eventId); $gameSwitches.setValue((_var46AID), false)
+                                        $gameVariables.setValue((_var46AID), eventunit._eventId); $gameSwitches.setValue((_switch46AID), false)
                                    } 
                                }
                                if (actorunit === 47) {
                                    if (($gameSwitches.value(_switch47AID)) && ($gameVariables.value(_var47AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var47AID), eventunit._eventId); $gameSwitches.setValue((_var47AID), false)
+                                        $gameVariables.setValue((_var47AID), eventunit._eventId); $gameSwitches.setValue((_switch47AID), false)
                                    }                        
                                }
                                if (actorunit === 48) {
                                    if (($gameSwitches.value(_switch48AID)) && ($gameVariables.value(_var48AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var48AID), eventunit._eventId); $gameSwitches.setValue((_var48AID), false)
+                                        $gameVariables.setValue((_var48AID), eventunit._eventId); $gameSwitches.setValue((_switch48AID), false)
                                    } 
                                }
                                if (actorunit === 49) {
                                    if (($gameSwitches.value(_switch49AID)) && ($gameVariables.value(_var49AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var49AID), eventunit._eventId); $gameSwitches.setValue((_var49AID), false)
+                                        $gameVariables.setValue((_var49AID), eventunit._eventId); $gameSwitches.setValue((_switch49AID), false)
                                    }                       
                                }
                                if (actorunit === 50) {
                                    if (($gameSwitches.value(_switch50AID)) && ($gameVariables.value(_var50AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var50AID), eventunit._eventId); $gameSwitches.setValue((_var50AID), false)
+                                        $gameVariables.setValue((_var50AID), eventunit._eventId); $gameSwitches.setValue((_switch50AID), false)
                                    } 
                                }
                                if (actorunit === 51) {
                                    if (($gameSwitches.value(_switch51AID)) && ($gameVariables.value(_var51AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var51AID), eventunit._eventId); $gameSwitches.setValue((_var51AID), false)
+                                        $gameVariables.setValue((_var51AID), eventunit._eventId); $gameSwitches.setValue((_switch51AID), false)
                                    }                       
                                }
                                if (actorunit === 52) {
                                    if (($gameSwitches.value(_switch52AID)) && ($gameVariables.value(_var52AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var52AID), eventunit._eventId); $gameSwitches.setValue((_var52AID), false)
+                                        $gameVariables.setValue((_var52AID), eventunit._eventId); $gameSwitches.setValue((_switch52AID), false)
                                    } 
                                }
                                if (actorunit === 53) {
                                    if (($gameSwitches.value(_switch53AID)) && ($gameVariables.value(_var53AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var53AID), eventunit._eventId); $gameSwitches.setValue((_var53AID), false)
+                                        $gameVariables.setValue((_var53AID), eventunit._eventId); $gameSwitches.setValue((_switch53AID), false)
                                    }                      
                                }
                                if (actorunit === 54) {
                                    if (($gameSwitches.value(_switch54AID)) && ($gameVariables.value(_var54AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var54AID), eventunit._eventId); $gameSwitches.setValue((_var54AID), false)
+                                        $gameVariables.setValue((_var54AID), eventunit._eventId); $gameSwitches.setValue((_switch54AID), false)
                                    } 
                                }
                                if (actorunit === 55) {
                                    if (($gameSwitches.value(_switch55AID)) && ($gameVariables.value(_var55AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var55AID), eventunit._eventId); $gameSwitches.setValue((_var55AID), false)
+                                        $gameVariables.setValue((_var55AID), eventunit._eventId); $gameSwitches.setValue((_switch55AID), false)
                                    }                       
                                }
                                if (actorunit === 56) {
                                    if (($gameSwitches.value(_switch56AID)) && ($gameVariables.value(_var56AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var56AID), eventunit._eventId); $gameSwitches.setValue((_var56AID), false)
+                                        $gameVariables.setValue((_var56AID), eventunit._eventId); $gameSwitches.setValue((_switch56AID), false)
                                    } 
                                }
                                if (actorunit === 57) {
                                    if (($gameSwitches.value(_switch57AID)) && ($gameVariables.value(_var57AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var57AID), eventunit._eventId); $gameSwitches.setValue((_var57AID), false)
+                                        $gameVariables.setValue((_var57AID), eventunit._eventId); $gameSwitches.setValue((_switch57AID), false)
                                    }                        
                                }
                                if (actorunit === 58) {
                                    if (($gameSwitches.value(_switch58AID)) && ($gameVariables.value(_var58AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var58AID), eventunit._eventId); $gameSwitches.setValue((_var58AID), false)
+                                        $gameVariables.setValue((_var58AID), eventunit._eventId); $gameSwitches.setValue((_switch58AID), false)
                                    } 
                                }
                                if (actorunit === 59) {
                                    if (($gameSwitches.value(_switch59AID)) && ($gameVariables.value(_var59AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var59AID), eventunit._eventId); $gameSwitches.setValue((_var59AID), false)
+                                        $gameVariables.setValue((_var59AID), eventunit._eventId); $gameSwitches.setValue((_switch59AID), false)
                                    }                       
                                }
                                if (actorunit === 60) {
                                    if (($gameSwitches.value(_switch60AID)) && ($gameVariables.value(_var60AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var60AID), eventunit._eventId); $gameSwitches.setValue((_var60AID), false)
+                                        $gameVariables.setValue((_var60AID), eventunit._eventId); $gameSwitches.setValue((_switch60AID), false)
                                    } 
                                }
                                if (actorunit === 61) {
                                    if (($gameSwitches.value(_switch61AID)) && ($gameVariables.value(_var61AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var61AID), eventunit._eventId); $gameSwitches.setValue((_var61AID), false)
+                                        $gameVariables.setValue((_var61AID), eventunit._eventId); $gameSwitches.setValue((_switch61AID), false)
                                    }                       
                                }
                                if (actorunit === 62) {
                                    if (($gameSwitches.value(_switch62AID)) && ($gameVariables.value(_var62AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var62AID), eventunit._eventId); $gameSwitches.setValue((_var62AID), false)
+                                        $gameVariables.setValue((_var62AID), eventunit._eventId); $gameSwitches.setValue((_switch62AID), false)
                                    } 
                                }
                                if (actorunit === 63) {
                                    if (($gameSwitches.value(_switch63AID)) && ($gameVariables.value(_var63AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var63AID), eventunit._eventId); $gameSwitches.setValue((_var63AID), false)
+                                        $gameVariables.setValue((_var63AID), eventunit._eventId); $gameSwitches.setValue((_switch63AID), false)
                                    }                      
                                }
                                if (actorunit === 64) {
                                    if (($gameSwitches.value(_switch64AID)) && ($gameVariables.value(_var64AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var64AID), eventunit._eventId); $gameSwitches.setValue((_var64AID), false)
+                                        $gameVariables.setValue((_var64AID), eventunit._eventId); $gameSwitches.setValue((_switch64AID), false)
                                    } 
                                }
                                if (actorunit === 65) {
                                    if (($gameSwitches.value(_switch65AID)) && ($gameVariables.value(_var65AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var65AID), eventunit._eventId); $gameSwitches.setValue((_var65AID), false)
+                                        $gameVariables.setValue((_var65AID), eventunit._eventId); $gameSwitches.setValue((_switch65AID), false)
                                    }                       
                                }
                                if (actorunit === 66) {
                                    if (($gameSwitches.value(_switch66AID)) && ($gameVariables.value(_var66AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var66AID), eventunit._eventId); $gameSwitches.setValue((_var66AID), false)
+                                        $gameVariables.setValue((_var66AID), eventunit._eventId); $gameSwitches.setValue((_switch66AID), false)
                                    } 
                                }
                                if (actorunit === 67) {
                                    if (($gameSwitches.value(_switch67AID)) && ($gameVariables.value(_var67AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var67AID), eventunit._eventId); $gameSwitches.setValue((_var67AID), false)
+                                        $gameVariables.setValue((_var67AID), eventunit._eventId); $gameSwitches.setValue((_switch67AID), false)
                                    }                        
                                }
                                if (actorunit === 68) {
                                    if (($gameSwitches.value(_switch68AID)) && ($gameVariables.value(_var68AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var68AID), eventunit._eventId); $gameSwitches.setValue((_var68AID), false)
+                                        $gameVariables.setValue((_var68AID), eventunit._eventId); $gameSwitches.setValue((_switch68AID), false)
                                    } 
                                }
                                if (actorunit === 69) {
                                    if (($gameSwitches.value(_switch69AID)) && ($gameVariables.value(_var69AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var69AID), eventunit._eventId); $gameSwitches.setValue((_var69AID), false)
+                                        $gameVariables.setValue((_var69AID), eventunit._eventId); $gameSwitches.setValue((_switch69AID), false)
                                    }                       
                                }
                                if (actorunit === 70) {
                                    if (($gameSwitches.value(_switch70AID)) && ($gameVariables.value(_var70AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var70AID), eventunit._eventId); $gameSwitches.setValue((_var70AID), false)
+                                        $gameVariables.setValue((_var70AID), eventunit._eventId); $gameSwitches.setValue((_switch70AID), false)
                                    } 
                                }
                                if (actorunit === 71) {
                                    if (($gameSwitches.value(_switch71AID)) && ($gameVariables.value(_var71AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var71AID), eventunit._eventId); $gameSwitches.setValue((_var71AID), false)
+                                        $gameVariables.setValue((_var71AID), eventunit._eventId); $gameSwitches.setValue((_switch71AID), false)
                                    }                       
                                }
                                if (actorunit === 72) {
                                    if (($gameSwitches.value(_switch72AID)) && ($gameVariables.value(_var72AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var72AID), eventunit._eventId); $gameSwitches.setValue((_var72AID), false)
+                                        $gameVariables.setValue((_var72AID), eventunit._eventId); $gameSwitches.setValue((_switch72AID), false)
                                    } 
                                }
                                if (actorunit === 73) {
                                    if (($gameSwitches.value(_switch73AID)) && ($gameVariables.value(_var73AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var73AID), eventunit._eventId); $gameSwitches.setValue((_var73AID), false)
+                                        $gameVariables.setValue((_var73AID), eventunit._eventId); $gameSwitches.setValue((_switch73AID), false)
                                    }                      
                                }
                                if (actorunit === 74) {
                                    if (($gameSwitches.value(_switch74AID)) && ($gameVariables.value(_var74AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var74AID), eventunit._eventId); $gameSwitches.setValue((_var74AID), false)
+                                        $gameVariables.setValue((_var74AID), eventunit._eventId); $gameSwitches.setValue((_switch74AID), false)
                                    } 
                                }
                                if (actorunit === 75) {
                                    if (($gameSwitches.value(_switch75AID)) && ($gameVariables.value(_var75AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var75AID), eventunit._eventId); $gameSwitches.setValue((_var75AID), false)
+                                        $gameVariables.setValue((_var75AID), eventunit._eventId); $gameSwitches.setValue((_switch75AID), false)
                                    }                       
                                }
                                if (actorunit === 76) {
                                    if (($gameSwitches.value(_switch76AID)) && ($gameVariables.value(_var76AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var76AID), eventunit._eventId); $gameSwitches.setValue((_var76AID), false)
+                                        $gameVariables.setValue((_var76AID), eventunit._eventId); $gameSwitches.setValue((_switch76AID), false)
                                    } 
                                }
                                if (actorunit === 77) {
                                    if (($gameSwitches.value(_switch77AID)) && ($gameVariables.value(_var77AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var77AID), eventunit._eventId); $gameSwitches.setValue((_var77AID), false)
+                                        $gameVariables.setValue((_var77AID), eventunit._eventId); $gameSwitches.setValue((_switch77AID), false)
                                    }                        
                                }
                                if (actorunit === 78) {
                                    if (($gameSwitches.value(_switch78AID)) && ($gameVariables.value(_var78AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var78AID), eventunit._eventId); $gameSwitches.setValue((_var78AID), false)
+                                        $gameVariables.setValue((_var78AID), eventunit._eventId); $gameSwitches.setValue((_switch78AID), false)
                                    } 
                                }
                                if (actorunit === 79) {
                                    if (($gameSwitches.value(_switch79AID)) && ($gameVariables.value(_var79AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var79AID), eventunit._eventId); $gameSwitches.setValue((_var79AID), false)
+                                        $gameVariables.setValue((_var79AID), eventunit._eventId); $gameSwitches.setValue((_switch79AID), false)
                                    }                       
                                }
                                if (actorunit === 80) {
                                    if (($gameSwitches.value(_switch80AID)) && ($gameVariables.value(_var80AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var80AID), eventunit._eventId); $gameSwitches.setValue((_var80AID), false)
+                                        $gameVariables.setValue((_var80AID), eventunit._eventId); $gameSwitches.setValue((_switch80AID), false)
                                    } 
                                }
                                if (actorunit === 81) {
                                    if (($gameSwitches.value(_switch81AID)) && ($gameVariables.value(_var81AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var81AID), eventunit._eventId); $gameSwitches.setValue((_var81AID), false)
+                                        $gameVariables.setValue((_var81AID), eventunit._eventId); $gameSwitches.setValue((_switch81AID), false)
                                    }                       
                                }
                                if (actorunit === 82) {
                                    if (($gameSwitches.value(_switch82AID)) && ($gameVariables.value(_var82AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var82AID), eventunit._eventId); $gameSwitches.setValue((_var82AID), false)
+                                        $gameVariables.setValue((_var82AID), eventunit._eventId); $gameSwitches.setValue((_switch82AID), false)
                                    } 
                                }
                                if (actorunit === 83) {
                                    if (($gameSwitches.value(_switch83AID)) && ($gameVariables.value(_var83AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var83AID), eventunit._eventId); $gameSwitches.setValue((_var83AID), false)
+                                        $gameVariables.setValue((_var83AID), eventunit._eventId); $gameSwitches.setValue((_switch83AID), false)
                                    }                      
                                }
                                if (actorunit === 84) {
                                    if (($gameSwitches.value(_switch84AID)) && ($gameVariables.value(_var84AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var84AID), eventunit._eventId); $gameSwitches.setValue((_var84AID), false)
+                                        $gameVariables.setValue((_var84AID), eventunit._eventId); $gameSwitches.setValue((_switch84AID), false)
                                    } 
                                }
                                if (actorunit === 85) {
                                    if (($gameSwitches.value(_switch85AID)) && ($gameVariables.value(_var85AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var85AID), eventunit._eventId); $gameSwitches.setValue((_var85AID), false)
+                                        $gameVariables.setValue((_var85AID), eventunit._eventId); $gameSwitches.setValue((_switch85AID), false)
                                    }                       
                                }
                                if (actorunit === 86) {
                                    if (($gameSwitches.value(_switch86AID)) && ($gameVariables.value(_var86AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var86AID), eventunit._eventId); $gameSwitches.setValue((_var86AID), false)
+                                        $gameVariables.setValue((_var86AID), eventunit._eventId); $gameSwitches.setValue((_switch86AID), false)
                                    } 
                                }
                                if (actorunit === 87) {
                                    if (($gameSwitches.value(_switch87AID)) && ($gameVariables.value(_var87AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var87AID), eventunit._eventId); $gameSwitches.setValue((_var87AID), false)
+                                        $gameVariables.setValue((_var87AID), eventunit._eventId); $gameSwitches.setValue((_switch87AID), false)
                                    }                        
                                }
                                if (actorunit === 88) {
                                    if (($gameSwitches.value(_switch88AID)) && ($gameVariables.value(_var88AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var88AID), eventunit._eventId); $gameSwitches.setValue((_var88AID), false)
+                                        $gameVariables.setValue((_var88AID), eventunit._eventId); $gameSwitches.setValue((_switch88AID), false)
                                    } 
                                }
                                if (actorunit === 89) {
                                    if (($gameSwitches.value(_switch89AID)) && ($gameVariables.value(_var89AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var89AID), eventunit._eventId); $gameSwitches.setValue((_var89AID), false)
+                                        $gameVariables.setValue((_var89AID), eventunit._eventId); $gameSwitches.setValue((_switch89AID), false)
                                    }                       
                                }
                                if (actorunit === 90) {
                                    if (($gameSwitches.value(_switch90AID)) && ($gameVariables.value(_var90AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var90AID), eventunit._eventId); $gameSwitches.setValue((_var90AID), false)
+                                        $gameVariables.setValue((_var90AID), eventunit._eventId); $gameSwitches.setValue((_switch90AID), false)
                                    } 
                                }
                                if (actorunit === 91) {
                                    if (($gameSwitches.value(_switch91AID)) && ($gameVariables.value(_var91AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var91AID), eventunit._eventId); $gameSwitches.setValue((_var91AID), false)
+                                        $gameVariables.setValue((_var91AID), eventunit._eventId); $gameSwitches.setValue((_switch91AID), false)
                                    }                       
                                }
                                if (actorunit === 92) {
                                    if (($gameSwitches.value(_switch92AID)) && ($gameVariables.value(_var92AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var92AID), eventunit._eventId); $gameSwitches.setValue((_var92AID), false)
+                                        $gameVariables.setValue((_var92AID), eventunit._eventId); $gameSwitches.setValue((_switch92AID), false)
                                    } 
                                }
                                if (actorunit === 93) {
                                    if (($gameSwitches.value(_switch93AID)) && ($gameVariables.value(_var93AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var93AID), eventunit._eventId); $gameSwitches.setValue((_var93AID), false)
+                                        $gameVariables.setValue((_var93AID), eventunit._eventId); $gameSwitches.setValue((_switch93AID), false)
                                    }                      
                                }
                                if (actorunit === 94) {
                                    if (($gameSwitches.value(_switch94AID)) && ($gameVariables.value(_var94AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var94AID), eventunit._eventId); $gameSwitches.setValue((_var94AID), false)
+                                        $gameVariables.setValue((_var94AID), eventunit._eventId); $gameSwitches.setValue((_switch94AID), false)
                                    } 
                                }
                                if (actorunit === 95) {
                                    if (($gameSwitches.value(_switch95AID)) && ($gameVariables.value(_var95AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var95AID), eventunit._eventId); $gameSwitches.setValue((_var95AID), false)
+                                        $gameVariables.setValue((_var95AID), eventunit._eventId); $gameSwitches.setValue((_switch95AID), false)
                                    }                       
                                }
                                if (actorunit === 96) {
                                    if (($gameSwitches.value(_switch96AID)) && ($gameVariables.value(_var96AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var96AID), eventunit._eventId); $gameSwitches.setValue((_var96AID), false)
+                                        $gameVariables.setValue((_var96AID), eventunit._eventId); $gameSwitches.setValue((_switch96AID), false)
                                    } 
                                }
                                if (actorunit === 97) {
                                    if (($gameSwitches.value(_switch97AID)) && ($gameVariables.value(_var97AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var97AID), eventunit._eventId); $gameSwitches.setValue((_var97AID), false)
+                                        $gameVariables.setValue((_var97AID), eventunit._eventId); $gameSwitches.setValue((_switch97AID), false)
                                    }                        
                                }
                                if (actorunit === 98) {
                                    if (($gameSwitches.value(_switch98AID)) && ($gameVariables.value(_var98AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var98AID), eventunit._eventId); $gameSwitches.setValue((_var98AID), false)
+                                        $gameVariables.setValue((_var98AID), eventunit._eventId); $gameSwitches.setValue((_switch98AID), false)
                                    } 
                                }
                                if (actorunit === 99) {
                                    if (($gameSwitches.value(_switch99AID)) && ($gameVariables.value(_var99AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var99AID), eventunit._eventId); $gameSwitches.setValue((_var99AID), false)
+                                        $gameVariables.setValue((_var99AID), eventunit._eventId); $gameSwitches.setValue((_switch99AID), false)
                                    }                       
                                }
                                if (actorunit === 100) {
                                    if (($gameSwitches.value(_switch100AID)) && ($gameVariables.value(_var100AID) === 0 ) ) { 
-                                        $gameVariables.setValue((_var100AID), eventunit._eventId); $gameSwitches.setValue((_var100AID), false)
+                                        $gameVariables.setValue((_var100AID), eventunit._eventId); $gameSwitches.setValue((_switch100AID), false)
                                    } 
                                }
                            }   
@@ -3075,115 +3075,115 @@
                 //---> set ALL eventID-Varibles back to 0 and set Switches to "true"
                 case 'Reset': // Plugin Command = "SRPG_ActorUnits Reset"
 
-                    $gameVariables.setValue(_var1AID, 0); $gameSwitches.setValue(_var1AID , true);
-                    $gameVariables.setValue(_var2AID, 0); $gameSwitches.setValue(_var2AID , true);
-                    $gameVariables.setValue(_var3AID, 0); $gameSwitches.setValue(_var3AID , true);
-                    $gameVariables.setValue(_var4AID, 0); $gameSwitches.setValue(_var4AID , true);
-                    $gameVariables.setValue(_var5AID, 0); $gameSwitches.setValue(_var5AID , true);
-                    $gameVariables.setValue(_var6AID, 0); $gameSwitches.setValue(_var6AID , true);
-                    $gameVariables.setValue(_var7AID, 0); $gameSwitches.setValue(_var7AID , true);
-                    $gameVariables.setValue(_var8AID, 0); $gameSwitches.setValue(_var8AID , true);
-                    $gameVariables.setValue(_var9AID, 0); $gameSwitches.setValue(_var9AID , true);
-                    $gameVariables.setValue(_var10AID, 0); $gameSwitches.setValue(_var10AID , true);
+                    $gameVariables.setValue(_var1AID, 0); $gameSwitches.setValue(_switch1AID , true);
+                    $gameVariables.setValue(_var2AID, 0); $gameSwitches.setValue(_switch2AID , true);
+                    $gameVariables.setValue(_var3AID, 0); $gameSwitches.setValue(_switch3AID , true);
+                    $gameVariables.setValue(_var4AID, 0); $gameSwitches.setValue(_switch4AID , true);
+                    $gameVariables.setValue(_var5AID, 0); $gameSwitches.setValue(_switch5AID , true);
+                    $gameVariables.setValue(_var6AID, 0); $gameSwitches.setValue(_switch6AID , true);
+                    $gameVariables.setValue(_var7AID, 0); $gameSwitches.setValue(_switch7AID , true);
+                    $gameVariables.setValue(_var8AID, 0); $gameSwitches.setValue(_switch8AID , true);
+                    $gameVariables.setValue(_var9AID, 0); $gameSwitches.setValue(_switch9AID , true);
+                    $gameVariables.setValue(_var10AID, 0); $gameSwitches.setValue(_switch10AID , true);
 //--> 10+
-                    $gameVariables.setValue(_var11AID, 0); $gameSwitches.setValue(_var11AID , true);
-                    $gameVariables.setValue(_var12AID, 0); $gameSwitches.setValue(_var12AID , true);
-                    $gameVariables.setValue(_var13AID, 0); $gameSwitches.setValue(_var13AID , true);
-                    $gameVariables.setValue(_var14AID, 0); $gameSwitches.setValue(_var14AID , true);
-                    $gameVariables.setValue(_var15AID, 0); $gameSwitches.setValue(_var15AID , true);
-                    $gameVariables.setValue(_var16AID, 0); $gameSwitches.setValue(_var16AID , true);
-                    $gameVariables.setValue(_var17AID, 0); $gameSwitches.setValue(_var17AID , true);
-                    $gameVariables.setValue(_var18AID, 0); $gameSwitches.setValue(_var18AID , true);
-                    $gameVariables.setValue(_var19AID, 0); $gameSwitches.setValue(_var19AID , true);
-                    $gameVariables.setValue(_var20AID, 0); $gameSwitches.setValue(_var20AID , true);
+                    $gameVariables.setValue(_var11AID, 0); $gameSwitches.setValue(_switch11AID , true);
+                    $gameVariables.setValue(_var12AID, 0); $gameSwitches.setValue(_switch12AID , true);
+                    $gameVariables.setValue(_var13AID, 0); $gameSwitches.setValue(_switch13AID , true);
+                    $gameVariables.setValue(_var14AID, 0); $gameSwitches.setValue(_switch14AID , true);
+                    $gameVariables.setValue(_var15AID, 0); $gameSwitches.setValue(_switch15AID , true);
+                    $gameVariables.setValue(_var16AID, 0); $gameSwitches.setValue(_switch16AID , true);
+                    $gameVariables.setValue(_var17AID, 0); $gameSwitches.setValue(_switch17AID , true);
+                    $gameVariables.setValue(_var18AID, 0); $gameSwitches.setValue(_switch18AID , true);
+                    $gameVariables.setValue(_var19AID, 0); $gameSwitches.setValue(_switch19AID , true);
+                    $gameVariables.setValue(_var20AID, 0); $gameSwitches.setValue(_switch20AID , true);
 //--> 20+
-                    $gameVariables.setValue(_var21AID, 0); $gameSwitches.setValue(_var21AID , true);
-                    $gameVariables.setValue(_var22AID, 0); $gameSwitches.setValue(_var22AID , true);
-                    $gameVariables.setValue(_var23AID, 0); $gameSwitches.setValue(_var23AID , true);
-                    $gameVariables.setValue(_var24AID, 0); $gameSwitches.setValue(_var24AID , true);
-                    $gameVariables.setValue(_var25AID, 0); $gameSwitches.setValue(_var25AID , true);
-                    $gameVariables.setValue(_var26AID, 0); $gameSwitches.setValue(_var26AID , true);
-                    $gameVariables.setValue(_var27AID, 0); $gameSwitches.setValue(_var27AID , true);
-                    $gameVariables.setValue(_var28AID, 0); $gameSwitches.setValue(_var28AID , true);
-                    $gameVariables.setValue(_var29AID, 0); $gameSwitches.setValue(_var29AID , true);
-                    $gameVariables.setValue(_var30AID, 0); $gameSwitches.setValue(_var30AID , true);
+                    $gameVariables.setValue(_var21AID, 0); $gameSwitches.setValue(_switch21AID , true);
+                    $gameVariables.setValue(_var22AID, 0); $gameSwitches.setValue(_switch22AID , true);
+                    $gameVariables.setValue(_var23AID, 0); $gameSwitches.setValue(_switch23AID , true);
+                    $gameVariables.setValue(_var24AID, 0); $gameSwitches.setValue(_switch24AID , true);
+                    $gameVariables.setValue(_var25AID, 0); $gameSwitches.setValue(_switch25AID , true);
+                    $gameVariables.setValue(_var26AID, 0); $gameSwitches.setValue(_switch26AID , true);
+                    $gameVariables.setValue(_var27AID, 0); $gameSwitches.setValue(_switch27AID , true);
+                    $gameVariables.setValue(_var28AID, 0); $gameSwitches.setValue(_switch28AID , true);
+                    $gameVariables.setValue(_var29AID, 0); $gameSwitches.setValue(_switch29AID , true);
+                    $gameVariables.setValue(_var30AID, 0); $gameSwitches.setValue(_switch30AID , true);
 //--> 30+
-                    $gameVariables.setValue(_var31AID, 0); $gameSwitches.setValue(_var31AID , true);
-                    $gameVariables.setValue(_var32AID, 0); $gameSwitches.setValue(_var32AID , true);
-                    $gameVariables.setValue(_var33AID, 0); $gameSwitches.setValue(_var33AID , true);
-                    $gameVariables.setValue(_var34AID, 0); $gameSwitches.setValue(_var34AID , true);
-                    $gameVariables.setValue(_var35AID, 0); $gameSwitches.setValue(_var35AID , true);
-                    $gameVariables.setValue(_var36AID, 0); $gameSwitches.setValue(_var36AID , true);
-                    $gameVariables.setValue(_var37AID, 0); $gameSwitches.setValue(_var37AID , true);
-                    $gameVariables.setValue(_var38AID, 0); $gameSwitches.setValue(_var38AID , true);
-                    $gameVariables.setValue(_var39AID, 0); $gameSwitches.setValue(_var39AID , true);
-                    $gameVariables.setValue(_var40AID, 0); $gameSwitches.setValue(_var40AID , true);
+                    $gameVariables.setValue(_var31AID, 0); $gameSwitches.setValue(_switch31AID , true);
+                    $gameVariables.setValue(_var32AID, 0); $gameSwitches.setValue(_switch32AID , true);
+                    $gameVariables.setValue(_var33AID, 0); $gameSwitches.setValue(_switch33AID , true);
+                    $gameVariables.setValue(_var34AID, 0); $gameSwitches.setValue(_switch34AID , true);
+                    $gameVariables.setValue(_var35AID, 0); $gameSwitches.setValue(_switch35AID , true);
+                    $gameVariables.setValue(_var36AID, 0); $gameSwitches.setValue(_switch36AID , true);
+                    $gameVariables.setValue(_var37AID, 0); $gameSwitches.setValue(_switch37AID , true);
+                    $gameVariables.setValue(_var38AID, 0); $gameSwitches.setValue(_switch38AID , true);
+                    $gameVariables.setValue(_var39AID, 0); $gameSwitches.setValue(_switch39AID , true);
+                    $gameVariables.setValue(_var40AID, 0); $gameSwitches.setValue(_switch40AID , true);
 //--> 40+
-                    $gameVariables.setValue(_var41AID, 0); $gameSwitches.setValue(_var41AID , true);
-                    $gameVariables.setValue(_var42AID, 0); $gameSwitches.setValue(_var42AID , true);
-                    $gameVariables.setValue(_var43AID, 0); $gameSwitches.setValue(_var43AID , true);
-                    $gameVariables.setValue(_var44AID, 0); $gameSwitches.setValue(_var44AID , true);
-                    $gameVariables.setValue(_var45AID, 0); $gameSwitches.setValue(_var45AID , true);
-                    $gameVariables.setValue(_var46AID, 0); $gameSwitches.setValue(_var46AID , true);
-                    $gameVariables.setValue(_var47AID, 0); $gameSwitches.setValue(_var47AID , true);
-                    $gameVariables.setValue(_var48AID, 0); $gameSwitches.setValue(_var48AID , true);
-                    $gameVariables.setValue(_var49AID, 0); $gameSwitches.setValue(_var49AID , true);
-                    $gameVariables.setValue(_var50AID, 0); $gameSwitches.setValue(_var50AID , true);
+                    $gameVariables.setValue(_var41AID, 0); $gameSwitches.setValue(_switch41AID , true);
+                    $gameVariables.setValue(_var42AID, 0); $gameSwitches.setValue(_switch42AID , true);
+                    $gameVariables.setValue(_var43AID, 0); $gameSwitches.setValue(_switch43AID , true);
+                    $gameVariables.setValue(_var44AID, 0); $gameSwitches.setValue(_switch44AID , true);
+                    $gameVariables.setValue(_var45AID, 0); $gameSwitches.setValue(_switch45AID , true);
+                    $gameVariables.setValue(_var46AID, 0); $gameSwitches.setValue(_switch46AID , true);
+                    $gameVariables.setValue(_var47AID, 0); $gameSwitches.setValue(_switch47AID , true);
+                    $gameVariables.setValue(_var48AID, 0); $gameSwitches.setValue(_switch48AID , true);
+                    $gameVariables.setValue(_var49AID, 0); $gameSwitches.setValue(_switch49AID , true);
+                    $gameVariables.setValue(_var50AID, 0); $gameSwitches.setValue(_switch50AID , true);
 //--> 50+
-                    $gameVariables.setValue(_var51AID, 0); $gameSwitches.setValue(_var51AID , true);
-                    $gameVariables.setValue(_var52AID, 0); $gameSwitches.setValue(_var52AID , true);
-                    $gameVariables.setValue(_var53AID, 0); $gameSwitches.setValue(_var53AID , true);
-                    $gameVariables.setValue(_var54AID, 0); $gameSwitches.setValue(_var54AID , true);
-                    $gameVariables.setValue(_var55AID, 0); $gameSwitches.setValue(_var55AID , true);
-                    $gameVariables.setValue(_var56AID, 0); $gameSwitches.setValue(_var56AID , true);
-                    $gameVariables.setValue(_var57AID, 0); $gameSwitches.setValue(_var57AID , true);
-                    $gameVariables.setValue(_var58AID, 0); $gameSwitches.setValue(_var58AID , true);
-                    $gameVariables.setValue(_var59AID, 0); $gameSwitches.setValue(_var59AID , true);
-                    $gameVariables.setValue(_var60AID, 0); $gameSwitches.setValue(_var60AID , true);
+                    $gameVariables.setValue(_var51AID, 0); $gameSwitches.setValue(_switch51AID , true);
+                    $gameVariables.setValue(_var52AID, 0); $gameSwitches.setValue(_switch52AID , true);
+                    $gameVariables.setValue(_var53AID, 0); $gameSwitches.setValue(_switch53AID , true);
+                    $gameVariables.setValue(_var54AID, 0); $gameSwitches.setValue(_switch54AID , true);
+                    $gameVariables.setValue(_var55AID, 0); $gameSwitches.setValue(_switch55AID , true);
+                    $gameVariables.setValue(_var56AID, 0); $gameSwitches.setValue(_switch56AID , true);
+                    $gameVariables.setValue(_var57AID, 0); $gameSwitches.setValue(_switch57AID , true);
+                    $gameVariables.setValue(_var58AID, 0); $gameSwitches.setValue(_switch58AID , true);
+                    $gameVariables.setValue(_var59AID, 0); $gameSwitches.setValue(_switch59AID , true);
+                    $gameVariables.setValue(_var60AID, 0); $gameSwitches.setValue(_switch60AID , true);
 //--> 60+
-                    $gameVariables.setValue(_var61AID, 0); $gameSwitches.setValue(_var61AID , true);
-                    $gameVariables.setValue(_var62AID, 0); $gameSwitches.setValue(_var62AID , true);
-                    $gameVariables.setValue(_var63AID, 0); $gameSwitches.setValue(_var63AID , true);
-                    $gameVariables.setValue(_var64AID, 0); $gameSwitches.setValue(_var64AID , true);
-                    $gameVariables.setValue(_var65AID, 0); $gameSwitches.setValue(_var65AID , true);
-                    $gameVariables.setValue(_var66AID, 0); $gameSwitches.setValue(_var66AID , true);
-                    $gameVariables.setValue(_var67AID, 0); $gameSwitches.setValue(_var67AID , true);
-                    $gameVariables.setValue(_var68AID, 0); $gameSwitches.setValue(_var68AID , true);
-                    $gameVariables.setValue(_var69AID, 0); $gameSwitches.setValue(_var69AID , true);
-                    $gameVariables.setValue(_var70AID, 0); $gameSwitches.setValue(_var70AID , true);
+                    $gameVariables.setValue(_var61AID, 0); $gameSwitches.setValue(_switch61AID , true);
+                    $gameVariables.setValue(_var62AID, 0); $gameSwitches.setValue(_switch62AID , true);
+                    $gameVariables.setValue(_var63AID, 0); $gameSwitches.setValue(_switch63AID , true);
+                    $gameVariables.setValue(_var64AID, 0); $gameSwitches.setValue(_switch64AID , true);
+                    $gameVariables.setValue(_var65AID, 0); $gameSwitches.setValue(_switch65AID , true);
+                    $gameVariables.setValue(_var66AID, 0); $gameSwitches.setValue(_switch66AID , true);
+                    $gameVariables.setValue(_var67AID, 0); $gameSwitches.setValue(_switch67AID , true);
+                    $gameVariables.setValue(_var68AID, 0); $gameSwitches.setValue(_switch68AID , true);
+                    $gameVariables.setValue(_var69AID, 0); $gameSwitches.setValue(_switch69AID , true);
+                    $gameVariables.setValue(_var70AID, 0); $gameSwitches.setValue(_switch70AID , true);
 //--> 70+
-                    $gameVariables.setValue(_var71AID, 0); $gameSwitches.setValue(_var71AID , true);
-                    $gameVariables.setValue(_var72AID, 0); $gameSwitches.setValue(_var72AID , true);
-                    $gameVariables.setValue(_var73AID, 0); $gameSwitches.setValue(_var73AID , true);
-                    $gameVariables.setValue(_var74AID, 0); $gameSwitches.setValue(_var74AID , true);
-                    $gameVariables.setValue(_var75AID, 0); $gameSwitches.setValue(_var75AID , true);
-                    $gameVariables.setValue(_var76AID, 0); $gameSwitches.setValue(_var76AID , true);
-                    $gameVariables.setValue(_var77AID, 0); $gameSwitches.setValue(_var77AID , true);
-                    $gameVariables.setValue(_var78AID, 0); $gameSwitches.setValue(_var78AID , true);
-                    $gameVariables.setValue(_var79AID, 0); $gameSwitches.setValue(_var79AID , true);
-                    $gameVariables.setValue(_var80AID, 0); $gameSwitches.setValue(_var80AID , true);
+                    $gameVariables.setValue(_var71AID, 0); $gameSwitches.setValue(_switch71AID , true);
+                    $gameVariables.setValue(_var72AID, 0); $gameSwitches.setValue(_switch72AID , true);
+                    $gameVariables.setValue(_var73AID, 0); $gameSwitches.setValue(_switch73AID , true);
+                    $gameVariables.setValue(_var74AID, 0); $gameSwitches.setValue(_switch74AID , true);
+                    $gameVariables.setValue(_var75AID, 0); $gameSwitches.setValue(_switch75AID , true);
+                    $gameVariables.setValue(_var76AID, 0); $gameSwitches.setValue(_switch76AID , true);
+                    $gameVariables.setValue(_var77AID, 0); $gameSwitches.setValue(_switch77AID , true);
+                    $gameVariables.setValue(_var78AID, 0); $gameSwitches.setValue(_switch78AID , true);
+                    $gameVariables.setValue(_var79AID, 0); $gameSwitches.setValue(_switch79AID , true);
+                    $gameVariables.setValue(_var80AID, 0); $gameSwitches.setValue(_switch80AID , true);
 //--> 80+
-                    $gameVariables.setValue(_var81AID, 0); $gameSwitches.setValue(_var81AID , true);
-                    $gameVariables.setValue(_var82AID, 0); $gameSwitches.setValue(_var82AID , true);
-                    $gameVariables.setValue(_var83AID, 0); $gameSwitches.setValue(_var83AID , true);
-                    $gameVariables.setValue(_var84AID, 0); $gameSwitches.setValue(_var84AID , true);
-                    $gameVariables.setValue(_var85AID, 0); $gameSwitches.setValue(_var85AID , true);
-                    $gameVariables.setValue(_var86AID, 0); $gameSwitches.setValue(_var86AID , true);
-                    $gameVariables.setValue(_var87AID, 0); $gameSwitches.setValue(_var87AID , true);
-                    $gameVariables.setValue(_var88AID, 0); $gameSwitches.setValue(_var88AID , true);
-                    $gameVariables.setValue(_var89AID, 0); $gameSwitches.setValue(_var89AID , true);
-                    $gameVariables.setValue(_var90AID, 0); $gameSwitches.setValue(_var90AID , true);
+                    $gameVariables.setValue(_var81AID, 0); $gameSwitches.setValue(_switch81AID , true);
+                    $gameVariables.setValue(_var82AID, 0); $gameSwitches.setValue(_switch82AID , true);
+                    $gameVariables.setValue(_var83AID, 0); $gameSwitches.setValue(_switch83AID , true);
+                    $gameVariables.setValue(_var84AID, 0); $gameSwitches.setValue(_switch84AID , true);
+                    $gameVariables.setValue(_var85AID, 0); $gameSwitches.setValue(_switch85AID , true);
+                    $gameVariables.setValue(_var86AID, 0); $gameSwitches.setValue(_switch86AID , true);
+                    $gameVariables.setValue(_var87AID, 0); $gameSwitches.setValue(_switch87AID , true);
+                    $gameVariables.setValue(_var88AID, 0); $gameSwitches.setValue(_switch88AID , true);
+                    $gameVariables.setValue(_var89AID, 0); $gameSwitches.setValue(_switch89AID , true);
+                    $gameVariables.setValue(_var90AID, 0); $gameSwitches.setValue(_switch90AID , true);
 //--> 90+
-                    $gameVariables.setValue(_var91AID, 0); $gameSwitches.setValue(_var91AID , true);
-                    $gameVariables.setValue(_var92AID, 0); $gameSwitches.setValue(_var92AID , true);
-                    $gameVariables.setValue(_var93AID, 0); $gameSwitches.setValue(_var93AID , true);
-                    $gameVariables.setValue(_var94AID, 0); $gameSwitches.setValue(_var94AID , true);
-                    $gameVariables.setValue(_var95AID, 0); $gameSwitches.setValue(_var95AID , true);
-                    $gameVariables.setValue(_var96AID, 0); $gameSwitches.setValue(_var96AID , true);
-                    $gameVariables.setValue(_var97AID, 0); $gameSwitches.setValue(_var97AID , true);
-                    $gameVariables.setValue(_var98AID, 0); $gameSwitches.setValue(_var98AID , true);
-                    $gameVariables.setValue(_var99AID, 0); $gameSwitches.setValue(_var99AID , true);
-                    $gameVariables.setValue(_var100AID, 0); $gameSwitches.setValue(_var100AID , true);
+                    $gameVariables.setValue(_var91AID, 0); $gameSwitches.setValue(_switch91AID , true);
+                    $gameVariables.setValue(_var92AID, 0); $gameSwitches.setValue(_switch92AID , true);
+                    $gameVariables.setValue(_var93AID, 0); $gameSwitches.setValue(_switch93AID , true);
+                    $gameVariables.setValue(_var94AID, 0); $gameSwitches.setValue(_switch94AID , true);
+                    $gameVariables.setValue(_var95AID, 0); $gameSwitches.setValue(_switch95AID , true);
+                    $gameVariables.setValue(_var96AID, 0); $gameSwitches.setValue(_switch96AID , true);
+                    $gameVariables.setValue(_var97AID, 0); $gameSwitches.setValue(_switch97AID , true);
+                    $gameVariables.setValue(_var98AID, 0); $gameSwitches.setValue(_switch98AID , true);
+                    $gameVariables.setValue(_var99AID, 0); $gameSwitches.setValue(_switch99AID , true);
+                    $gameVariables.setValue(_var100AID, 0); $gameSwitches.setValue(_switch100AID , true);
 //-> 100_END
                     break;
                  }

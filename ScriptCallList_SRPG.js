@@ -60,7 +60,7 @@
    $gameSystem.EventToUnit(eventID)[1];
                     
 // Unit battler ActorID: 
-// if that Battler is an Actor,this will return the "actor ID
+// if that Battler is an Actor,this will return the "actor ID"
    $gameSystem.EventToUnit(eventID)[1]._actorId;
 // Unit Battler HP                    
 // This will return the Units hp,and it works with all stats the same way
@@ -84,7 +84,7 @@
    $gameSystem.EventToUnit(eventID)[1].addState(addId);
 //----------------------------------------------------------------------------------------------------------
 
-// Skill Related for ActorUnits only  :
+// Skill Related for ActorUnits only:
 // check skill:
    $gameSystem.EventToUnit(eventID)[1].hasSkill(skillId);
 // forget skill:
@@ -92,7 +92,7 @@
 // learn skill:
    $gameSystem.EventToUnit(eventID)[1].learnSkill(skillId);
                         
-// this returns the currently Active skill Id ,works for actors&enemys
+// this returns the currently Active skill Id ,works for actors&enemys:
    $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]._actions[0]._item._itemId;
                         
 //----------------------------------------------------------------------------------------------------------

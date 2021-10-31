@@ -20,7 +20,7 @@
  
 (function() {
 
-  // Plugin param Variables:
+  // Plugin param Variables: this code is realted to Plugin name and text in the Plugin description above
 
   var parameters = PluginManager.parameters("ScriptCallList_SRPG") || $plugins.filter(function (plugin) { return plugin.description.contains('<SRPG_Blank>'); });
 //----------------------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@
 
 
 
-// check all map events
+// check all MapEvents
                     for (var i = 1; i <= $gameMap.events().length; i++) {
 // access to Battler data
                     var battleunit = $gameSystem.EventToUnit([i]);
@@ -47,7 +47,7 @@
                     };
 
 //----------------------------------------------------------------------------------------------------------
-// Code for Unit Battler:(a few Examples) Usind this in the F8 console will show a lot of more Options 
+// Code for Unit Battler:(a few Examples) Using this in the F8 console will show a lot of more Options 
 //----------------------------------------------------------------------------------------------------------
                     $gameSystem.EventToUnit(eventID)[1];
                     

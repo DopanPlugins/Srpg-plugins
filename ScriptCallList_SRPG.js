@@ -10,12 +10,11 @@
  * -> the plugin Structure is only used to have the JS displayed better
  * ============================================================================
  * Free for any commercial or non-commercial project!
- * (edits are allowed but pls dont claim it as yours without Credits.thx)
  * ============================================================================
  * Changelog 
  * ============================================================================
  * Version 1.0:
- * - first Release 00.00.2020 for SRPG (rpg mv)!
+ * - first Release 31.10.2021 for SRPG (rpg mv)!
  */
  
 (function() {

@@ -28,7 +28,7 @@
 // List of helpfull SRPG related Scriptcalls for usage in SRPG battleMode(requires SRPG Core)
 // this is just a little help & reminder, for more pls try to read SRPG Plugins, or use Console F8 In SRPG Battle
 //----------------------------------------------------------------------------------------------------------
-// Code to ask about All EVentUnits with the option to add code if Conditions are "True":
+// Code to ask about All EventUnits with the option to add code if Conditions are "True":
 //----------------------------------------------------------------------------------------------------------
 
 

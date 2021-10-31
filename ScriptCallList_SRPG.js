@@ -51,7 +51,7 @@
                     
 // Unit battler ActorID: 
 // if that Battler is an Actor,this will return the "actor ID
-                    $gameSystem.EventToUnit(eventID)[1]._actorId
+                    $gameSystem.EventToUnit(eventID)[1]._actorId;
 // Unit Battler HP                    
 // This will return the Units hp,and it works with all stats the same way
                      $gameSystem.EventToUnit(eventID)[1].hp;
@@ -67,20 +67,20 @@
 
 // State related:
 // check State for if conditions, returns true if aftected:
-                        $gameSystem.EventToUnit(eventID)[1].isStateAffected(checkId)
+                        $gameSystem.EventToUnit(eventID)[1].isStateAffected(checkId);
 // remove State to Unit
-                        $gameSystem.EventToUnit(eventID)[1].removeState(removeId)
+                        $gameSystem.EventToUnit(eventID)[1].removeState(removeId);
 // Add State to Unit
-                        $gameSystem.EventToUnit(eventID)[1].addState(addId)
+                        $gameSystem.EventToUnit(eventID)[1].addState(addId);
 //----------------------------------------------------------------------------------------------------------
 
 // Skill Related for ActorUnits only  :
 //check skill:
-                        $gameSystem.EventToUnit(eventID)[1].hasSkill(skillId)
+                        $gameSystem.EventToUnit(eventID)[1].hasSkill(skillId);
 //forget skill:
-                        $gameSystem.EventToUnit(eventID)[1].forgetSkill(skillId)
+                        $gameSystem.EventToUnit(eventID)[1].forgetSkill(skillId);
 //learn skill:
-                        $gameSystem.EventToUnit(eventID)[1].learnSkill(skillId)
+                        $gameSystem.EventToUnit(eventID)[1].learnSkill(skillId);
                         
 //this returns the currently Active skill Id ,works for actors&enemys
                         $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]._actions[0]._item._itemId;
@@ -93,9 +93,9 @@
 // Target Event:
                         $gameTemp.targetEvent();
 // active eventID:
-                        $gameTemp.activeEvent().eventId()
+                        $gameTemp.activeEvent().eventId();
 // target eventID:
-                        $gameTemp.targetEvent().eventId()
+                        $gameTemp.targetEvent().eventId();
 
 //----------------------------------------------------------------------------------------------------------
 

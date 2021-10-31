@@ -31,6 +31,8 @@
  
 // Code to ask about All EventUnits with the option to add code if Conditions are "True":
 //----------------------------------------------------------------------------------------------------------
+// (different Codes that are made out of this,with small edits, can be found in the plugin "SRPG_UnitsGroups")
+ 
 // check all MapEvents
                     for (var i = 1; i <= $gameMap.events().length; i++) {
 // access to Battler data
@@ -86,8 +88,9 @@
                         $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]._actions[0]._item._itemId;
                         
 //----------------------------------------------------------------------------------------------------------
-
 // Other Code "gameTemp" for ative and target event
+//----------------------------------------------------------------------------------------------------------
+ 
 // Active Event:
                         $gameTemp.activeEvent();
 // Target Event:
@@ -98,8 +101,9 @@
                         $gameTemp.targetEvent().eventId();
 
 //----------------------------------------------------------------------------------------------------------
-
 //Incase of reinforcement spwaned events the events need to be initialized again
+//----------------------------------------------------------------------------------------------------------
+ 
 // by default that happens at BattleStart:
 
                         $gameSystem.setAllEventType();

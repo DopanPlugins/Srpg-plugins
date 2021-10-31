@@ -56,49 +56,49 @@
                     $gameSystem.EventToUnit(eventID)[1]._actorId;
 // Unit Battler HP                    
 // This will return the Units hp,and it works with all stats the same way
-                     $gameSystem.EventToUnit(eventID)[1].hp;
+                    $gameSystem.EventToUnit(eventID)[1].hp;
 // another example: agi
-                     $gameSystem.EventToUnit(eventID)[1].agi;
+                    $gameSystem.EventToUnit(eventID)[1].agi;
                      
 // code for Gain-HP,MP,TP
-                     $gameSystem.EventToUnit(eventID)[1].gainHp(number);
-                     $gameSystem.EventToUnit(eventID)[1].gainMp(number);
-                     $gameSystem.EventToUnit(eventID)[1].gainTp(number);
+                    $gameSystem.EventToUnit(eventID)[1].gainHp(number);
+                    $gameSystem.EventToUnit(eventID)[1].gainMp(number);
+                    $gameSystem.EventToUnit(eventID)[1].gainTp(number);
                      
 //----------------------------------------------------------------------------------------------------------
 
 // State related:
 // check State for if conditions, returns true if aftected:
-                        $gameSystem.EventToUnit(eventID)[1].isStateAffected(checkId);
+                    $gameSystem.EventToUnit(eventID)[1].isStateAffected(checkId);
 // remove State from Unit
-                        $gameSystem.EventToUnit(eventID)[1].removeState(removeId);
+                    $gameSystem.EventToUnit(eventID)[1].removeState(removeId);
 // Add State to Unit
-                        $gameSystem.EventToUnit(eventID)[1].addState(addId);
+                    $gameSystem.EventToUnit(eventID)[1].addState(addId);
 //----------------------------------------------------------------------------------------------------------
 
 // Skill Related for ActorUnits only  :
 // check skill:
-                        $gameSystem.EventToUnit(eventID)[1].hasSkill(skillId);
+                    $gameSystem.EventToUnit(eventID)[1].hasSkill(skillId);
 // forget skill:
-                        $gameSystem.EventToUnit(eventID)[1].forgetSkill(skillId);
+                    $gameSystem.EventToUnit(eventID)[1].forgetSkill(skillId);
 // learn skill:
-                        $gameSystem.EventToUnit(eventID)[1].learnSkill(skillId);
+                    $gameSystem.EventToUnit(eventID)[1].learnSkill(skillId);
                         
 // this returns the currently Active skill Id ,works for actors&enemys
-                        $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]._actions[0]._item._itemId;
+                    $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]._actions[0]._item._itemId;
                         
 //----------------------------------------------------------------------------------------------------------
 // Other Code "gameTemp" for ative and target event
 //----------------------------------------------------------------------------------------------------------
  
 // Active Event:
-                        $gameTemp.activeEvent();
+                    $gameTemp.activeEvent();
 // Target Event:
-                        $gameTemp.targetEvent();
+                    $gameTemp.targetEvent();
 // active eventID:
-                        $gameTemp.activeEvent().eventId();
+                    $gameTemp.activeEvent().eventId();
 // target eventID:
-                        $gameTemp.targetEvent().eventId();
+                    $gameTemp.targetEvent().eventId();
 
 //----------------------------------------------------------------------------------------------------------
 // Incase of reinforcement spwaned events the events need to be initialized again
@@ -106,15 +106,15 @@
  
 // by default that happens at BattleStart:
 
-                        $gameSystem.setAllEventType();
+                    $gameSystem.setAllEventType();
 // initialzes the meta of "EventNote" from all_Events..
 // note: this one must be used first 
 
-                        $gameSystem.setSrpgEnemys();
+                    $gameSystem.setSrpgEnemys();
 // can be used instead of "add enemy",for allEnemys
 // it uses the eventNote meta-Info: "<type:enemy>"
 
-                        $gameSystem.setSrpgActors();
+                    $gameSystem.setSrpgActors();
 // same as above only for Actors & "<type:actor>"
  
 //----------------------------------------------------------------------------------------------------------

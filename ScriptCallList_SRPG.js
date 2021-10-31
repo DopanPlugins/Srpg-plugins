@@ -41,7 +41,7 @@
         var battleunit = $gameSystem.EventToUnit([i]);
 // access to GameMap event data 
         var eventunit = $gameMap.event([i]);
-// if the event ID of "Event" and "Battler" are same ,beeing "actor"- or "enemy"- eventType & The Unit is NOT Death                    
+// if the event ID of "Event" and "Battler" are same ,beeing "actor"- or "enemy"- eventType & The Unit is NOTdeath("!" at the beginning means NOT)                    
         if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy') && (!battleunit[1].isDead())) {  
 // example for executed script after all "if conditions" are "true"
 // here i wanna show how "$gameSystem.EventToUnit(eventID)[1]" is replaced by "battleunit[1]"

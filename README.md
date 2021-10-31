@@ -1,15 +1,24 @@
 before we start,..
 for rpg MV related Scriptcalls that are NOT added by the SRPG Core pls visit :
 
-Usefull Scriptcalls Info (Page is not made by me)
+Usefull Scriptcalls Info 
+(Page is not made by me)
+
 https://docs.google.com/spreadsheets/d/1-Oa0cRGpjC8L5JO8vdMwOaYMKO75dtfKDOetnvh7OHs/htmlview#gid=0
 
-alternative Scriptcall List (Page is not made by me)
+alternative Scriptcall List
+(Page is not made by me)
+
 https://www.wikimoe.com/?post=108
 
 for a scriptcall list of SRPG realted Scriptcalls pls visit:
-ScriptCallList_SRPG.js
 
+ScriptCallList_SRPG.js:
+
+https://github.com/DopanPlugins/Srpg-plugins/blob/main/ScriptCallList_SRPG.js
+
+
+Ok lets start with the readme infos:
 # edited Srpg Core-plugins 
 & other infos about some srpg plugins (rpg mv)
 

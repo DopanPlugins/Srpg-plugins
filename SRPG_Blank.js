@@ -88,7 +88,7 @@
 
   
   var _varDefaultID = Number(parameters['DefaultVarID'] || 0);
-  var _switchDefaultID = Number(parameters['InfoReport_SwitchID'] || 0);
+  var _switchDefaultID = Number(parameters['DefaultSwitchID'] || 0);
 
 //-----------------------------------------------------------------------------------------
 

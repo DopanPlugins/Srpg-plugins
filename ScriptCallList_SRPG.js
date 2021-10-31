@@ -33,14 +33,22 @@
 //----------------------------------------------------------------------------------------------------------
 // (different Codes that are made out of this,with small edits, can be found in the plugin "SRPG_UnitsGroups")
  
-// check all MapEvents
+// check all MapEvents , "[i]" is the Event ID 
                     for (var i = 1; i <= $gameMap.events().length; i++) {
-// access to Battler data
+// access to Battler data. In usage its needed to add [0] for the event_Type, or [1] for the event_Unit
+// That will look like this -> "battleunit[0]" "battleunit[1]"
+// in the following context, [0] or [1] is NOT added,thats to store event ID so that "battleunit"&"eventunit" can be equal
                     var battleunit = $gameSystem.EventToUnit([i]);
-// access to GameMap event data
+// access to GameMap event data 
                     var eventunit = $gameMap.event([i]);
 // if the event ID of "Event" and "Battler" are same ,beeing "actor"- or "enemy"- eventType & The Unit is NOT Death                    
                     if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy') && (!battleunit[1].isDead())) {  
+// example for executed script after all "if conditions" are "true"
+// here i wanna show how "$gameSystem.EventToUnit(eventID)[1]" is replaced by "battleunit[1].addState(addId)"
+// this adds a State to all Units that fit to the Conditions above.. its only needed to add the StateID (Replace "addID")                     
+                        battleunit[1].addState(addId);
+// Free Room to add more Execution Scripts that are used if all Conditions are "true"                      
+                     
                         // <-insert test code here & remove this help text + the "//"
                     }
                        

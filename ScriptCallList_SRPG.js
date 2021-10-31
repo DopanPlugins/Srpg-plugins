@@ -2,8 +2,8 @@
 // ScriptCallList_SRPG.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <ScriptCallList_SRPG> for whatever in SRPG 
- * @author (dopan)
+ * @plugindesc v1.0 Adds <ScriptCallList_SRPG> for Tutorial usage 
+ * @author (dopan) code from SRPG Core
  *
  * ============================================================================
  * Terms of Use : THIS IS NOT A PLUGIN!!

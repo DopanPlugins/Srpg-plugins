@@ -37,7 +37,7 @@
                     var battleunit = $gameSystem.EventToUnit([i]);
 // access to GameMap event data
                     var eventunit = $gameMap.event([i]);
-// if the event ID of "Event" and "Battler" are same and The Unit is NOT Death                    
+// if the event ID of "Event" and "Battler" are same ,beeing "actor"- or "enemy"- Eventtype & The Unit is NOT Death                    
                     if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy') && (!battleunit[1].isDead())) {  
                         // <-insert test code here & remove this help text + the "//"
                     }

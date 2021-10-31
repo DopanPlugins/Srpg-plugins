@@ -20,7 +20,7 @@
  
 (function() {
 
-  // Plugin param Variables: this code is realted to Plugin name and text in the Plugin description above
+  // Plugin param Variables: this code is related to Plugin name and text in the Plugin description above
 
   var parameters = PluginManager.parameters("ScriptCallList_SRPG") || $plugins.filter(function (plugin) { return plugin.description.contains('<SRPG_Blank>'); });
 //----------------------------------------------------------------------------------------------------------

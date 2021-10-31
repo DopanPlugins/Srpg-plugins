@@ -23,16 +23,14 @@
   // Plugin param Variables: this code is related to Plugin name and text in the Plugin description above
 
   var parameters = PluginManager.parameters("ScriptCallList_SRPG") || $plugins.filter(function (plugin) { return plugin.description.contains('<SRPG_Blank>'); });
+ 
 //----------------------------------------------------------------------------------------------------------
-  
 // List of helpfull SRPG related Scriptcalls for usage in SRPG battleMode(requires SRPG Core)
 // this is just a little help & reminder, for more pls try to read SRPG Plugins, or use Console F8 In SRPG Battle
 //----------------------------------------------------------------------------------------------------------
+ 
 // Code to ask about All EventUnits with the option to add code if Conditions are "True":
 //----------------------------------------------------------------------------------------------------------
-
-
-
 // check all MapEvents
                     for (var i = 1; i <= $gameMap.events().length; i++) {
 // access to Battler data

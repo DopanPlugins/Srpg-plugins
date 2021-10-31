@@ -48,8 +48,9 @@
 // this adds a State to all Units that fit to the Conditions above.. its only needed to add the StateID (Replace "addID")                     
             battleunit[1].addState(addId);
 // Free Room to add more Execution Scripts that are used if all Conditions are "true"                      
-                     
-            // <-insert test code here & remove this help text + the "//"
+            //        
+            // <-insert test code here & remove this help text + those "//"
+            //
         }
                        
    };

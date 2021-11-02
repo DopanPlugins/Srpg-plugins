@@ -150,6 +150,15 @@ if ($gameSystem.ActorToEvent(ActorID) > 0) { this.unitAddState($gameSystem.Actor
 // this Example still needs a State ID, but however this way we use Actor ID instead of Event ID
 
  
+// SideNote:
+ 
+   $gameActors.actor(actorId).event().eventId(); 
+// also returns the Event ID
+// it should work similar like:
+   $gameSystem.ActorToEvent(ActorID); 
+// and return 0 if the unit is not in battle & has no event used
+  
+ 
 //----------------------------------------------------------------------------------------------------------
 // PLS Note This List might get more Updates in the Future
 //----------------------------------------------------------------------------------------------------------

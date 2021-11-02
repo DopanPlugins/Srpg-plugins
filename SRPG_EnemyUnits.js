@@ -3295,6 +3295,30 @@
         };
 
 //---End :
+ 
+// Plugin update edit:
+ 
+    // this will return the Event ID based on the EventNoteTag: "<Unit:x>" of an EnemyUnit
+//-----------------------------------------------------------------------------------------
+
+    // for example: EventNoteTag"<Unit:1>" is in scriptcall: "1" instead of "unit_ID"
+
+    // Example => $gameSystem.EnemyUnit(1);
+    Game_System.prototype.EnemyUnit = function(unit_ID) {
+        var eventId = 0;
+        $gameMap.events().forEach(function(event) {
+            if (event.isType() === 'enemy') {
+                var enemyMetaUnit = event.event().meta.unit;
+                if (enemyMetaUnit == unit_ID) {
+                    eventId = event.eventId();
+                }
+            }
+        });
+        return eventId;
+    };
+
+
+//---Fin :
 
  
 })();

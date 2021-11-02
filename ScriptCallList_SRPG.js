@@ -141,7 +141,7 @@
    $gameSystem.EventToUnit($gameSystem.ActorToEvent(ActorID))[1];
 // this way we getting the battler(EventToUnit) of an Actor by using Actor ID instead of Event ID
 // but this example_Code can only be used if the Actor Is in Battle ,
-// because "EventToUnit" needs a valid EventID other than 0 or errors will be cause when using it.
+// because "EventToUnit" needs a valid EventID other than 0 or errors will be caused when using it.
  
 // Using this Example_code when eventing with script without causing errors:
 // this can be handled by a simple "if Condtion"

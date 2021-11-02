@@ -131,11 +131,24 @@
  
    $gameSystem.ActorToEvent(ActorID);
 // Incase the Actor isnt in srpgBattle it will return 0
+// Thats helpfull in Plugin Usage because it shows us the event ID,
+// and it tells us if the Actor is in srpgbattle
+
+// Example in Usage instead of event ID :
  
+   $gameSystem.EventToUnit($gameSystem.ActorToEvent(ActorID))[1];
+// this way we getting the battler(EventToUnit) of an Actor by using Actor ID instead of Event ID
+// but this example_Code can only be used if the Actor Is in Battle ,
+// because "EventToUnit" needs a valid EventID other than 0 or errors will be cause when using it.
  
- 
- 
- 
+// Using this Example_code when eventing with script without causing errors:
+// this can be handled by a simple "if Condtion"
+// we will use "this.unitAddState(EventId, StateId);" as execution order example
+
+if ($gameSystem.ActorToEvent(ActorID) > 0) { this.unitAddState($gameSystem.ActorToEvent(ActorID), StateId) };
+// pls note "this.unitAddState(EventId, StateId);" also needs a valid event ID other than 0
+// this Example still needs a State ID, but however this way we use Actor ID instead of Event ID
+
  
 //----------------------------------------------------------------------------------------------------------
 // PLS Note This List might get more Updates in the Future

@@ -126,7 +126,7 @@
 // same as above only for Actors & "<type:actor>"
  
 //----------------------------------------------------------------------------------------------------------
-// This Returns the Event ID based on the Actor ID
+// How to get the Event ID based on the Actor ID
 //----------------------------------------------------------------------------------------------------------
  
    $gameSystem.ActorToEvent(ActorID);
@@ -152,12 +152,21 @@ if ($gameSystem.ActorToEvent(ActorID) > 0) { this.unitAddState($gameSystem.Actor
  
 // SideNote:
  
-   $gameActors.actor(actorId).event().eventId(); 
-// also returns the Event ID
+   $gameActors.actor(ActorID).event().eventId(); 
+// also returns the Event_ID based on Actor_ID
 // it should work similar like:
    $gameSystem.ActorToEvent(ActorID); 
 // and return 0 if the unit is not in battle & has no event used
-  
+ 
+//----------------------------------------------------------------------------------------------------------
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
 //----------------------------------------------------------------------------------------------------------
 // PLS Note This List might get more Updates in the Future

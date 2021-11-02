@@ -130,6 +130,7 @@
 //----------------------------------------------------------------------------------------------------------
  
    $gameSystem.ActorToEvent(ActorID);
+// (is Part of any default SRPG Core even older Versions)
 // Incase the Actor isnt in srpgBattle it will return 0
  
 // incase the Actor is in battle & deathState affected,it will still return the event id..
@@ -156,10 +157,13 @@ if ($gameSystem.ActorToEvent(ActorID) > 0) {$gameSystem.EventToUnit($gameSystem.
 // SideNote:
  
    $gameActors.actor(ActorID).event().eventId(); 
-// also returns the Event_ID based on Actor_ID
+// also returns the Event_ID based on Actor_ID 
+//(it was added by the mapbattle Plugin which is implemented in newer srpg core Versions)
 // it should work similar like:
    $gameSystem.ActorToEvent(ActorID); 
 // and return 0 if the unit is not in battle & has no event used
+ 
+
  
 //----------------------------------------------------------------------------------------------------------
  

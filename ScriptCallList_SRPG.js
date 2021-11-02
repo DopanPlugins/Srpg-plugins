@@ -143,13 +143,14 @@
  
 // Using this Example_code when eventing with script without causing errors:
 // this can be handled by a simple "if Condtion"
-// we will use "this.unitAddState(EventId, StateId);" as execution order example
+// we will use "$gameSystem.EventToUnit(EventID)[1].addState(StateID);" as execution order example
 
-if ($gameSystem.ActorToEvent(ActorID) > 0) { this.unitAddState($gameSystem.ActorToEvent(ActorID), StateId) };
-// pls note "this.unitAddState(EventId, StateId);" also needs a valid event ID other than 0
-// this Example still needs a State ID, but however this way we use Actor ID instead of Event ID
+if ($gameSystem.ActorToEvent(ActorID) > 0) {$gameSystem.EventToUnit($gameSystem.ActorToEvent(ActorID))[1].addState(StateID)};
+// pls note "$gameSystem.EventToUnit(EventID)[1].addState(StateID);"
+// needs a valid event ID other than 0, thats solved with the "if condition"
+// also this Example still needs a State ID,
+// but however this way we can use Actor ID instead of Event ID
 
- 
 // SideNote:
  
    $gameActors.actor(ActorID).event().eventId(); 

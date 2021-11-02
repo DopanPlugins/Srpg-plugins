@@ -132,7 +132,7 @@
    $gameSystem.ActorToEvent(ActorID);
 // Incase the Actor isnt in srpgBattle it will return 0
  
-// incase the actor is in battle & deathState affected,it will still return the event id..
+// incase the Actor is in battle & deathState affected,it will still return the event id..
 // "deathState" affeted Units have Event with the status "erased",
 // but the eventID is still there & can be used to revive Units for example.. 
  

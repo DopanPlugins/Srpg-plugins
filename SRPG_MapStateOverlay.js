@@ -1,8 +1,8 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_MapStateOverlay.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
+ * @plugindesc v1.0 Adds <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
  * @author dopan
  *
  *
@@ -44,7 +44,7 @@
  *
  * -> plug & play !
  *
- * -> credits to Caethyril for the Coding Help!
+ *
  *
  * ============================================================================
  * Terms of Use
@@ -117,24 +117,24 @@
         this.updateChildren();
 
         //Dopan INFO=> edited part starts here, stuff above is the Default Function Content
-        if ($gameSystem.isSRPGMode() == true) {
-            if (SceneManager._scene instanceof Scene_Menu === true) {
-                _checkSOS = false;
 
-            }
-            if (SceneManager._scene instanceof Scene_Battle === true) {
-                _checkSOS = false;
+        if (SceneManager._scene instanceof Scene_Menu === true) {
+            _checkSOS = false;
 
-            }
-            if (SceneManager._scene instanceof Scene_Map === true) {    
-                if (_checkSOS === false) {
-                    Game_Interpreter.prototype.srpgStateOverlay.call(this);
-                    _checkSOS = true;
-
-                }
-
-            }
         }
+        if (SceneManager._scene instanceof Scene_Battle === true) {
+            _checkSOS = false;
+
+        }
+        if (SceneManager._scene instanceof Scene_Map === true) {    
+            if (_checkSOS === false) {
+                Game_Interpreter.prototype.srpgStateOverlay.call(this);
+                _checkSOS = true;
+
+            }
+
+        }
+
     };
 
     // overwrite Battlestart Event calling Function to initialize StateOverlaySprite..

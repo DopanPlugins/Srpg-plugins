@@ -96,7 +96,7 @@
    $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]._actions[0]._item._itemId;
                         
 //----------------------------------------------------------------------------------------------------------
-// Other Code "gameTemp" for ative and target event
+// Other Code "gameTemp" for active and target event
 //----------------------------------------------------------------------------------------------------------
  
 // Active Event:

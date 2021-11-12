@@ -14,8 +14,8 @@
  *
  * (srpg extension ,needs the srpg Core plugin)
  * 
- * This Plugin spawns eventsGraves whenever a battleUnit get killed, and deletes them if that battleUnit gets revided! 
- * (requires the Raise sciptcalls from ths plugin)
+ * This Plugin spawns "eventGraves" whenever a battleUnit get killed, and deletes them if that battleUnit gets revided! 
+ * (requires the Raise sciptcalls from ths plugin when reving Units..)
  *
  * by eventing this would require to use a lot of gamevariables & an EventSpawner Plugin.. But this Plugin only needs:
  * 
@@ -39,11 +39,11 @@
  * (no other notetags required, but <type:object> can be added aswell)
  *----------------------------------------------------------------------------------
  * (for EnemyUnits Only!)
- *    <Unit:x> => this is required for every "enemyUnit"(not grave)
+ *    <Unit:x> => this is required for every "enemyUnit" (not Grave)
  *               ..this is used to give enemys a 2nd ID.This number must be Unique 
  *          (because enemys get cloned and all clones have the same enemy ID) 
  *
- * Example for a correctly made EnemyUnitBattler Notetag:
+ * Example for a correctly made EnemyUnitBattler eventNotetag:
  *  <type:enemy><id:x><unit:x> 
  *--------------------------------
  * Info about srpgCore scriptcall:    
@@ -54,7 +54,7 @@
  *   (return 0 if the unit is not in battle & has no event used,
  *   else return the actors EventID)
  *
- * for usage example :
+ * for usage example : (Actor Id is used instead to insert the EventID) 
  * "$gameSystem.EventToUnit($gameSystem.ActorToEvent(ActorID))[1];" 
  * (this is the Actor-Battler called by its "ActorID" instead of "eventID")
  *--------------------------------------------------------------------
@@ -70,7 +70,7 @@
  * <unit:x> ( "x" is the enemyUnitID)
  * example:  <type:enemy><id:x><unit:x> 
  * 
- * that way the EnemyID is the clones first ID and UnitID is the clones second unique ID.
+ * That way the EnemyID is the clones first ID and UnitID is the clones second unique ID.
  * Similar like humans have first and second name.. 
  * (actors only use the actor ID because its not recommended to clone actors)
  *
@@ -80,7 +80,7 @@
  * example with UnitID=1-> "$gameSystem.EventToUnit($gameSystem.EnemyUnit(1))[1];"
  *---------------------------------------------------------------------------------------------------------
  * these scriptcalls below revive singel Units or all actors/enemys & erase the related graves,..
- * ..pls use these instead of the default scriptcall from the srpg core,to erase related Graves
+ * ..pls use these instead of the default scriptcall from the srpg core,to erase related Graves while reving.
  *
  * "this.unitRaise(eventID)" "this.allActorsRaise()" "this.allEnemysRaise()"
  *---------------------------------------------------------------------------------------------------------

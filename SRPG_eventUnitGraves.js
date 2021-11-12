@@ -20,7 +20,7 @@
  * by eventing this would require to use a lot of gamevariables & an EventSpawner Plugin.. But this Plugin only needs:
  * 
  * 1.MapID in the Plugin param 2.EventNoteTags on the GraveEvents,that are stored on that "GraveMap".. 
- * (1.this map should be unique and only used to store the grave events)(2.<actorgrave:x> <actorgrave:x>)
+ * (1. this map should be unique and only used to store the grave events)(2. <actorgrave:x> <enemygrave:x>)
  * 3.Enemy Units need to get the EventNote <unit:x> in addittion to the default Enemy eventNotetags
  *
  * After this Setup is done its Plug&Play,but it also offers a few helpfull ScriptCalls,  

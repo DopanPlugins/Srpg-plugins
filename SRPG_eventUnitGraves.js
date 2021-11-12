@@ -21,11 +21,12 @@
  * 
  * 1.MapID in the Plugin param 2.EventNoteTags on the GraveEvents,that are stored on that "GraveMap".. 
  *  (this map should be unique and only used to store the grave events)
+ * 3.Enemy Units need to get the EventNote <unit:x> in addittion to the other eventNotetags
  *
  * After this Setup is done its Plug&Play,but it also offers a few helpfull ScriptCalls,  
  * but first lets check the new EventNoteTags:
  *-------------------------
- * Importent EventNoteTags:
+ * Importent EventNoteTags: (for GraveEvents only!)
  *-------------------------
  *  <actorgrave:x>
  *  this has to be added to an Dead Body Event
@@ -37,6 +38,7 @@
  *  "x" should be the enemyId of the related alive Unit
  * (no other notetags required, but <type:object> can be added aswell)
  *----------------------------------------------------------------------------------
+ * (for EnemyUnits Only!)
  *    <Unit:x> => this is required for every enemyUnit(not grave)
  *               ..this is used to give enemys a 2nd ID.This number must be Unique 
  *          (because enemys get cloned and all clones have the same enemy ID) 
@@ -62,7 +64,6 @@
  *---------------------
  * Plugin Scriptcall:
  *---------------------
- *
  * I use EnemyClones that have the same EnemyID, therefor i made
  * an EventNoteTag for the EnemyUnits which have the EventNote:
  * <type:enemy><id:x> ( "x" is the enemyID)
@@ -73,7 +74,7 @@
  * Similar like humans have first and second name.. 
  * (actors only use the actor ID because its not recommened to clone actors)
  *
- * new "Unit" ScriptCall:  $gameSystem.EnemyUnit(1)
+ * new "Unit" ScriptCall:  "$gameSystem.EnemyUnit(1)" (only for enemys Units)   
  *-----------------------
  * "$gameSystem.EnemyUnit(1)" can replace eventID 
  * example-> "$gameSystem.EventToUnit($gameSystem.EnemyUnit(1))[1];"
@@ -81,7 +82,7 @@
  * these scriptcalls revive singel Units or all actors/enemys & erase the related graves,..
  * ..pls use these instead of the default scriptcall from the srpg core,to erase related Graves
  *
- *  "this.unitRaise(eventID)"    "this.allActorsRaise()"     "this.allEnemysRaise()"
+ * "this.unitRaise(eventID)" "this.allActorsRaise()" "this.allEnemysRaise()"
  *---------------------------------------------------------------------------------------------------------
  * Credits:
  *       Basicly this is an Automatic-Eventspawner & i learned a lot how this works,

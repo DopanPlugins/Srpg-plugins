@@ -31,12 +31,12 @@
  *  <actorgrave:x>
  *  this has to be added to an Dead Body Event
  *  "x" should be the "ActorId" of the related alive Unit
- * (no other notetags required, but <type:object> can be added aswell)
+ * (no other notetags required)
  *---------------------------------------------------------------------------------
  *  <enemygrave:x>
  *  this has to be added to an Dead Body Event
  *  "x" should be the "EnemyId" of the related alive Unit
- * (no other notetags required, but <type:object> can be added aswell)
+ * (no other notetags required)
  *----------------------------------------------------------------------------------
  * (for EnemyUnits Only!)
  *    <Unit:x> => this is required for every "enemyUnit" (not Grave)

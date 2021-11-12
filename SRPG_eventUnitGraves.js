@@ -267,7 +267,7 @@
 //-----------------------------------------------------------------------------------------
 // Game temp ------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------
-    // imports the enemyUnit ID into gameMap events:
+    // imports the enemyUnit ID into gameMap:
 
     Game_Temp.prototype.importEnemyUnitID = function() {
         var returnInfo = 'no metaUnit data on this map';
@@ -475,7 +475,7 @@ Game_Interpreter.prototype.unitRaise = function(eventId) {
     this.unitRevive(EventID);
 };
 
-// "this.unitRaise(eventID)"
+// "this.allActorsRaise()"
 Game_Interpreter.prototype.allActorsRaise = function() {
     $gameMap.events().forEach(function(event) {
          if (event.isType() === 'actor') {
@@ -488,7 +488,7 @@ Game_Interpreter.prototype.allActorsRaise = function() {
     });
 };
 
-// "this.allEnemysRaise"
+// "this.allEnemysRaise()"
 Game_Interpreter.prototype.allEnemysRaise = function() {
     $gameMap.events().forEach(function(event) {
          if (event.isType() === 'enemy') {

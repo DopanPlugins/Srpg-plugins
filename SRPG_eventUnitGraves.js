@@ -84,6 +84,15 @@
  *
  * "this.unitRaise(eventID)" "this.allActorsRaise()" "this.allEnemysRaise()"
  *---------------------------------------------------------------------------------------------------------
+ * After srpg Battle started at "start of battle" EnemyUnits with the corretly EventNoteTag setup will get:
+ *- "Unit ID" added to Battler and Event. (this can be seen in the ConsoleF8 and used for any purposes)
+ * Examples:
+ *
+ * for Event:   "$gameMap.event(eventID)._eventEnemyUnitId;"        (returns the UnitID on EventEnemyUnit)
+ * for Battler: "$gameSystem.EventToUnit(eventID)[1]._enemyUnitId;" (return the UnitID on BattlerEnemyUnit)
+ *_________________________________________________________________________________________________________
+ *(more Scriptcalls&Infos can be found in the pluginCode)
+ *
  * Credits:
  *       Basicly this is an Automatic-Eventspawner & i learned a lot how this works,
  *       by reading the codes of other EventSpawner Plugins.And from the Forum Infos.

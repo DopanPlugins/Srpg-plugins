@@ -44,7 +44,7 @@
  *
  * -> plug & play !
  *
- *
+ * Credits : Caethyril for helping me to understand how to do that^^
  *
  * ============================================================================
  * Terms of Use

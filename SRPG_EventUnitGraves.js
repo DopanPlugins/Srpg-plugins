@@ -182,6 +182,7 @@
     Game_GraveEvent.prototype.constructor = Game_GraveEvent;
     // extract Metadata, add several Ids, xy_Location & initialize Game_Event
     Game_GraveEvent.prototype.initialize = function(mapId, graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY) {
+	Game_Character.prototype.initialize.call(this);
         this._graveActorID = actorID;
         this._graveUnitID = unitID;
         this._mapId = mapId;

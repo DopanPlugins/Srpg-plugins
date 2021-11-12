@@ -608,8 +608,8 @@ Game_Interpreter.prototype.allEnemysRaise = function() {
             if (_updateSwitch === true) {
                 if ($gameSystem.anyUnitDead() === true) {$gameSystem.startGraveSpawn()}
             };
-            if (_updateSwitch = true) {
-                _updateSwitch === false;
+            if (_updateSwitch === true) {
+                _updateSwitch = false;
             };
         };
     };

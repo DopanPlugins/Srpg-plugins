@@ -13,7 +13,7 @@
  * @help  
  *
  * (srpg extension ,needs the srpg Core plugin)
- * NOTE HELP INFO IS UNFINISHED!
+ * 
  * This Plugin spawns eventsGraves whenever a battleUnit get killed, and deletes them if that battleUnit gets revided! 
  * (requires the Raise sciptcalls from ths plugin)
  *

@@ -14,80 +14,51 @@
  *
  * (srpg extension ,needs the srpg Core plugin)
  * NOTE HELP INFO IS UNFINISHED!
- * This Plugin spawns eventsGraves whenever a battleUnit get killed, 
- * and deletes them if that battleUnit gets revided!
+ * This Plugin spawns eventsGraves whenever a battleUnit get killed, and deletes them if that battleUnit gets revided! 
+ * (requires the Raise sciptcalls from ths plugin)
  *
- * by eventing this would require to use a lot of gamevariables &
- * an EventSpawner Plugin.. But this Plugin only needs:
- *
- * ->MapID in the Plugin param & EventNoteTags on the GraveEvents,
- *  that are stored on that "GraveMap".. 
- * (this map should be unique and only used to store the grave events)
- *
- *
- * After this Setup is done its Plug&Play,
- * but it also offers a few helpfull ScriptCalls, 
- * but first lets check the new EventNoteTags:
+ * by eventing this would require to use a lot of gamevariables & an EventSpawner Plugin.. But this Plugin only needs:
  * 
+ * 1.MapID in the Plugin param 2.EventNoteTags on the GraveEvents,that are stored on that "GraveMap".. 
+ *  (this map should be unique and only used to store the grave events)
+ *
+ * After this Setup is done its Plug&Play,but it also offers a few helpfull ScriptCalls,  
+ * but first lets check the new EventNoteTags:
  *-------------------------
  * Importent EventNoteTags:
  *-------------------------
- *
  *  <actorgrave:x>
- *
  *  this has to be added to an Dead Body Event
  *  "x" should be the ActorId of the related alive Unit
  * (no other notetags required, but <type:object> can be added aswell)
  *---------------------------------------------------------------------------------
  *  <enemygrave:x>
- *
  *  this has to be added to an Dead Body Event
  *  "x" should be the enemyId of the related alive Unit
  * (no other notetags required, but <type:object> can be added aswell)
- *
- *  => "enemygraves" will get the "unit ID" of their related alive enemyUnits,
- *     from the system as soon they are spawned.. 
- *     this is to make sure that every clone gets its related grave
  *----------------------------------------------------------------------------------
  *    <Unit:x> => this is required for every enemyUnit(not grave)
  *               ..this is used to give enemys a 2nd ID.This number must be Unique 
- *          (because enemys get cloned and all clones have the same enemy ID)  
+ *          (because enemys get cloned and all clones have the same enemy ID) 
  *
  * Example for a correctly made EnemyUnitBattler Notetag:
- *
  *  <type:enemy><id:x><unit:x> 
- *    
- * (it is related to enemy, and unit gives the second ID which must stay Unique)
- *
- * more infos about "Unit" Notetag and related scriptcall @ "Plugin Scriptcalls:"
- *
  *--------------------------------
  * Info about srpgCore scriptcall:    
  *--------------------------------
  *  How to get the Event ID based on the Actor ID? (on ActorUnits)
  *-------------------------------------------------------------------
  *   $gameSystem.ActorToEvent(ActorID); 
- *
- *   return 0 if the unit is not in battle & has no event used,
- *   else return the actors EventID
+ *   (return 0 if the unit is not in battle & has no event used,
+ *   else return the actors EventID)
  *
  * for usage example :
- *
  * $gameSystem.EventToUnit($gameSystem.ActorToEvent(ActorID))[1]; 
- *
- * this is the Actor-Battler called by its actorID instead of eventID
+ * (this is the Actor-Battler called by its actorID instead of eventID)
  *--------------------------------------------------------------------
- *
  * The default script from srpgCore to call a battler is :
- *
  *   $gameSystem.EventToUnit(eventID)[1];
- *
  * (this needs the EventID of the GameMapEvent of the BattleUnit)
- *
- *
- *   this plugin has some similar scriptcalls added...
- *
- *
  *---------------------
  * Plugin Scriptcall:
  *---------------------
@@ -95,7 +66,7 @@
  * I use EnemyClones that have the same EnemyID, therefor i made
  * an EventNoteTag for the EnemyUnits which have the EventNote:
  * <type:enemy><id:x> ( "x" is the enemyID)
- * so i just add <unit:x> ( "x" is the enemyUnitID)
+ * <unit:x> ( "x" is the enemyUnitID)
  * example:  <type:enemy><id:x><unit:x> 
  * 
  * that way the EnemyID is the clones first ID and UnitID is the clones second unique ID.
@@ -104,21 +75,14 @@
  *
  * new "Unit" ScriptCall:  $gameSystem.EnemyUnit(1)
  *-----------------------
- *
- *    get event ID of a BattleUnit based on Unit ID,this is similar like "$gameSystem.ActorToEvent(ActorID)" 
- *    But for EnemyUnits.. example: EventNoteTag"<Unit:1>" is UnitID 1 (in order to trigger a EnemyUnit by its unitID)
- *    Example: 
- *  
  * "$gameSystem.EnemyUnit(1)" can replace eventID 
- *
- * -> "$gameSystem.EventToUnit($gameSystem.EnemyUnit(1))[1];"
+ * example-> "$gameSystem.EventToUnit($gameSystem.EnemyUnit(1))[1];"
  *---------------------------------------------------------------------------------------------------------
- * these scriptcall revive singel Units or all actors/enemys & erase the related graves,..
- * ..pls use these instead of the default scriptcall from the srpg core,to abvoid "Grave problems"
+ * these scriptcalls revive singel Units or all actors/enemys & erase the related graves,..
+ * ..pls use these instead of the default scriptcall from the srpg core,to erase related Graves
  *
- *  "this.unitRaise(eventID)"    "this.allActorsRaise"     "this.allEnemysRaise"
+ *  "this.unitRaise(eventID)"    "this.allActorsRaise()"     "this.allEnemysRaise()"
  *---------------------------------------------------------------------------------------------------------
- *
  * Credits:
  *       Basicly this is an Automatic-Eventspawner & i learned a lot how this works,
  *       by reading the codes of other EventSpawner Plugins.And from the Forum Infos.
@@ -127,7 +91,6 @@
  *       Even if Shoukang's Plugin works different and has other purposes,   
  *       it helped me to understand how to get the data from other Maps &  
  *       how to Spawn Events.
- *
  * ============================================================================
  * Terms of Use
  * ============================================================================

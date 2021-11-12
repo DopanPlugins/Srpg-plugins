@@ -15,7 +15,7 @@
  * (srpg extension ,needs the srpg Core plugin)
  * 
  * This Plugin spawns "eventGraves" whenever a battleUnit get killed, and deletes them if that battleUnit gets revided! 
- * (requires the Raise sciptcalls from ths plugin when reving Units..)
+ * (requires the "Raise" sciptcalls from this plugin when reving Units..)
  *
  * by eventing this would require to use a lot of gamevariables & an EventSpawner Plugin.. But this Plugin only needs:
  * 

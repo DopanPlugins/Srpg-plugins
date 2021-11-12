@@ -36,10 +36,8 @@ which need to be inserted in the plugin param
 -> ill attach some info screenshoots for this aswell
 
 ![Screenshot_1](https://user-images.githubusercontent.com/72324675/138602017-a6f604f2-3d87-4b1e-ba14-eb8bf9e5c768.png)
-
+-
 ![Screenshot_3](https://user-images.githubusercontent.com/72324675/138602027-f8777cc6-1d9c-4c33-ab4b-0287284d9b2d.png)
-
-
 
 => it has also other upgrades but none of them have importent requirements like those above
 ..if you need help with the setup pls ask in rpg mv forum
@@ -48,11 +46,8 @@ The MapActionText can easyly made with 1 Common event triggered from pre-action 
 ..with if condition(if mapbattle is ON )
 
 ![Screenshot_4](https://user-images.githubusercontent.com/72324675/138602102-d713cbe1-ecbf-4e00-9a73-56025c96147f.png)
-
-
-![11](https://user-images.githubusercontent.com/72324675/138607811-16ef1e5a-6b33-42cb-886a-d157b5d89daf.png)
-
-
+-
+![11](https://user-images.githubusercontent.com/72324675/141405131-791fcc21-bbda-4ae2-b265-f4bdaba50092.png)
 The "MFA switch" is a Switch that is aktivated by the newest update of MapForceAction (not fully tested but uploaded)
 this Switch makes sure that extra actions dont trigger a "MapActionText" or "MapBattle_pre-action phase"
  (to avoid bugs)

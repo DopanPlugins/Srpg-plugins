@@ -593,7 +593,7 @@ Game_Interpreter.prototype.allEnemysRaise = function() {
                  }
              }
         }   
-        if (_updateSwitch = false) {_updateSwitch === true};return startGraveSpawn;          
+        if (_updateSwitch === false) {_updateSwitch = true};return startGraveSpawn;          
     };
 
 //-----------------------------------------------------------------------------------------
@@ -606,10 +606,7 @@ Game_Interpreter.prototype.allEnemysRaise = function() {
         _SRPG_SceneMap_update.call(this);
         if (SceneManager._scene instanceof Scene_Map === true) { 
             if (_updateSwitch === true) {
-                if ($gameSystem.anyUnitDead() === true) {$gameSystem.startGraveSpawn()}
-            };
-            if (_updateSwitch === true) {
-                _updateSwitch = false;
+                if ($gameSystem.anyUnitDead() === true) {_updateSwitch = false;$gameSystem.startGraveSpawn()};
             };
         };
     };

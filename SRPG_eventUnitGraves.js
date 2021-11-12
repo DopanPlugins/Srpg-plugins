@@ -21,7 +21,7 @@
  * 
  * 1.MapID in the Plugin param 2.EventNoteTags on the GraveEvents,that are stored on that "GraveMap".. 
  *  (this map should be unique and only used to store the grave events)
- * 3.Enemy Units need to get the EventNote <unit:x> in addittion to the other eventNotetags
+ * 3.Enemy Units need to get the EventNote <unit:x> in addittion to the default Enemy eventNotetags
  *
  * After this Setup is done its Plug&Play,but it also offers a few helpfull ScriptCalls,  
  * but first lets check the new EventNoteTags:
@@ -30,16 +30,16 @@
  *-------------------------
  *  <actorgrave:x>
  *  this has to be added to an Dead Body Event
- *  "x" should be the ActorId of the related alive Unit
+ *  "x" should be the "ActorId" of the related alive Unit
  * (no other notetags required, but <type:object> can be added aswell)
  *---------------------------------------------------------------------------------
  *  <enemygrave:x>
  *  this has to be added to an Dead Body Event
- *  "x" should be the enemyId of the related alive Unit
+ *  "x" should be the "EnemyId" of the related alive Unit
  * (no other notetags required, but <type:object> can be added aswell)
  *----------------------------------------------------------------------------------
  * (for EnemyUnits Only!)
- *    <Unit:x> => this is required for every enemyUnit(not grave)
+ *    <Unit:x> => this is required for every "enemyUnit"(not grave)
  *               ..this is used to give enemys a 2nd ID.This number must be Unique 
  *          (because enemys get cloned and all clones have the same enemy ID) 
  *
@@ -55,11 +55,11 @@
  *   else return the actors EventID)
  *
  * for usage example :
- * $gameSystem.EventToUnit($gameSystem.ActorToEvent(ActorID))[1]; 
- * (this is the Actor-Battler called by its actorID instead of eventID)
+ * "$gameSystem.EventToUnit($gameSystem.ActorToEvent(ActorID))[1];" 
+ * (this is the Actor-Battler called by its "ActorID" instead of "eventID")
  *--------------------------------------------------------------------
  * The default script from srpgCore to call a battler is :
- *   $gameSystem.EventToUnit(eventID)[1];
+ *   "$gameSystem.EventToUnit(eventID)[1];"
  * (this needs the EventID of the GameMapEvent of the BattleUnit)
  *---------------------
  * Plugin Scriptcall:
@@ -72,14 +72,14 @@
  * 
  * that way the EnemyID is the clones first ID and UnitID is the clones second unique ID.
  * Similar like humans have first and second name.. 
- * (actors only use the actor ID because its not recommened to clone actors)
+ * (actors only use the actor ID because its not recommended to clone actors)
  *
- * new "Unit" ScriptCall:  "$gameSystem.EnemyUnit(1)" (only for enemys Units)   
+ * new "Unit" ScriptCall:  "$gameSystem.EnemyUnit(1)" (only for "enemyUnits")   
  *-----------------------
  * "$gameSystem.EnemyUnit(1)" can replace eventID 
- * example-> "$gameSystem.EventToUnit($gameSystem.EnemyUnit(1))[1];"
+ * example with UnitID=1-> "$gameSystem.EventToUnit($gameSystem.EnemyUnit(1))[1];"
  *---------------------------------------------------------------------------------------------------------
- * these scriptcalls revive singel Units or all actors/enemys & erase the related graves,..
+ * these scriptcalls below revive singel Units or all actors/enemys & erase the related graves,..
  * ..pls use these instead of the default scriptcall from the srpg core,to erase related Graves
  *
  * "this.unitRaise(eventID)" "this.allActorsRaise()" "this.allEnemysRaise()"

@@ -2,7 +2,7 @@
 // SRPG_eventUnitGraves.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for whatever in SRPG 
+ * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for BattleUnits in SRPG 
  * @author (dopan)
  *
  * @param Grave Map Id

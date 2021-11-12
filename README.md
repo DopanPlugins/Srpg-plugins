@@ -11,7 +11,7 @@ alternative Scriptcall List
 
 https://www.wikimoe.com/?post=108
 
-for a scriptcall list of SRPG realted Scriptcalls pls visit:
+for a scriptcall list of SRPG related Scriptcalls pls visit:
 
 ScriptCallList_SRPG.js:
 
@@ -29,6 +29,7 @@ needed IMGs are attached at this github
 
 -has eventpriority change ,that requires the plugin "EventResetAfterAction",
 in order to reset priority after each action..
+/(that help to always display the acting Unit over the target unit,required for weapon usage on map)
 
 -has an correctly working MapBattle PreAction Phase, that requires an Common Event
 which need to be inserted in the plugin param

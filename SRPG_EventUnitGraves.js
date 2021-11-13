@@ -57,6 +57,7 @@
  * "this.controllGraveSpawn(true/false);" 
  *
  * this can be used to controll when & if the GraveSpawn gets activated
+ * (by default thats not needed because everything works plug&play,its just incase someone might need it)
  *--------------------------------
  * Info about srpgCore scriptcall:    
  *--------------------------------

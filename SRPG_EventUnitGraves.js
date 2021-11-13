@@ -2,7 +2,7 @@
 // SRPG_eventUnitGraves.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for whatever in SRPG 
+ * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for for BattleUnits in SRPG  
  * @author (dopan)
  *
  * @param Controll Grave Spawn
@@ -20,12 +20,12 @@
  * (srpg extension ,needs the srpg Core plugin)
  * 
  * This Plugin spawns "eventGraves" whenever a battleUnit get killed, and deletes them if that battleUnit gets revided! 
- * (requires the Raise sciptcalls from ths plugin when reving Units..)
+ * (requires the "Raise" sciptcalls from this plugin when revive Units..)
  *
  * by eventing this would require to use a lot of gamevariables & an EventSpawner Plugin.. But this Plugin only needs:
  * 
  * 1.MapID in the Plugin param 2.EventNoteTags on the GraveEvents,that are stored on that "GraveMap".. 
- * (1.this map should be unique and only used to store the grave events)(2.<actorgrave:x> <actorgrave:x>)
+ * (1.this map should be unique and only used to store the grave events)(2.<actorgrave:x> <enemygrave:x>)
  * 3.Enemy Units need to get the EventNote <unit:x> in addittion to the default Enemy eventNotetags
  *
  * After this Setup is done its Plug&Play,but it also offers a few helpfull ScriptCalls,  
@@ -36,12 +36,12 @@
  *  <actorgrave:x>
  *  this has to be added to an Dead Body Event
  *  "x" should be the "ActorId" of the related alive Unit
- * (no other notetags required, but <type:object> can be added aswell)
+ * (no other notetags required, but <type:object> or others can be added aswell)
  *---------------------------------------------------------------------------------
  *  <enemygrave:x>
  *  this has to be added to an Dead Body Event
  *  "x" should be the "EnemyId" of the related alive Unit
- * (no other notetags required, but <type:object> can be added aswell)
+ * (no other notetags required, but <type:object> or others can be added aswell)
  *----------------------------------------------------------------------------------
  * (for EnemyUnits Only!)
  *    <Unit:x> => this is required for every "enemyUnit" (not Grave)

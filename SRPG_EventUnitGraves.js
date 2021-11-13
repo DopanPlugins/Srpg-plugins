@@ -2,8 +2,13 @@
 // SRPG_eventUnitGraves.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for BattleUnits in SRPG 
+ * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for whatever in SRPG 
  * @author (dopan)
+ *
+ * @param Controll Grave Spawn
+ * @desc Switch that activates Grave Spawn,can be changed with scriptcall aswell
+ * @type boolean
+ * @default true
  *
  * @param Grave Map Id
  * @desc ID of Map which stores Grave Events
@@ -15,12 +20,12 @@
  * (srpg extension ,needs the srpg Core plugin)
  * 
  * This Plugin spawns "eventGraves" whenever a battleUnit get killed, and deletes them if that battleUnit gets revided! 
- * (requires the "Raise" sciptcalls from this plugin when reving Units..)
+ * (requires the Raise sciptcalls from ths plugin when reving Units..)
  *
  * by eventing this would require to use a lot of gamevariables & an EventSpawner Plugin.. But this Plugin only needs:
  * 
  * 1.MapID in the Plugin param 2.EventNoteTags on the GraveEvents,that are stored on that "GraveMap".. 
- * (1. this map should be unique and only used to store the grave events)(2. <actorgrave:x> <enemygrave:x>)
+ * (1.this map should be unique and only used to store the grave events)(2.<actorgrave:x> <actorgrave:x>)
  * 3.Enemy Units need to get the EventNote <unit:x> in addittion to the default Enemy eventNotetags
  *
  * After this Setup is done its Plug&Play,but it also offers a few helpfull ScriptCalls,  
@@ -31,12 +36,12 @@
  *  <actorgrave:x>
  *  this has to be added to an Dead Body Event
  *  "x" should be the "ActorId" of the related alive Unit
- * (no other notetags required)
+ * (no other notetags required, but <type:object> can be added aswell)
  *---------------------------------------------------------------------------------
  *  <enemygrave:x>
  *  this has to be added to an Dead Body Event
  *  "x" should be the "EnemyId" of the related alive Unit
- * (no other notetags required)
+ * (no other notetags required, but <type:object> can be added aswell)
  *----------------------------------------------------------------------------------
  * (for EnemyUnits Only!)
  *    <Unit:x> => this is required for every "enemyUnit" (not Grave)
@@ -45,6 +50,13 @@
  *
  * Example for a correctly made EnemyUnitBattler eventNotetag:
  *  <type:enemy><id:x><unit:x> 
+ *----------------------------------------------------------------------------------
+ *----------------------------------------------------------------------------------
+ * ScriptCall to controll the Switch from the Plugin Param (default is "true")
+ *
+ * "this.controllGraveSpawn(true/false);" 
+ *
+ * this can be used to controll if when&if the GraveSpawn is activated
  *--------------------------------
  * Info about srpgCore scriptcall:    
  *--------------------------------
@@ -122,6 +134,10 @@
 
   var _GraveMapId = Number(parameters['Grave Map Id']) || 1;
 
+  var _controllGraveSpawn = parameters['Controll Grave Spawn'] || 'true';
+
+  var _updateSwitch = true;
+
 // ID variables and related codes: its not needed but used as reminder..
 
   var actorID = 0;      // $gameSystem.EventToUnit(eventID)[1]._actorId;
@@ -132,8 +148,6 @@
   var euX = 0;          // eventUnit.x
   var euY = 0;          // eventUnit.y
   var mapId = 0;        // $gameMap._mapId
-
-  var _updateSwitch = true;
 	
 //-----------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------
@@ -182,7 +196,7 @@
     Game_GraveEvent.prototype.constructor = Game_GraveEvent;
     // extract Metadata, add several Ids, xy_Location & initialize Game_Event
     Game_GraveEvent.prototype.initialize = function(mapId, graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY) {
-	Game_Character.prototype.initialize.call(this);
+        Game_Character.prototype.initialize.call(this);
         this._graveActorID = actorID;
         this._graveUnitID = unitID;
         this._mapId = mapId;
@@ -190,7 +204,8 @@
         this._graveDataEID = graveDataEID;
 	Game_Event.prototype.initialize.call(this,mapId,graveEID);
 	DataManager.extractMetadata(this.event());
-	this.locate(euX, euY);    
+	this.locate(euX, euY); 
+        //if (this.event().note.indexOf("<type:object>") !== -1) {this.setType('object')};// add 'object'type if needed   
         this.refresh();
     };
 
@@ -458,50 +473,57 @@
             }
         });
         return eventId;
-    };  
+   };  
 
 //-----------------------------------------------------------------------------------------  
 // Game Interpreter -----------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------  
 
-// "this.unitRaise(eventID)"
-Game_Interpreter.prototype.unitRaise = function(eventId) {
-    var eventID = eventId;
-    var battleUnit = $gameSystem.EventToUnit(eventID);
-    var eventUnit = $gameMap.event(eventID);
-    var unitID = eventUnit._eventEnemyUnitId;
-    var actorID = battleUnit[1]._actorId;
-    if (battleUnit && (battleUnit[0] === 'actor')) {$gameSystem.eraseActorGrave(actorID)};
-    if (battleUnit && (battleUnit[0] === 'enemy')) {$gameSystem.eraseEnemyGrave(unitID)};
-    this.unitRevive(EventID);
-};
+   // "this.unitRaise(eventID)"
+   Game_Interpreter.prototype.unitRaise = function(eventId) {
+       var eventID = eventId;
+       var battleUnit = $gameSystem.EventToUnit(eventID);
+       var eventUnit = $gameMap.event(eventID);
+       var unitID = eventUnit._eventEnemyUnitId;
+       var actorID = battleUnit[1]._actorId;
+       if (battleUnit && (battleUnit[0] === 'actor')) {$gameSystem.eraseActorGrave(actorID)};
+       if (battleUnit && (battleUnit[0] === 'enemy')) {$gameSystem.eraseEnemyGrave(unitID)};
+       this.unitRevive(EventID);
+   };
 
-// "this.allActorsRaise()"
-Game_Interpreter.prototype.allActorsRaise = function() {
-    $gameMap.events().forEach(function(event) {
-         if (event.isType() === 'actor') {
-             eventID = event.eventId();    
-             var battleUnit = $gameSystem.EventToUnit(eventID);
-             var actorID = battleUnit[1]._actorId;
-             $gameSystem.eraseActorGrave(actorID);
-             this.unitRevive(EventID);
-         };
-    });
-};
+   // "this.allActorsRaise()"
+   Game_Interpreter.prototype.allActorsRaise = function() {
+       $gameMap.events().forEach(function(event) {
+            if (event.isType() === 'actor') {
+                eventID = event.eventId();    
+                var battleUnit = $gameSystem.EventToUnit(eventID);
+                var actorID = battleUnit[1]._actorId;
+                $gameSystem.eraseActorGrave(actorID);
+                this.unitRevive(EventID);
+            };
+       });
+   };
 
-// "this.allEnemysRaise()"
-Game_Interpreter.prototype.allEnemysRaise = function() {
-    $gameMap.events().forEach(function(event) {
-         if (event.isType() === 'enemy') {
-             eventID = event.eventId();    
-             var battleUnit = $gameSystem.EventToUnit(eventID);
-             var unitID = $gameMap.event(eventID)._eventEnemyUnitId;
-             $gameSystem.eraseEnemyGrave(unitID);
-             this.unitRevive(EventID);
-         };
-    });
-};
+   // "this.allEnemysRaise()"
+   Game_Interpreter.prototype.allEnemysRaise = function() {
+       $gameMap.events().forEach(function(event) {
+            if (event.isType() === 'enemy') {
+                eventID = event.eventId();    
+                var battleUnit = $gameSystem.EventToUnit(eventID);
+                var unitID = $gameMap.event(eventID)._eventEnemyUnitId;
+                $gameSystem.eraseEnemyGrave(unitID);
+                this.unitRevive(EventID);
+            };
+       });
+   };
     
+   //this.controllGraveSpawn(true/false)
+   Game_Interpreter.prototype.controllGraveSpawn = function(graveSpawn) {
+       if (graveSpawn === true) {_controllGraveSpawn = true};
+       if (graveSpawn === false) {_controllGraveSpawn = false};
+       return _controllGraveSpawn;
+   };
+
 //-----------------------------------------------------------------------------------------  
 // Game System ---------------------------------------------------------------------------- 
 //----------------------------------------------------------------------------------------- 
@@ -598,20 +620,22 @@ Game_Interpreter.prototype.allEnemysRaise = function() {
     };
 
 //-----------------------------------------------------------------------------------------
-// Scene Map (Event after Action) --------------------------- this.srpgBattlerDeadAfterBattle(); 
+// Scene Map (Event after Action) ---------------------------------------------------------  
 //-----------------------------------------------------------------------------------------
     // -> "SRPG_SceneMap_update"  
     // trigger Plugin
     var _SRPG_SceneMap_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
         _SRPG_SceneMap_update.call(this);
-        if (SceneManager._scene instanceof Scene_Map === true) { 
-            if (_updateSwitch === true) {
-                if ($gameSystem.anyUnitDead() === true) {_updateSwitch = false;$gameSystem.startGraveSpawn()};
+        if (_controllGraveSpawn === true) {
+            if (SceneManager._scene instanceof Scene_Map === true) { 
+                if (_updateSwitch === true) {
+                    if ($gameSystem.anyUnitDead() === true) {_updateSwitch = false;$gameSystem.startGraveSpawn()};
+                };
             };
         };
     };
-
+      
 //-----------------------------------------------------------------------------------------  
  
 //--End:

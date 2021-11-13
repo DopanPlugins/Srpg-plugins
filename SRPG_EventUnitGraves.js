@@ -3,7 +3,7 @@
 //=============================================================================
 /*:
  * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for for BattleUnits in SRPG  
- * @author (dopan)
+ * @author dopan
  *
  * @param Controll Grave Spawn
  * @desc Switch that activates Grave Spawn,can be changed with scriptcall aswell

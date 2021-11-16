@@ -1,4 +1,7 @@
 before we start,..
+old plugins can be found here:
+https://github.com/DopanPlugins/Storage-old-plugins-/tree/main
+
 for rpg MV related Scriptcalls that are NOT added by the SRPG Core pls visit :
 
 Usefull Scriptcalls Info 

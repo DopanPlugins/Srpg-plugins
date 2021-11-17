@@ -6054,16 +6054,18 @@ Window_WinLoseCondition.prototype.refresh = function() {
             targetArray[1].srpgMakeNewActions();
             if (actionArray[0] === 'actor' && targetArray[0] === 'enemy' &&
                 targetArray[1].canMove()) {
+                targetArray[1].setActionTiming(1);// dopan edit added
                 targetArray[1].action(0).setSrpgEnemySubject(0);
                 targetArray[1].action(0).setAttack();
                 targetArray[1].action(0).setTarget(0);
             }
             if (actionArray[0] === 'enemy' && targetArray[0] === 'actor' &&
                 targetArray[1].canMove()) {
+                targetArray[1].setActionTiming(1);// dopan edit added
                 targetArray[1].action(0).setAttack();
                 targetArray[1].action(0).setTarget(0);
             }
-            targetArray[1].setActionTiming(1);
+            //targetArray[1].setActionTiming(1); edit dopan set actionTiming before set attack or set action
         }
         this.preBattleSetDirection();
         //行動回数追加スキルなら行動回数を追加する

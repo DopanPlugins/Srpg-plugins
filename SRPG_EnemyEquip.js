@@ -110,9 +110,11 @@
  * Scriptcall to change the Stealchance in Game:
  *----------------------------------------------
  *
- *  this.changeStealChance(chanceNumber);
+ * "this.changeStealChance(chanceNumber);"// usage in Events ,commonEvents ,"Game_Interpreter.prototype"-functions ect
  *
- * ChanceNumber can be any number betwen "1" and "100". "100" means 100% stealChance.
+ * or "Game_Interpreter.prototype.changeStealChance.call(this, chanceNumber);"// usage if used in other pluginsCodes
+ *
+ * chanceNumber can be any number betwen "1" and "100". "100" means 100% stealChance.
  * (default is StealChanceNumber in the Plugin param)
  *
  * Plugin NoteTags:

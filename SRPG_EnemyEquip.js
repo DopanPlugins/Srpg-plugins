@@ -137,7 +137,7 @@
  *---------------
  * SkillNoteTags:
  *---------------
- * These noteTags , make a skill a "stealing_skill"
+ * These noteTags , make a skill into a "stealing_skill"
  *
  * <srpgSteal:weapon> 
  * <srpgSteal:shield> 

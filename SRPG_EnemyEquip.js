@@ -119,9 +119,9 @@
  *
  * Plugin NoteTags:
  *-----------------
- *---------------
+ *----------------
  * Enemy noteTags:
- *---------------
+ *----------------
  *   <srpgWeapon:x>
  *   <srpgShield:x>
  *   <srpgHead:x>

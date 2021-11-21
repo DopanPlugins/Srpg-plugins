@@ -347,7 +347,7 @@
                 var stolenWeaponId = targetBattleUnit[1]._equips[0].id;
                 $gameParty.gainItem($dataWeapons[stolenWeaponId], 1);
                 targetBattleUnit[1]._enemyWeaponStolen = true;
-                targetBattleUnit[1]._equips[0] = 0;//$gameTemp.reserveCommonEvent(_stealTextCE);
+                targetBattleUnit[1]._equips[0] = 0;
                 // get data for stealResult
                 var itemName =  $dataWeapons[stolenWeaponId].name;
                 var msgIconID = $dataWeapons[stolenWeaponId].iconIndex;

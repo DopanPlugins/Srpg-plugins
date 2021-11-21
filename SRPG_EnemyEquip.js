@@ -78,7 +78,7 @@
  * But you can also use 2 Scriptcalls,for changing Enemy equipment on Battlemap,
  * based on the EnemyUnits eventID..
  *
- * By default the stealchance is 50%, this can be chaged in the Plugin param,
+ * By default the stealchance is 50%, this can be changed in the Plugin param,
  *  or by using the plugin Scriptcall.Incase its wanted to have a UnitRelated stealChance:
  * ->Such change should happen in the eventBeforeAction,or with "customExecution" (with scriptcall).
  * Pls Note: (plugin auto reset stealChance)

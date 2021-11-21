@@ -245,7 +245,7 @@
         }
     };
     // scriptcall to change enemy weapon "$gameTemp.changeEnemyWeapon(eventID, SlotID, ArmorID);"
-    Game_Temp.prototype.changeEnemyWeapon = function(unitID, SlotID, WeaponID) {
+    Game_Temp.prototype.changeEnemyWeapon = function(eventID, SlotID, WeaponID) {
         var battleUnit = $gameSystem.EventToUnit(eventID);
         if ((battleunit[0] === 'enemy') && (battleUnit[1]._equips)) {
             battleUnit[1]._equips[SlotID] = $dataWeapons[WeaponID];

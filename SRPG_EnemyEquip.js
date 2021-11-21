@@ -6,9 +6,6 @@
  * @author dopan
  *
  *
- *
- *
- *
  * @param Steal Chance
  * @desc this Number makes the Steal chance in %. Min is "1", Max is "100".
  * @type number

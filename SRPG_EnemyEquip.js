@@ -117,6 +117,10 @@
  * chanceNumber can be any number betwen "1" and "100". "100" means 100% stealChance.
  * (default is StealChanceNumber in the Plugin param)
  *
+ * pls Note:
+ *-> i might implement Actor/Enemy/Class/State Notetags, that can change the stealChance in later pluginUpdates
+ *
+ *
  * Plugin NoteTags:
  *-----------------
  *----------------
@@ -146,9 +150,10 @@
  * About gain Exp & gain Gold -skills:
  *------------------------------------
  *
- * for skills that add gold or extra exp, you can use an Common event on the skill.
+ * for skills that add gold or extra exp, you can use an CommonEvent on the skill.
+ * (This can probably also be solved with the battleformula)
  * There you can put a math script or a variable that rolls the succes rate.
- * Scripts for gain gold and gain Exp.(This can probably also be solved with the battleformula)
+ * Default Scripts for gainGold and gainExp are :
  * 
  *  $gameParty.gainGold(n);
  *  $gameActors.actor(ActorID).gainExp(exp)

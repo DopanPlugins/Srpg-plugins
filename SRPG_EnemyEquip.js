@@ -168,7 +168,7 @@
  * Changelog 
  * ============================================================================
  * Version 1.0:
- * - first Release 00.00.2020 for SRPG (rpg mv)!
+ * - first Release 21.11.2021 for SRPG (rpg mv)!
  */
  
 (function() {

@@ -118,7 +118,7 @@
  * (default is StealChanceNumber in the Plugin param)
  *
  * pls Note:
- *-> i might implement Actor/Enemy/Class/State Notetags, that can change the stealChance in later pluginUpdates
+ *-> i might implement Actor/Enemy/Class/State/Skill -Notetags, that can change the stealChance in later pluginUpdates
  *
  *
  * Plugin NoteTags:

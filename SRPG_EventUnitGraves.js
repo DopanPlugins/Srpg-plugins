@@ -205,8 +205,7 @@
         this._graveDataEID = graveDataEID;
 	Game_Event.prototype.initialize.call(this,mapId,graveEID);
 	DataManager.extractMetadata(this.event());
-	this.locate(euX, euY); 
-        //if (this.event().note.indexOf("<type:object>") !== -1) {this.setType('object')};// add 'object'type if needed   
+	this.locate(euX, euY);   
         this.refresh();
     };
 
@@ -628,7 +627,7 @@
     var _SRPG_SceneMap_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
         _SRPG_SceneMap_update.call(this);
-        if (_controllGraveSpawn === true) {
+        if (_controllGraveSpawn === 'true') {
             if (SceneManager._scene instanceof Scene_Map === true) { 
                 if (_updateSwitch === true) {
                     if ($gameSystem.anyUnitDead() === true) {_updateSwitch = false;$gameSystem.startGraveSpawn()};

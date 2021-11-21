@@ -193,8 +193,6 @@
   var _stealChance = Number(parameters['Steal Chance'] || 50);
 
 //-----------------------------------------------------------------------------------------
-//$gameMessage.add(eName + "'s \\i["+ msgIconID +"]"+ itemName +" stolen!\\|\\|\\|\\^");
-//$gameSystem.EventToUnit()[1].
 
 // Setup for Steal skill:
 //-----------------------

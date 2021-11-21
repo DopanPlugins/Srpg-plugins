@@ -142,9 +142,9 @@
  * <srpgSteal:accessory> 
  *
  *
- *--------------------------------------
- * gain Exp & gain gold
- *--------------------------------------
+ *------------------------------------
+ * About gain Exp & gain Gold -skills:
+ *------------------------------------
  *
  * for skills that add gold or extra exp, you can use an Common event on the skill.
  * There you can put a math script or a variable that rolls the succes rate.

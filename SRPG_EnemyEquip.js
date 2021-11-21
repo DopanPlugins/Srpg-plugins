@@ -104,7 +104,7 @@
  * (weaponID and ArmorID , is the Number related to the equipment in your Project)
  * => using 0 on weaponID or ArmorID, will delete any equipment in that slot!!
  *
- * these Scriptcalls can be used on battlemap to change the Equipment of Enemy Units individually
+ * these 2 Scriptcalls above can be used on battlemap to change the Equipment of Enemy Units individually
  *
  *----------------------------------------------
  * Scriptcall to change the Stealchance in Game:

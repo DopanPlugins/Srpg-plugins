@@ -79,7 +79,7 @@
  * based on the EnemyUnits eventID..
  *
  * By default the stealchance is 50%, this can be changed in the Plugin param,
- *  or by using the plugin Scriptcall.Incase its wanted to have a UnitRelated stealChance:
+ *  or by using the plugin Scriptcall.Incase its wanted to have a UnitRelated or SkillRelated StealChance:
  * ->Such change should happen in the eventBeforeAction,or with "customExecution" (with scriptcall).
  * Pls Note: (plugin auto reset stealChance)
  * The StealChance will always be reseted to the Plugin param stealChance, in the AfterAction_Scene.

@@ -73,7 +73,7 @@
  *  but i think i already made the best of it)
  *
  * When using EnemyNote to set Equip,
- * every enemyClone with the same ID will have the same Equip..
+ * every enemyClone with the same EnemyID will have the same Equip..
  * 
  * But you can also use 2 Scriptcalls,for changing Enemy equipment on Battlemap,
  * based on the EnemyUnits eventID..

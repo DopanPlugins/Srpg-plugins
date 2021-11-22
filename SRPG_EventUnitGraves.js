@@ -574,7 +574,7 @@
                  if ((battleunit[1].isDead()) && (eventunit._erased === true)) { 
                       if (eventunit._hasGrave === true) {
                            if (battleunit && eventunit && (battleunit[0] === 'actor')) {
-                               var actorID = battleUnit[1]._actorId;
+                               var actorID = battleunit[1]._actorId;
                                var relatedActorGrave = $gameMap.event($gameTemp.actorGrave(actorID));
                                if (relatedActorGrave._erased === true) {
                                    relatedActorGrave._erased = false;

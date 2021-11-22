@@ -329,7 +329,7 @@
         for (var i = $dataGrave.events.length - 1; i > 0; i--) {
              var dataGraveEvents = $dataGrave.events[i];
              if (dataGraveEvents !== null && (dataGraveEvents.note.indexOf("actorgrave") > 0)) {
-                 if (dataGraveEvents.meta.actorgrave == enemyID) {
+                 if (dataGraveEvents.meta.actorgrave == actorID) {
                      var getGrave = i ;
                      return getGrave; break; 
                  }

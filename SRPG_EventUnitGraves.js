@@ -372,7 +372,7 @@
     // "EnemyUnitID" is used to give enemyClones an own ID (all clones have the same Enemy ID) 
     Game_Temp.prototype.spawnEnemyGrave = function() {
         $gameMap.events().forEach(function(event){
-             var battleUnit = $gameSystem.EventToUnit(eventUnit.eventId());
+             var battleUnit = $gameSystem.EventToUnit(event.eventId());
              var euX = event.x;
              var euY = event.y;       
              if (battleUnit && event && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
@@ -380,7 +380,7 @@
                  var actorID = 0;
                  var graveEID = 0;
                  var graveDataEID = $gameTemp.importEnemyGraveEID(enemyID);
-                 var unitID = event._eventEnemyUnitId;
+                 var unitID = battleUnit[1]._enemyUnitId;
                  var relatedGrave = $gameMap.event($gameTemp.enemyGrave(unitID));
                  if ((relatedGrave) && (relatedGrave._graveUnitID === unitID) && (relatedGrave._erased === true)) {
                       relatedGrave.reSpawnGrave();

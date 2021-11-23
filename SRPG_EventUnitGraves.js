@@ -396,17 +396,16 @@
 
     //example scritcall: "$gameSystem.eraseAllActorGraves()"
     Game_Temp.prototype.eraseAllActorGraves = function() {
-        for (var i = 1; i <= $gameMap.events().length; i++) {
-             var battleUnit = $gameSystem.EventToUnit([i]);
-             var eventUnit = $gameMap.event([i]);        
-             if (battleUnit && eventUnit && (battleUnit[0] === 'actor') && (!battleUnit[1].isDead())) {  
+	$gameMap.events().forEach(function(event){
+             var battleUnit = $gameSystem.EventToUnit(event.eventId());   
+             if (battleUnit && event && (battleUnit[0] === 'actor') && (!battleUnit[1].isDead())) {  
                  var actorID = battleUnit[1]._actorId;
                  var relatedGrave = $gameMap.event($gameTemp.actorGrave(actorID));
                  if (relatedGrave && (relatedGrave._erased === false)) {
                      relatedGrave._isErased;return true;
                  }
              };
-        };
+        });
     };
 
     //unspawn single ActorGrave by actorId  "$gameSystem.eraseActorGrave(actorID)"
@@ -420,17 +419,16 @@
 
     //example scritcall: "$gameSystem.eraseAllEnemyGraves()"
     Game_Temp.prototype.eraseAllEnemyGraves = function() {
-        for (var i = 1; i <= $gameMap.events().length; i++) {
-             var battleUnit = $gameSystem.EventToUnit([i]);
-             var eventUnit = $gameMap.event([i]);        
+   	$gameMap.events().forEach(function(event){
+             var battleUnit = $gameSystem.EventToUnit(event.eventId());
              if (battleUnit && eventUnit && (battleUnit[0] === 'enemy') && (!battleUnit[1].isDead())) {  
-                 var unitID = eventUnit._eventEnemyUnitId;
+                 var unitID = battleUnit[1]._enemyUnitId;
                  var relatedGrave = $gameMap.event($gameTemp.enemyGrave(unitID));
                  if (relatedGrave && (relatedGrave._erased === false)) {
                      relatedGrave.eraseGrave();return true;
                  }
              };
-        };
+        });
     };
 
     //unspawn singel EnemyGrave by unitId "$gameSystem.eraseEnemyGrave(unitID)"

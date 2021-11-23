@@ -361,9 +361,8 @@
                  var graveDataEID = $gameTemp.importActorGraveEID(actorID);
                  var relatedGrave = $gameMap.event($gameTemp.actorGrave(actorID));
                  if (relatedGrave && (relatedGrave._erased === true)) {
-                     relatedGrave.reSpawnGrave(); break;
-                 }
-                 $gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY); 
+                     relatedGrave.reSpawnGrave();
+                 } else {$gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY)};
              }           
         });
     };
@@ -384,9 +383,8 @@
                  var unitID = event._eventEnemyUnitId;
                  var relatedGrave = $gameMap.event($gameTemp.enemyGrave(unitID));
                  if ((relatedGrave) && (relatedGrave._graveUnitID === unitID) && (relatedGrave._erased === true)) {
-                      relatedGrave.reSpawnGrave(); break;
-                 }
-                 $gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY);   
+                      relatedGrave.reSpawnGrave();
+                 } else {$gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY)};  
              }           
         });
     };

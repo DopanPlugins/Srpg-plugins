@@ -315,7 +315,6 @@
     // This imports the Event ID from "$dataGrave" Map. "<enemygrave:x>" based on that eventNote  
     // "x" is "enemyID" .Example: eventNote <enemygrave:2> 
     //  <enemygrave:2>  is related to the enemy ID of the related alive EnemyUnit (enemyId2)
-
     Game_Temp.prototype.importEnemyGraveEID = function(enemyID) {
         for (var i = $dataGrave.events.length - 1; i > 0; i--) {
              var dataGraveEvents = $dataGrave.events[i];
@@ -331,7 +330,6 @@
     // This imports the Event ID from "$dataGrave" Map.Based on this eventNote "<actorgrave:x>" 
     // "x" is "actorID" .Example: eventNote <actorgrave:2> 
     //  <actorgrave:2>  is related to the actorID of the related alive actorUnit (actorId2)
-   
     Game_Temp.prototype.importActorGraveEID = function(actorID) {
         for (var i = $dataGrave.events.length - 1; i > 0; i--) {
              var dataGraveEvents = $dataGrave.events[i];
@@ -350,12 +348,11 @@
 	
     //this checks if the BattleUnit is death and spawns the related actorGrave 
     Game_Temp.prototype.spawnActorGrave = function() {
-        for (var i = 1; i <= $gameMap.events().length; i++) {
-             var battleUnit = $gameSystem.EventToUnit([i]);
-             var eventUnit = $gameMap.event([i]);
-             var euX = eventUnit.x;
-             var euY = eventUnit.y;        
-             if (battleUnit && eventUnit && (battleUnit[0] === 'actor') && (battleUnit[1].isDead()) && (eventUnit._hasGrave === false)) {   
+        $gameMap.events().forEach(function(event){
+             var battleUnit = $gameSystem.EventToUnit(event.eventId());
+             var euX = event.x;
+             var euY = event.y;       
+             if (battleUnit && event && (battleUnit[0] === 'actor') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
                  var actorID = battleUnit[1]._actorId;
                  var enemyID = 0;
                  var unitID = 0;
@@ -365,34 +362,32 @@
                  if (relatedGrave && (relatedGrave._erased === true)) {
                      relatedGrave.reSpawnGrave(); break;
                  }
-                 $gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY);                    
-             }       
-        };   
+                 $gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY); 
+             }           
+        });
     };
-
+	
     //this checks if the BattleUnit is death and spawns the related enemyGrave 
     // on Enemys also the "EnemyUnitID" get added in order to fit with the related alive EnemyUnit
     // "EnemyUnitID" is used to give enemyClones an own ID (all clones have the same Enemy ID) 
-
     Game_Temp.prototype.spawnEnemyGrave = function() {
-        for (var i = 1; i <= $gameMap.events().length; i++) {
-             var battleUnit = $gameSystem.EventToUnit([i]);
-             var eventUnit = $gameMap.event([i]);
-             var euX = eventUnit.x;
-             var euY = eventUnit.y;         
-             if (battleUnit && eventUnit && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead()) && (eventUnit._hasGrave === false)) {  
+        $gameMap.events().forEach(function(event){
+             var battleUnit = $gameSystem.EventToUnit(eventUnit.eventId());
+             var euX = event.x;
+             var euY = event.y;       
+             if (battleUnit && event && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
                  var enemyID = battleUnit[1]._enemyId;
                  var actorID = 0;
                  var graveEID = 0;
                  var graveDataEID = $gameTemp.importEnemyGraveEID(enemyID);
-                 var unitID = eventUnit._eventEnemyUnitId;
+                 var unitID = event._eventEnemyUnitId;
                  var relatedGrave = $gameMap.event($gameTemp.enemyGrave(unitID));
                  if ((relatedGrave) && (relatedGrave._graveUnitID === unitID) && (relatedGrave._erased === true)) {
                       relatedGrave.reSpawnGrave(); break;
                  }
-                 $gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY);     
-             }              
-        };    
+                 $gameMap.addGrave(graveEID, graveDataEID, actorID, enemyID, unitID, euX, euY);   
+             }           
+        });
     };
 
 //----------------------------	

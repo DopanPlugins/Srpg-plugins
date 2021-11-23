@@ -106,6 +106,14 @@
  *
  * ScripCall:   "this.addBattleActor(EventID, ActorID);"
  * (adds all needed data to the Event of the new Actor Unit)
+ *--------------------------------------------------------------------------------------------------------
+ * Incase any BattleUnits gets summpned or spawned with using "addBattleEnemy" or "addBattleActor",
+ * they must have the correct eventNotetag and then these 2 Scriptcalls must be used:
+ *
+ * $gameMap.setEnemytUnitID();  // set EnemyUnit ID to mapEvent&gamebattler of all enemyUnits (enemys only)
+ *
+ * $gameMap.graveSetup(); // add GraveSetup to all BattleUnit mapEvents (actors&Enemys)
+ *
  *
  *---------------------------------------------------------------------------------------------------------
  * After srpg Battle started at "start of battle" EnemyUnits with the corretly EventNoteTag setup will get:

@@ -591,31 +591,30 @@
     // perma check if dead & if needGraveRespawn
     Game_System.prototype.anyUnitDead = function() {
         var anyUnitDead = false;
-        for (var i = 1; i <= $gameMap.events().length; i++) {
-             var battleunit = $gameSystem.EventToUnit([i]);
-             var eventunit = $gameMap.event([i]);
-             if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy')) {                  
-                 if ((battleunit[1].isDead()) && (eventunit._erased === true)) { 
-                      if (eventunit._hasGrave === true) {
-                           if (battleunit && eventunit && (battleunit[0] === 'actor')) {
+	$gameMap.events().forEach(function(event){
+             var battleunit = $gameSystem.EventToUnit(event.eventId());
+             if (battleunit && event && (battleunit[0] === 'actor' || battleunit[0] === 'enemy')) {                  
+                 if ((battleunit[1].isDead()) && (event._erased === true)) { 
+                      if (event._hasGrave === true) {
+                           if (battleunit && event && (battleunit[0] === 'actor')) {
                                var actorID = battleunit[1]._actorId;
                                var relatedActorGrave = $gameMap.event($gameTemp.actorGrave(actorID));
                                if (relatedActorGrave._erased === true) {
                                    relatedActorGrave._erased = false;
                                } 
                            }
-                           if (battleunit && eventunit && (battleunit[0] === 'enemy')) {
-                               var enemyUnit = eventunit._eventEnemyUnitId;
+                           if (battleunit && event && (battleunit[0] === 'enemy')) {
+                               var enemyUnit = event._eventEnemyUnitId;
                                var relatedEnemyGrave = $gameMap.event($gameTemp.enemyGrave(enemyUnit));
                                if (relatedEnemyGrave._erased === true) {
                                    relatedEnemyGrave._erased = false;
                                } 
                            }
                       }
-                      if (eventunit._hasGrave === false) {anyUnitDead = true};
+                      if (event._hasGrave === false) {anyUnitDead = true};
                  }
              }
-        }
+        });
         return anyUnitDead; 
     };  
       

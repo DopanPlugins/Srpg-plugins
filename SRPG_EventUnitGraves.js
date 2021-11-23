@@ -326,8 +326,7 @@
              }  
         }
     };
-    //should i use  ??->   $dataGrave.events().forEach(function(event) {
-    // });
+
     // This imports the Event ID from "$dataGrave" Map.Based on this eventNote "<actorgrave:x>" 
     // "x" is "actorID" .Example: eventNote <actorgrave:2> 
     //  <actorgrave:2>  is related to the actorID of the related alive actorUnit (actorId2)

@@ -621,24 +621,23 @@
     // trigger function (spawn graves)        
     Game_System.prototype.startGraveSpawn = function() {
         var startGraveSpawn = false;  
-        for (var i = 1; i <= $gameMap.events().length; i++) {
-             var battleUnit = $gameSystem.EventToUnit([i]);
-             var eventUnit = $gameMap.event([i]);
-             if (battleUnit && eventUnit && (battleUnit[0] === 'actor' || battleUnit[0] === 'enemy') && (battleUnit[1].isDead())) { 
-                 var enemyUnitID = eventUnit._eventEnemyUnitId;
-                 var actorUnitID = battleUnit[1]._actorId;
-                 if (battleUnit && eventUnit && (battleUnit[0] === 'actor') && (battleUnit[1].isDead())) { 
+	$gameMap.events().forEach(function(event){
+             var battleUnit = $gameSystem.EventToUnit(event.eventId());
+             if (battleUnit && event && (battleUnit[0] === 'actor' || battleUnit[0] === 'enemy') && (battleUnit[1].isDead())) { 
+                 if (battleUnit && event && (battleUnit[0] === 'actor') && (battleUnit[1].isDead())) { 
+		     var actorUnitID = battleUnit[1]._actorId;
                      var relatedActorGrave = $gameMap.event($gameTemp.actorGrave(actorUnitID));
-                     if (relatedActorGrave) {eventUnit._hasGrave = true}; 
-                     if (!relatedActorGrave) {$gameTemp.spawnActorGrave();eventUnit._hasGrave = true;startGraveSpawn = true}; 
+                     if (relatedActorGrave) {event._hasGrave = true}; 
+                     if (!relatedActorGrave) {$gameTemp.spawnActorGrave();event._hasGrave = true;startGraveSpawn = true}; 
                  }
-                 if (battleUnit && eventUnit && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead())) { 
+                 if (battleUnit && event && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead())) { 
+		     var enemyUnitID = battleUnit[1]._enemyUnitId;
                      var relatedEnemyGrave = $gameMap.event($gameTemp.enemyGrave(enemyUnitID));
-                     if (relatedEnemyGrave) {eventUnit._hasGrave = true};  
-                     if (!relatedEnemyGrave) {$gameTemp.spawnEnemyGrave();eventUnit._hasGrave = true;startGraveSpawn = true};
+                     if (relatedEnemyGrave) {event._hasGrave = true};  
+                     if (!relatedEnemyGrave) {$gameTemp.spawnEnemyGrave();event._hasGrave = true;startGraveSpawn = true};
                  }
              }
-        }   
+        });  
         if (_updateSwitch === false) {_updateSwitch = true};return startGraveSpawn;          
     };
 

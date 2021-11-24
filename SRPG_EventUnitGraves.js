@@ -525,7 +525,7 @@
 	  var unitID = eventUnit._eventEnemyUnitId;
 	  $gameSystem.eraseEnemyGrave(unitID)
        };
-       this.unitRevive(EventID);
+       this.unitRevive(eventID);
    };
 
    // "this.allActorsRaise()"

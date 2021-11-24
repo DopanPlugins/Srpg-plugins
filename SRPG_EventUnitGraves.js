@@ -321,7 +321,7 @@
              if (dataGraveEvents !== null && (dataGraveEvents.note.indexOf("enemygrave") > 0)) {
                  if (dataGraveEvents.meta.enemygrave == enemyID) {
                      var getGrave = i ;
-                     return getGrave; break; 
+                     return getGrave; 
                  }
              }  
         }
@@ -336,7 +336,7 @@
              if (dataGraveEvents !== null && (dataGraveEvents.note.indexOf("actorgrave") > 0)) {
                  if (dataGraveEvents.meta.actorgrave == actorID) {
                      var getGrave = i ;
-                     return getGrave; break; 
+                     return getGrave;
                  }
              }  
         }

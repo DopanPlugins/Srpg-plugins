@@ -101,19 +101,28 @@
  *      ("this.addEnemy(EventID, EnemyID)" & "this.addActor(EventID, ActorID)")
  * ..in order to add Units to an Event later in battleMap:
  *
- * ScripCall:   "this.addBattleEnemy(EventID, EnemyID, UnitID);"
- * (adds all needed data to the Event of the new Enemy Unit)
+ * ScripCall:   "this.addBattleEnemy(EventID, EnemyID, "UnitID");"
+ * adds data to the Event of the new Enemy Unit => Example: this.addBattleEnemy(10, 2, "9"); 
+ *
+ * (that example above is the enemy with => EventID:10 => EnemyID:2 => UnitID:9)
+ *
  *
  * ScripCall:   "this.addBattleActor(EventID, ActorID);"
- * (adds all needed data to the Event of the new Actor Unit)
+ * adds data to the Event of the new Actor Unit=> Example: this.addBattleActor(10, 2); 
+ *
+ * (that example above is the actor with => EventID:10 => ActorID:2)
+ *
+ *
+ * => both scripcalls also add "$gameMap.graveSetup();" to the used Event!
  *--------------------------------------------------------------------------------------------------------
- * Incase any BattleUnits gets summpned or spawned with using "addBattleEnemy" or "addBattleActor",
- * they must have the correct eventNotetag and then these 2 Scriptcalls must be used:
+ *--------------------------------------------------------------------------------------------------------
+ * Incase any BattleUnits gets summoned or spawned with spawner/summoner-Plugins,
+ * Events must have the correct eventNotetag for battleUnits and then these 2 Scriptcalls must be used:
+ * =>spawning BattleUnits this way doesnt need "addEnemy(EventID, EnemyID)"or"this.addActor(EventID, ActorID)"
  *
  * $gameMap.setEnemytUnitID();  // set EnemyUnit ID to mapEvent&gamebattler of all enemyUnits (enemys only)
  *
  * $gameMap.graveSetup(); // add GraveSetup to all BattleUnit mapEvents (actors&Enemys)
- *
  *
  *---------------------------------------------------------------------------------------------------------
  * After srpg Battle started at "start of battle" EnemyUnits with the corretly EventNoteTag setup will get:
@@ -279,7 +288,7 @@
     // imports the enemyUnit ID into BattleMap:
 
     Game_Map.prototype.setEnemytUnitID = function() { 
-        var returnInfo = 'no metaUnit data on this BattleMap';
+        var returnInfo = false;
 	if ($gameSystem.isSRPGMode() == true) {
             $gameMap.events().forEach(function(event) {
                  if (event.isType() === 'enemy') {
@@ -289,7 +298,7 @@
                          var mapEventMetaUnitID = event.event().meta.unit
                          event._eventEnemyUnitId = mapEventMetaUnitID;
                          batlleUnit[1]._enemyUnitId = mapEventMetaUnitID;
-		         returnInfo = 'metaUnit data imported to BattleMap';
+		         returnInfo = true;
                     }
                  } 	  
            });
@@ -316,13 +325,15 @@
     // "x" is "enemyID" .Example: eventNote <enemygrave:2> 
     //  <enemygrave:2>  is related to the enemy ID of the related alive EnemyUnit (enemyId2)
     Game_Temp.prototype.importEnemyGraveEID = function(enemyID) {
-        for (var i = $dataGrave.events.length - 1; i > 0; i--) {
+        for (var i = 1; i < $dataGrave.events.length; i++) {
              var dataGraveEvents = $dataGrave.events[i];
-             if (dataGraveEvents !== null && (dataGraveEvents.note.indexOf("enemygrave") > 0)) {
-                 if (dataGraveEvents.meta.enemygrave === "enemyID") {
-                     var getGrave = i ;
-                     return getGrave; 
-                 }
+             if (dataGraveEvents !== null) { 
+                if (dataGraveEvents.note.indexOf("enemygrave") > 0) {
+                    if (dataGraveEvents.meta.enemygrave == enemyID) {
+                        var getGrave = i ;
+                        return getGrave;
+                    }
+                }
              }  
         }
     };
@@ -331,13 +342,18 @@
     // "x" is "actorID" .Example: eventNote <actorgrave:2> 
     //  <actorgrave:2>  is related to the actorID of the related alive actorUnit (actorId2)
     Game_Temp.prototype.importActorGraveEID = function(actorID) {
-        for (var i = $dataGrave.events.length - 1; i > 0; i--) {
+        var i = 1;
+        for (var i = 1; i < $dataGrave.events.length; i++) {
              var dataGraveEvents = $dataGrave.events[i];
-             if (dataGraveEvents !== null && (dataGraveEvents.note.indexOf("actorgrave") > 0)) {
-                 if (dataGraveEvents.meta.actorgrave === "actorID") {
-                     var getGrave = i ;
-                     return getGrave;
-                 }
+             if (dataGraveEvents !== null) { 
+                if (dataGraveEvents.note) {
+                    if (dataGraveEvents.note.indexOf("actorgrave") > 0) {
+                        if (dataGraveEvents.meta.actorgrave == actorID) {
+                            var getGrave = i ;
+                            return getGrave;
+                        }
+                    }
+                }
              }  
         }
     };
@@ -349,10 +365,10 @@
     //this checks if the BattleUnit is death and spawns the related actorGrave 
     Game_Temp.prototype.spawnActorGrave = function() {
         $gameMap.events().forEach(function(event){
-             var battleUnit = $gameSystem.EventToUnit(event.eventId());
-             var euX = event.x;
-             var euY = event.y;       
+             var battleUnit = $gameSystem.EventToUnit(event.eventId());       
              if (battleUnit && event && (battleUnit[0] === 'actor') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
+                 var euX = event.x;
+                 var euY = event.y;
                  var actorID = battleUnit[1]._actorId;
                  var enemyID = 0;
                  var unitID = 0;
@@ -371,10 +387,10 @@
     // "EnemyUnitID" is used to give enemyClones an own ID (all clones have the same Enemy ID) 
     Game_Temp.prototype.spawnEnemyGrave = function() {
         $gameMap.events().forEach(function(event){
-             var battleUnit = $gameSystem.EventToUnit(event.eventId());
-             var euX = event.x;
-             var euY = event.y;       
+             var battleUnit = $gameSystem.EventToUnit(event.eventId());     
              if (battleUnit && event && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
+                 var euX = event.x;
+                 var euY = event.y;  
                  var enemyID = battleUnit[1]._enemyId;
                  var actorID = 0;
                  var graveEID = 0;
@@ -477,22 +493,20 @@
 // Game Interpreter -----------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------  
    // "this.addBattleEnemy(EventID, EnemyID, UnitID);" OR
-   // "Game_Interpreter.prototype.addBattleEnemy.call(this, EventID, EnemyID, UnitID))"	
+   // "Game_Interpreter.prototype.addBattleEnemy.call(this, EventID, EnemyID, UnitID)"	
    Game_Interpreter.prototype.addBattleEnemy = function(EventID, EnemyID, UnitID) {
-       //add needed event.Note_data & event.Meta_data 
-       $gameMap.event(EventID).event().note = "<unit:UnitID><type:enemy><id:EnemyID>";
-       $gameMap.event(EventID).event().meta = {unit: "UnitID", type: "enemy", id: "EnemyID"};
+       // Import UNIT ID to Event
+       $gameMap.event(EventID)._eventEnemyUnitId = UnitID;
        // use default srpgCore script: "this.addEnemy(EventID, EnemyID);"
        this.addEnemy(EventID, EnemyID);
-       // Import UNIT ID to battler&Event and add GraveSetup
-       $gameMap.setEnemyUnitID();$gameMap.graveSetup();  
+       // Import UNIT ID to and add GraveSetup
+       $gameMap.graveSetup();
+       $gameSystem.EventToUnit(EventID)[1]._enemyUnitId = UnitID; 
+
    };
    // "this.addBattleActor(EventID, ActorID);" OR
    // "Game_Interpreter.prototype.addBattleActor.call(this, EventID, ActorID);"
    Game_Interpreter.prototype.addBattleActor = function(EventID, ActorID) {
-       //add needed event.Note_data & event.Meta_data 
-       $gameMap.event(EventID).event().note = "<type:actor><id:ActorID>";
-       $gameMap.event(EventID).event().meta = {type: "actor", id: "ActorID"};
        // use default srpgCore script: "this.addActor(EventID, EnemyID);"
        this.addActor(EventID, ActorID);
        // add GraveSetup:

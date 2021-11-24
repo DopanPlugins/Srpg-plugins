@@ -523,7 +523,7 @@
        };
        if (battleUnit && (battleUnit[0] === 'enemy')) {
 	  var unitID = eventUnit._eventEnemyUnitId;
-	  $gameSystem.eraseEnemyGrave(unitID)
+	  $gameSystem.eraseEnemyGrave(unitID);
        };
        this.unitRevive(eventID);
    };

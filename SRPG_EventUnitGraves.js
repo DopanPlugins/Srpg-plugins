@@ -515,13 +515,11 @@
 	
    // "this.unitRaise(eventID)"
    Game_Interpreter.prototype.unitRaise = function(eventID)) {
-       var eventID = eventId;
        var battleUnit = $gameSystem.EventToUnit(eventID);
        var eventUnit = $gameMap.event(eventID);
        if (battleUnit && (battleUnit[0] === 'actor')) {
           var actorID = battleUnit[1]._actorId;	       
-	  $gameSystem.eraseActorGrave(actorID)
-	       
+	  $gameSystem.eraseActorGrave(actorID) 
        };
        if (battleUnit && (battleUnit[0] === 'enemy')) {
 	  var unitID = eventUnit._eventEnemyUnitId;

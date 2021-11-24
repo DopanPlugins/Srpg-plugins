@@ -612,7 +612,8 @@
                            if (battleunit && event && (battleunit[0] === 'actor')) {
                                var actorID = battleunit[1]._actorId;
                                var relatedActorGrave = $gameMap.event($gameTemp.actorGrave(actorID));
-                               if (relatedActorGrave._erased === true) {
+                               if (relatedActorGrave._erased === true) {    
+				   relatedActorGrave.setPosition(event.x, event.y); 
                                    relatedActorGrave._erased = false;
                                } 
                            }
@@ -620,6 +621,7 @@
                                var enemyUnit = event._eventEnemyUnitId;
                                var relatedEnemyGrave = $gameMap.event($gameTemp.enemyGrave(enemyUnit));
                                if (relatedEnemyGrave._erased === true) {
+				   relatedActorGrave.setPosition(event.x, event.y); 				       
                                    relatedEnemyGrave._erased = false;
                                } 
                            }

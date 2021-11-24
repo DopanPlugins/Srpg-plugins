@@ -536,7 +536,7 @@
                 var battleUnit = $gameSystem.EventToUnit(eventID);
                 var actorID = battleUnit[1]._actorId;
                 $gameSystem.eraseActorGrave(actorID);
-                this.unitRevive(EventID);
+                this.unitRevive(eventID);
             };
        });
    };
@@ -549,7 +549,7 @@
                 var battleUnit = $gameSystem.EventToUnit(eventID);
                 var unitID = $gameMap.event(eventID)._eventEnemyUnitId;
                 $gameSystem.eraseEnemyGrave(unitID);
-                this.unitRevive(EventID);
+                this.unitRevive(eventID);
             };
        });
    };

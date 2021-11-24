@@ -519,11 +519,11 @@
        var eventUnit = $gameMap.event(eventID);
        if (battleUnit && (battleUnit[0] === 'actor')) {
           var actorID = battleUnit[1]._actorId;	       
-	  $gameSystem.eraseActorGrave(actorID); 
+	  $gameTemp.eraseActorGrave(actorID); 
        };
        if (battleUnit && (battleUnit[0] === 'enemy')) {
 	  var unitID = eventUnit._eventEnemyUnitId;
-	  $gameSystem.eraseEnemyGrave(unitID);
+	  $gameTemp.eraseEnemyGrave(unitID);
        };
        this.unitRevive(eventID);
    };
@@ -535,7 +535,7 @@
                 eventID = event.eventId();    
                 var battleUnit = $gameSystem.EventToUnit(eventID);
                 var actorID = battleUnit[1]._actorId;
-                $gameSystem.eraseActorGrave(actorID);
+                $gameTemp.eraseActorGrave(actorID);
                 this.unitRevive(eventID);
             };
        });
@@ -548,7 +548,7 @@
                 eventID = event.eventId();    
                 var battleUnit = $gameSystem.EventToUnit(eventID);
                 var unitID = $gameMap.event(eventID)._eventEnemyUnitId;
-                $gameSystem.eraseEnemyGrave(unitID);
+                $gameTemp.eraseEnemyGrave(unitID);
                 this.unitRevive(eventID);
             };
        });

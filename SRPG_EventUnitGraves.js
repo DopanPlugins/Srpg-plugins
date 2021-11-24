@@ -514,14 +514,19 @@
    };
 	
    // "this.unitRaise(eventID)"
-   Game_Interpreter.prototype.unitRaise = function(eventId) {
+   Game_Interpreter.prototype.unitRaise = function(eventID)) {
        var eventID = eventId;
        var battleUnit = $gameSystem.EventToUnit(eventID);
        var eventUnit = $gameMap.event(eventID);
-       var unitID = eventUnit._eventEnemyUnitId;
-       var actorID = battleUnit[1]._actorId;
-       if (battleUnit && (battleUnit[0] === 'actor')) {$gameSystem.eraseActorGrave(actorID)};
-       if (battleUnit && (battleUnit[0] === 'enemy')) {$gameSystem.eraseEnemyGrave(unitID)};
+       if (battleUnit && (battleUnit[0] === 'actor')) {
+          var actorID = battleUnit[1]._actorId;	       
+	  $gameSystem.eraseActorGrave(actorID)
+	       
+       };
+       if (battleUnit && (battleUnit[0] === 'enemy')) {
+	  var unitID = eventUnit._eventEnemyUnitId;
+	  $gameSystem.eraseEnemyGrave(unitID)
+       };
        this.unitRevive(EventID);
    };
 

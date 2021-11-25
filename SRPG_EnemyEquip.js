@@ -77,9 +77,9 @@
  * But you can also use 2 Scriptcalls,for changing BattlerUnits Equipment on Battlemap,
  * based on the eventID..
  *
- * By default the stealchance is 50%, this can be changed in the Plugin param,
+ * By default the chanceRates are 50%, this can be changed in the Plugin param,
  *  or by using the plugin Scriptcall.Incase its wanted to have a UnitRelated Chance:
- * ->Such change should happen in the eventBeforeAction,or with "customExecution" (with scriptcall).
+ * ->Such change should happen in the "eventBeforeAction",or with "customExecution" (with scriptcall).
  * Pls Note: (plugin auto reset Chance)
  * The "BreakChance"&"StealChance" will always be reseted to the Plugin param "BreakChance"&"StealChance",
  * ..in the AfterAction_Scene.

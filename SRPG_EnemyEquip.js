@@ -59,7 +59,7 @@
  * => if you wanna use more you need to edit and expand the Plugin..  
  * 
  *
- * this Plugin includes a stealing fundtion!
+ * this Plugin includes a stealing function!
  * I admit that this plugin stealing_function is limited aswell as the enemy equipment
  * (having only 5 base slots ect)
  *

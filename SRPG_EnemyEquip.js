@@ -47,7 +47,7 @@
  * @help  
  *
  * this Plugins requires: 
- *  "SRPG_Core.js"
+ *  "SRPG_Core.js" & "SRPG_Teams" (default actor team "actor" must be used)
  *
  * This Plugin let Enemys use Equipment (only 5 base slots) & and it adds the Equipment
  * into the battleStatusWindow of actor&enemys 

@@ -370,7 +370,7 @@
 	
     //this checks if the BattleUnit is death and spawns the related actorGrave 
     Game_Temp.prototype.spawnActorGrave = function() {
-        $gameMap.events().forEach(function(event){
+        $gameMap.events().forEach(function(event) {
              var battleUnit = $gameSystem.EventToUnit(event.eventId());       
              if (battleUnit && event && (battleUnit[0] === 'actor') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
                  var euX = event.x;
@@ -392,7 +392,7 @@
     // on Enemys also the "EnemyUnitID" get added in order to fit with the related alive EnemyUnit
     // "EnemyUnitID" is used to give enemyClones an own ID (all clones have the same Enemy ID) 
     Game_Temp.prototype.spawnEnemyGrave = function() {
-        $gameMap.events().forEach(function(event){
+        $gameMap.events().forEach(function(event) {
              var battleUnit = $gameSystem.EventToUnit(event.eventId());     
              if (battleUnit && event && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
                  var euX = event.x;
@@ -416,7 +416,7 @@
 
     //example scritcall: "$gameSystem.eraseAllActorGraves()"
     Game_Temp.prototype.eraseAllActorGraves = function() {
-	$gameMap.events().forEach(function(event){
+	$gameMap.events().forEach(function(event) {
              var battleUnit = $gameSystem.EventToUnit(event.eventId());   
              if (battleUnit && event && (battleUnit[0] === 'actor') && (!battleUnit[1].isDead())) {  
                  var actorID = battleUnit[1]._actorId;
@@ -439,7 +439,7 @@
 
     //example scritcall: "$gameSystem.eraseAllEnemyGraves()"
     Game_Temp.prototype.eraseAllEnemyGraves = function() {
-   	$gameMap.events().forEach(function(event){
+   	$gameMap.events().forEach(function(event) {
              var battleUnit = $gameSystem.EventToUnit(event.eventId());
              if (battleUnit && eventUnit && (battleUnit[0] === 'enemy') && (!battleUnit[1].isDead())) {  
                  var unitID = battleUnit[1]._enemyUnitId;
@@ -584,7 +584,7 @@
     // perma check if dead & if needGraveRespawn
     Game_System.prototype.anyUnitDead = function() {
         var anyUnitDead = false;
-	$gameMap.events().forEach(function(event){
+	$gameMap.events().forEach(function(event) {
              var battleunit = $gameSystem.EventToUnit(event.eventId());
              if (battleunit && event && (battleunit[0] === 'actor' || battleunit[0] === 'enemy')) {                  
                  if ((battleunit[1].isDead()) && (event._erased === true)) { 
@@ -616,7 +616,7 @@
     // trigger function (spawn graves)        
     Game_System.prototype.startGraveSpawn = function() {
         var startGraveSpawn = false;  
-	$gameMap.events().forEach(function(event){
+	$gameMap.events().forEach(function(event) {
              var battleUnit = $gameSystem.EventToUnit(event.eventId());
              if (battleUnit && event && (battleUnit[0] === 'actor' || battleUnit[0] === 'enemy') && (battleUnit[1].isDead())) { 
                  if (battleUnit && event && (battleUnit[0] === 'actor') && (battleUnit[1].isDead())) { 

@@ -92,10 +92,11 @@
  * "$gameSystem.EnemyUnit(1)" can replace eventID 
  * example with UnitID=1-> "$gameSystem.EventToUnit($gameSystem.EnemyUnit(1))[1];"
  *---------------------------------------------------------------------------------------------------------
- * these scriptcalls below revive singel Units or all actors/enemys & erase the related graves,..
- * ..pls use these instead of the default scriptcall from the srpg core,to erase related Graves while reving.
+ * these scriptcall below revive a singel Units & erases the related grave..
+ * ..pls use this instead of the default scriptcall from the srpg core,to erase related Graves while reving.
  *
- * "this.unitRaise(eventID)" "this.allActorsRaise()" "this.allEnemysRaise()"
+ *  Scriptcall=> "this.unitRaise(eventID)" or "Game_Interpreter.prototype.unitRaise.call(this, eventID)"
+ *
  *---------------------------------------------------------------------------------------------------------
  * And these ScriptCalls should be used INSTEAD of the default Scripcalls from the SRPGCore 
  *      ("this.addEnemy(EventID, EnemyID)" & "this.addActor(EventID, ActorID)")
@@ -220,6 +221,7 @@
     // Add subgroup to Game_Event => Game_GraveEvent (used to add the new Events from "$dataGrave" to $gameMap)
     Game_GraveEvent = function() {
         this.initialize.apply(this, arguments);
+
     }
 
     Game_GraveEvent.prototype = Object.create(Game_Event.prototype);
@@ -234,10 +236,14 @@
         this._graveDataEID = graveDataEID;
 	Game_Event.prototype.initialize.call(this,mapId,graveEID);
 	DataManager.extractMetadata(this.event());
-	this.locate(euX, euY);   
-        this.refresh();
+	this.locate(euX, euY);  
+        this.refresh(); 
+        this.setGraveType();
     };
 
+    Game_GraveEvent.prototype.setGraveType = function() {
+        if (this.event().meta.type) {this.setType(this.event().meta.type)};
+    };
     // add event from $dataGrave to Game_GraveEvent
     Game_GraveEvent.prototype.event = function() {
         return $dataGrave.events[this._graveDataEID];
@@ -364,7 +370,7 @@
 	
     //this checks if the BattleUnit is death and spawns the related actorGrave 
     Game_Temp.prototype.spawnActorGrave = function() {
-        $gameMap.events().forEach(function(event) {
+        $gameMap.events().forEach(function(event){
              var battleUnit = $gameSystem.EventToUnit(event.eventId());       
              if (battleUnit && event && (battleUnit[0] === 'actor') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
                  var euX = event.x;
@@ -386,7 +392,7 @@
     // on Enemys also the "EnemyUnitID" get added in order to fit with the related alive EnemyUnit
     // "EnemyUnitID" is used to give enemyClones an own ID (all clones have the same Enemy ID) 
     Game_Temp.prototype.spawnEnemyGrave = function() {
-        $gameMap.events().forEach(function(event) {
+        $gameMap.events().forEach(function(event){
              var battleUnit = $gameSystem.EventToUnit(event.eventId());     
              if (battleUnit && event && (battleUnit[0] === 'enemy') && (battleUnit[1].isDead()) && (event._hasGrave === false)) {
                  var euX = event.x;
@@ -410,7 +416,7 @@
 
     //example scritcall: "$gameSystem.eraseAllActorGraves()"
     Game_Temp.prototype.eraseAllActorGraves = function() {
-	$gameMap.events().forEach(function(event) {
+	$gameMap.events().forEach(function(event){
              var battleUnit = $gameSystem.EventToUnit(event.eventId());   
              if (battleUnit && event && (battleUnit[0] === 'actor') && (!battleUnit[1].isDead())) {  
                  var actorID = battleUnit[1]._actorId;
@@ -433,7 +439,7 @@
 
     //example scritcall: "$gameSystem.eraseAllEnemyGraves()"
     Game_Temp.prototype.eraseAllEnemyGraves = function() {
-   	$gameMap.events().forEach(function(event) {
+   	$gameMap.events().forEach(function(event){
              var battleUnit = $gameSystem.EventToUnit(event.eventId());
              if (battleUnit && eventUnit && (battleUnit[0] === 'enemy') && (!battleUnit[1].isDead())) {  
                  var unitID = battleUnit[1]._enemyUnitId;
@@ -520,40 +526,14 @@
        if (battleUnit && (battleUnit[0] === 'actor')) {
           var actorID = battleUnit[1]._actorId;	       
 	  $gameTemp.eraseActorGrave(actorID); 
-       };
+       }       
        if (battleUnit && (battleUnit[0] === 'enemy')) {
 	  var unitID = eventUnit._eventEnemyUnitId;
 	  $gameTemp.eraseEnemyGrave(unitID);
-       };
+       }
        this.unitRevive(eventID);
    };
 
-   // "this.allActorsRaise()"
-   Game_Interpreter.prototype.allActorsRaise = function() {
-       $gameMap.events().forEach(function(event) {
-            if (event.isType() === 'actor') {
-                eventID = event.eventId();    
-                var battleUnit = $gameSystem.EventToUnit(eventID);
-                var actorID = battleUnit[1]._actorId;
-                $gameTemp.eraseActorGrave(actorID);
-                this.unitRevive(eventID);
-            };
-       });
-   };
-
-   // "this.allEnemysRaise()"
-   Game_Interpreter.prototype.allEnemysRaise = function() {
-       $gameMap.events().forEach(function(event) {
-            if (event.isType() === 'enemy') {
-                eventID = event.eventId();    
-                var battleUnit = $gameSystem.EventToUnit(eventID);
-                var unitID = $gameMap.event(eventID)._eventEnemyUnitId;
-                $gameTemp.eraseEnemyGrave(unitID);
-                this.unitRevive(eventID);
-            };
-       });
-   };
-    
    //this.controllGraveSpawn(true/false)
    Game_Interpreter.prototype.controllGraveSpawn = function(graveSpawn) {
        if (graveSpawn === true) {_controllGraveSpawn = true};
@@ -604,7 +584,7 @@
     // perma check if dead & if needGraveRespawn
     Game_System.prototype.anyUnitDead = function() {
         var anyUnitDead = false;
-	$gameMap.events().forEach(function(event) {
+	$gameMap.events().forEach(function(event){
              var battleunit = $gameSystem.EventToUnit(event.eventId());
              if (battleunit && event && (battleunit[0] === 'actor' || battleunit[0] === 'enemy')) {                  
                  if ((battleunit[1].isDead()) && (event._erased === true)) { 
@@ -636,7 +616,7 @@
     // trigger function (spawn graves)        
     Game_System.prototype.startGraveSpawn = function() {
         var startGraveSpawn = false;  
-	$gameMap.events().forEach(function(event) {
+	$gameMap.events().forEach(function(event){
              var battleUnit = $gameSystem.EventToUnit(event.eventId());
              if (battleUnit && event && (battleUnit[0] === 'actor' || battleUnit[0] === 'enemy') && (battleUnit[1].isDead())) { 
                  if (battleUnit && event && (battleUnit[0] === 'actor') && (battleUnit[1].isDead())) { 

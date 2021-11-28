@@ -228,6 +228,12 @@
  * @desc Term for nothing equipped on a unit.
  * @default None
  *
+ * //dopan edit exa fix
+ * @param More Char Frame Usage
+ * @desc true if using more frames than default 3x4.true require 3 imgs '$srpg_set_E' '$srpg_set_X' '$srpg_set_A'
+ * @type boolean
+ * @default false
+ *
  * @param srpgSet
  * @desc Spriteset for cursor and SRPG system icons
  * @type file
@@ -764,6 +770,7 @@
     var _actorHomeY = parameters['ActorHomeY'] || Graphics.height / 2 + 48; // boomys edit 
     var _enemyHomeX = parameters['EnemyHomeX'] || 216 + index * 240; //boomys edit
     var _enemyHomeY = parameters['EnemyHomeY'] || Graphics.height / 2 + 48; //boomys edit   
+    var _srpgEXA = parameters['srpgBattleSwitchID'] || 'false';
 	
     var _Game_Interpreter_pluginCommand =
             Game_Interpreter.prototype.pluginCommand;
@@ -3640,24 +3647,42 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
                 if ((battlerArray[0] === 'actor' || battlerArray[0] === 'enemy') &&
                     battlerArray[1].isAlive()) {
                     if (battlerArray[1].isRestricted()) {
-                        var sx = (6 + this.characterPatternX()) * pw;
+                       //dopan edit info Default=> 'false'
+                        if (_srpgEXA ==='false') {
+                            var sx = (6 + this.characterPatternX()) * pw;  
+                        } else {var sx = (0 + this.characterPatternX()) * pw};
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        //dopan edit info Default=> 'false' 
+                        if (_srpgEXA ==='false') {
+                            this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        } else {this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_X')};
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this.isTurnEndUnit() == true) {
-                        var sx = (3 + this.characterPatternX()) * pw;
+                        //dopan edit info Default=> 'false'
+                        if (_srpgEXA ==='false') {
+                            var sx = (3 + this.characterPatternX()) * pw;
+                        } else {var sx = (0 + this.characterPatternX()) * pw};
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        //dopan edit info Default=> 'false'
+                        if (_srpgEXA ==='false') {
+                            this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        } else {this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_E')};
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (battlerArray[1].isAutoBattle()) {
-                        var sx = (9 + this.characterPatternX()) * pw;
+                        //dopan edit info Default=> // 
+                        if (_srpgEXA ==='false') {
+                            var sx = (9 + this.characterPatternX()) * pw;
+                        } else {var sx = (0 + this.characterPatternX()) * pw};
                         var sy = (0 + this.characterPatternY()) * ph;
                         this.createTurnEndSprites();
-                        this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        //dopan edit info Default=> // 
+                        if (_srpgEXA ==='false') {
+                            this._turnEndSprite.bitmap = this._turnEndBitmap;
+                        } else {this._turnEndSprite.bitmap = ImageManager.loadCharacter('$srpg_set_A')};
                         this._turnEndSprite.visible = true;
                         this._turnEndSprite.setFrame(sx, sy, pw, ph);
                     } else if (this._turnEndSprite) {

@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_StatusWindow.js
 //=============================================================================
 /*:
@@ -32,7 +32,7 @@
  * Compatibility:
  * Place it below SRPG_UX_Window & SRPG_BattleUI & SRPG_EnemyEquip
  * =========================================================================================================================
- * v2.00 dopans Edited Patch for EnemyEquip!
+ * v2.01 dopans Edited Patch for EnemyEquip!
  */
 
 (function(){
@@ -184,11 +184,12 @@
             var characterName = this._battler._characterName;
             var characterIndex = this._battler._characterIndex;
             //TODO:  "page 1" + char img
-            this.drawText('page 1', 420, 20);
-            this.drawText('Element Rates:', 6, lineHeight * 0);
-            this.drawCharacter(characterName , characterIndex , 390, 60);
-            //an example to draw all element rate
             this.changeTextColor(this.systemColor());
+            this.drawText('1/2', 465, 20);
+            this.drawText('Element Rates:', 6, lineHeight * 0);
+            this.resetTextColor();
+            this.drawCharacter(characterName , characterIndex , 440, 60);
+            //an example to draw all element rate
             this.drawText('physical', 6, lineHeight * 1, 120);
             this.drawText('fire', 6, lineHeight * 2, 120);
             this.drawText('ice', 6, lineHeight * 3, 120);
@@ -198,7 +199,6 @@
             this.drawText('wind', 6, lineHeight * 7, 120);
             this.drawText('light', 6, lineHeight * 8, 120);
             this.drawText('darkness', 6, lineHeight * 9, 120);
-            this.resetTextColor();
             this.drawText(this._battler.elementRate(1) * 100 + '%', 6 + 120, lineHeight * 1, 48, 'right');
             this.drawText(this._battler.elementRate(2) * 100 + '%', 6 + 120, lineHeight * 2, 48, 'right');
             this.drawText(this._battler.elementRate(3) * 100 + '%', 6 + 120, lineHeight * 3, 48, 'right');
@@ -214,8 +214,10 @@
             var characterName = this._battler._characterName;
             var characterIndex = this._battler._characterIndex;
             //TODO:  "page 2" + char img
-            this.drawText('page 2', 420, 20);
-            this.drawCharacter(characterName, characterIndex, 390, 60);
+            this.changeTextColor(this.systemColor());
+            this.drawText('2/2', 465, 20);
+            this.resetTextColor();
+            this.drawCharacter(characterName, characterIndex, 440, 60);
             // add stuff here
 
 
@@ -233,11 +235,12 @@
             var characterName = enemyMeta.characterName;
             var characterIndex = enemyMeta.characterIndex;
             //TODO: "page 1" +char img
-            this.drawText('page 1', 420, 20);
-            this.drawText('Element Rates:', 6, lineHeight * 0);
-            this.drawCharacter(characterName, characterIndex, 390, 60);
-            //an example to draw all element rate
             this.changeTextColor(this.systemColor());
+            this.drawText('1/2', 465, 20);
+            this.drawText('Element Rates:', 2, lineHeight * 0);
+            this.resetTextColor();
+            this.drawCharacter(characterName, characterIndex, 440, 60);
+            //an example to draw all element rate
             this.drawText('physical', 6, lineHeight * 1, 120);
             this.drawText('fire', 6, lineHeight * 2, 120);
             this.drawText('ice', 6, lineHeight * 3, 120);
@@ -247,7 +250,6 @@
             this.drawText('wind', 6, lineHeight * 7, 120);
             this.drawText('light', 6, lineHeight * 8, 120);
             this.drawText('darkness', 6, lineHeight * 9, 120);
-            this.resetTextColor();
             this.drawText(this._battler.elementRate(1) * 100 + '%', 6 + 120, lineHeight * 1, 48, 'right');
             this.drawText(this._battler.elementRate(2) * 100 + '%', 6 + 120, lineHeight * 2, 48, 'right');
             this.drawText(this._battler.elementRate(3) * 100 + '%', 6 + 120, lineHeight * 3, 48, 'right');
@@ -257,6 +259,36 @@
             this.drawText(this._battler.elementRate(7) * 100 + '%', 6 + 120, lineHeight * 7, 48, 'right');
             this.drawText(this._battler.elementRate(8) * 100 + '%', 6 + 120, lineHeight * 8, 48, 'right');
             this.drawText(this._battler.elementRate(9) * 100 + '%', 6 + 120, lineHeight * 9, 48, 'right');
+            //EnemyItemStore Setup:
+            this.changeTextColor(this.systemColor());
+            this.drawText('Items:', 220, lineHeight * 6);
+            this.resetTextColor();
+            var storage = this._battler._itemSlot;
+            var count = storage.length;
+            for (var i = 0; i < count; i++) {
+                 var itemID = this._battler._itemSlot[i]._itemId;
+                 var dataType = this._battler._itemSlot[i]._dataClass;
+                 if (itemID > 0) {
+                     if (dataType === "item") {var itemStorage = $dataItems[itemID]}; 
+                     if (dataType === "armor") {var itemStorage = $dataArmors[itemID]};
+                     if (dataType === "weapon") {var itemStorage = $dataWeapons[itemID]};
+                     this.drawItemName(itemStorage, 230, lineHeight * 7 + this.lineHeight() * i);
+                 }
+            };
+            //EnemyItemStore Setup End
+            this.changeTextColor(this.systemColor());
+            this.drawText('Sklls:', 230, lineHeight * 0);
+            this.resetTextColor();
+            var skills = [];
+            for (var i = 0; i < this._battler.enemy().actions.length; ++i) {
+                var skill = $dataSkills[this._battler.enemy().actions[i].skillId];
+                if (skill) skills.push(skill);
+                this.drawItemName(skills[i], 240, lineHeight * 1 + this.lineHeight() * i);
+            }
+            // add stuff here
+
+
+
         } else if (this._page == 2){
             //TODO: this part is content for page 2
             //add data:
@@ -264,9 +296,12 @@
             var characterName = enemyMeta.characterName;
             var characterIndex = enemyMeta.characterIndex;
             //TODO:  "page 2"+ char img
-            this.drawText('page 2', 420, 20);
-            this.drawCharacter(characterName, characterIndex, 390, 60);
+            this.changeTextColor(this.systemColor());
+            this.drawText('2/2', 465, 20);
+            this.resetTextColor();
+            this.drawCharacter(characterName, characterIndex, 440, 60);
             // add stuff here
+
 
 
         }

@@ -140,7 +140,7 @@
    Game_Interpreter.prototype.globalSwitch = function(setGlobalSwitch) {
        if (setGlobalSwitch === true) {_globaLoadSwitch = 'true'};
        if (setGlobalSwitch === false) {_globaLoadSwitch = 'false'};
-       return _setGlobalSwitch;
+       return _globaLoadSwitch;
    };
 
 //-----------------------------------------------------------------------------------------

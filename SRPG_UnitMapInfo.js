@@ -223,7 +223,7 @@
     };
 
     // add stuff to eventAfterAction_scene
-    //  add debug Switch Setup
+    // add debug Switch Setup
     var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
     Scene_Map.prototype.srpgAfterAction = function() {
 	 _srpgAfterActionScene.call(this);
@@ -232,7 +232,7 @@
          if (_debugSwitch === false) {this.setSkillWait(30);_debugSwitch = true};
     };
 
-    // override error causing function from Yep BuffstatesCore to not trigger if steal action happens
+    // overwrite error causing function from Yep BuffstatesCore to not trigger if steal action happens
     // this YEP function is supposses to happen in "status" window scene ,
     // so this should be no problem if its disabled in battleaction
     Sprite_StateIcon.prototype.textColor = function(n) {

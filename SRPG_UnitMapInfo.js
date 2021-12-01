@@ -256,7 +256,7 @@
     };
     
     Sprite_Character.prototype.getIconIndex = function() {
-	  //get data  
+	  // get data  
 	  var battler = $gameSystem.EventToUnit(this._character.eventId());
 	  var iconID = 0; // <-this is used to check if an weapon and related icon is not there
 	  // check if a weapon is equiped
@@ -277,7 +277,7 @@
     return iconID
     };
 
-    // create AttackIcon	
+    // sprite Char create AttackIcon	
     Sprite_Character.prototype.createAttIcon = function() {
 	  //get data  
 	  var battler = $gameSystem.EventToUnit(this._character.eventId());
@@ -343,7 +343,6 @@
     };
 
 //sprite Char create hpGaugeSprite
-	
     Sprite_Character.prototype.createhpGaugeSprite = function() {
         if (!this._hpGaugeSprite) {
             this._hpGaugeSprite = new Sprite_hpGaugeSprite();

@@ -320,8 +320,7 @@
   var _enemySlotSize = Number(parameters['Enemy Slot Amount'] || 5);
 
   var _broken = false;
-  var _stolen = false; 
-	
+  var _stolen = false; 	
 //-----------------------------------------------------------------------------------------
 
 //Scene.map.AfterAction:
@@ -482,6 +481,11 @@
         } 
 
     };
+    Game_Enemy.prototype.enemyEquips = function() {
+        return this._equips.map(function(item) {
+               return item.object();
+        });
+    };
     // add Equip if enemyNote fits & enemy is not already equiped
     Game_Enemy.prototype.equips = function() {
         if (this._equips) { 
@@ -536,7 +540,7 @@
                 if (slotType === "weapon") {this._equips[9].setObject($dataWeapons[Number(enemy.meta.srpgSlot9EquipID)])}
 	        if (slotType === "armor") {this._equips[9].setObject($dataArmors[Number(enemy.meta.srpgSlot9EquipID)])}
             } 
-        } if (this._equips) {return this._equips} else {return 0};
+        } if (this._equips) {return this.enemyEquips()} else {return 0};
     };
     // Reflect the characteristics of the Enemy_equipment  (add trairs ect)
     var _SRPG_Game_Enemy_traitObjects = Game_Enemy.prototype.traitObjects;
@@ -580,6 +584,36 @@
             };
         };
     return value;
+    };
+
+    // overwrite srpg core stuff
+   
+    Game_Enemy.prototype.hasNoWeapons = function() {
+        return this.weapons().length === 0;
+    };
+
+    Game_Enemy.prototype.attackAnimationId = function() {
+        if (this.hasNoWeapons()) {
+            return this.bareHandsAnimationId();
+        } else {
+            var weapons = $dataWeapons[Number(this._equips[0]._itemId)];
+            return weapons ? weapons.animationId : 1;
+        }
+    };
+
+    Game_Enemy.prototype.attackSkillId = function() {
+        var weapon = this.weapons()[0];
+        if (weapon && weapon.meta.srpgWeaponSkill) {
+            return Number(weapon.meta.srpgWeaponSkill);
+        } else {
+            return Game_BattlerBase.prototype.attackSkillId.call(this);
+        }
+    };
+
+    Game_Enemy.prototype.weapons = function() {
+        return this.equips().filter(function(item) {
+               return item && DataManager.isWeapon(item);
+        });
     };
 
 //Window Setup
@@ -1029,6 +1063,8 @@
         var eName = targetBattleUnit[1].name();
         this.stealResult(itemName, msgIconID, eName);	
     };
+
+
 
 //-----------------------------------------------------------------------------------------
 // 

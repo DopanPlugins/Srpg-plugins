@@ -225,27 +225,95 @@
 // Sprite_Character
 //=============================================================================
 
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+// Sprite_Character create AttackIcon
+
+    // load att Icon Bitmap
+    var _IconLoad_Character_setCharacterBitmap = Sprite_Character.prototype.setCharacterBitmap;
+    Sprite_Character.prototype.setCharacterBitmap = function() {
+          _IconLoad_Character_setCharacterBitmap.call(this);
+          this.AttIconBitmap = ImageManager.loadSystem('IconSet');
+    };
+    
+    // create AttackIcon	
+    Sprite_Character.prototype.createAttIconSprite = function() {
+	  //get data  
+	  var battler = $gameSystem.EventToUnit(this._character.eventId());
+	  var _attIconIndex = 0;
+	  // check if a weapon is equiped,, this will also know if a weapon was changed
+	  if (!this._battler.hasNoWeapons()) {
+	      if (battler[0] === 'actor') { 
+		  if (battler[1].equips[0]._itemId > 0) {	
+                      _attIconIndex = battler[1].weapons()[0].iconIndex;  // actor
+		  }
+              }
+	      // code is a bit longer because it checks if the "enemyEquip" plugin is used,
+	      // or if the "core weapon meta" is used .. 
+              if (battler[0] === 'enemy') { 
+	              if (battler[1].enemy().meta.srpgWeapon) {	
+			  var coreMeta = $dataWeapons[Number(this._battler.enemy().meta.srpgWeapon)]; 
+			  _attIconIndex = coreMeta.iconIndex; // enemy
+		      }     
+		      if (battler[1].equips[0]._dataClass === "weapon") {      
+                          var weaponID = battler[1].equips[0]._itemId;
+                          var equipData = $dataWeapons[weaponID];
+                          _attIconIndex = equipData.iconIndex; // enemy
+ 		      } 
+	      }      
+	  }    
+	  // add "this._AttIconSprite"  + get Sprite data
+          if (!this._AttIconSprite) {
+              var _Attpw = 32;
+              var _Attph = 32;
+	      var _Attsx = _attIconIndex % 16 * pw;
+              var _Attsy = Math.floor(_attIconIndex / 16) * ph;
+              this._AttIconSprite =  new Sprite();
+              this._AttIconSprite.x = attIconPosX;
+              this._AttIconSprite.y = attIconPosY;
+              this._AttIconSprite.z = 9;
+              this._AttIconSprite.anchor.x = 0.5;
+              this._AttIconSprite.anchor.y = 0.5;
+              this._AttIconSprite.scale.x = 0.5;
+              this._AttIconSprite.scale.y = 0.5;
+              this._AttIconSprite.setup(battler);
+              this.addChild(this._AttIconSprite);
+              this._AttIconSprite.visible = true;
+          }
+    };
+	
+// Sprite_Character updateCharacterFrame
+	
     var _SRPG_Sprite_Character_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
     Sprite_Character.prototype.updateCharacterFrame = function() {
         _SRPG_Sprite_Character_updateCharacterFrame.call(this);
-
         if ($gameSystem.isSRPGMode() == true && this._character.isEvent() == true) {
             var battlerArray = $gameSystem.EventToUnit(this._character.eventId());
             if (battlerArray) {
                 // create State Icon
                 //  add debug Switch Setup
                 if (useStateIconUnit && (_debugSwitch = true)) this.createStateIconSprite();
-                // create Weapon Icon
-                //  add debug Switch Setup
-                if (useWeaponIconUnit && (_debugSwitch = true)) this.createAttIconSprite();
                 // create HP number for HP
                 if (useHPNumUnit) this.createHpNumberSprite();
                 // create HP gauge
                 if (useHPGaugeUnit) this.createHpGaugeSprite();
+                // create Weapon Icon
+                //  add debug Switch Setup
+                if (useWeaponIconUnit && (_debugSwitch = true)) {
+		    this.createAttIconSprite();
+	            // install bitmap
+		    this._AttIconSprite.bitmap = this.AttIconBitmap;
+		    // install Sprite data
+                    this._AttIconSprite.setFrame(_Attsx, _Attsy, _Attpw, _Attph);
+		    // make sprite visible	
+                    this._imgLoad0.visible = true;
+		}    
             }
         }
     };
 
+//sprite Char create HpGaugeSprite
+	
     Sprite_Character.prototype.createHpGaugeSprite = function() {
         if (!this._HpGaugeSprite) {
             this._HpGaugeSprite = new Sprite_HpGaugeSprite();
@@ -254,7 +322,7 @@
             this.addChild(this._HpGaugeSprite);
         }
     };
-
+//sprite Char create HpNumberSprit
     Sprite_Character.prototype.createHpNumberSprite = function() {
         if (!this._HpNumberSprite) {
             this._HpNumberSprite = new Sprite_HpNumberSprite();
@@ -263,7 +331,7 @@
             this.addChild(this._HpNumberSprite);
         }
     };
-
+//sprite Char create StateIconSprite
     Sprite_Character.prototype.createStateIconSprite = function() {
         if (!this._StateIconSprite) {
             this._StateIconSprite = new Sprite_StateIcon();
@@ -392,117 +460,5 @@
         this.bitmap.textColor = hpcolor;
         this.bitmap.drawText(this._newNumber + '', 0, 0, width, height, 'right');
     };
-
-//-----------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-// Sprite_AttackIcon
-
-
-    //var _IconLoad_Character_setCharacterBitmap = Sprite_Character.prototype.setCharacterBitmap;
-    //Sprite_Character.prototype.setCharacterBitmap = function() {
-    //      _IconLoad_Character_setCharacterBitmap.call(this);
-    //      this.AttIconBitmap = ImageManager.loadSystem('IconSet');
-
-    //};
-
-    Sprite_Character.prototype.createAttIconSprite = function() {
-        if (!this._AttIconSprite) {
-            var battler = $gameSystem.EventToUnit(this._character.eventId());
-            this._AttIconSprite = new Sprite_AttIcon(battler);
-            this._AttIconSprite.x = attIconPosX;
-            this._AttIconSprite.y = attIconPosY;
-            this._AttIconSprite.z = 9;
-            this._AttIconSprite.anchor.x = 0.5;
-            this._AttIconSprite.anchor.y = 0.5;
-            this._AttIconSprite.scale.x = 0.5;
-            this._AttIconSprite.scale.y = 0.5;
-            this._AttIconSprite.setup(battler);
-            this.addChild(this._AttIconSprite);
-            this._AttIconSprite.visible = true;
-        }
-    };
-
-
-
-//-----------------------------------------------------------------------------
-// Sprite_AttackIcon
-//
-
-
-
-
-function Sprite_AttIcon() {
-    this.initialize.apply(this, arguments);
-}
-
-Sprite_AttIcon.prototype = Object.create(Sprite.prototype);
-Sprite_AttIcon.prototype.constructor = Sprite_AttIcon;
-
-Sprite_AttIcon.prototype.initialize = function(battler) {
-    Sprite.prototype.initialize.call(this);
-    this._iconIndex = 0;
-    this.loadAttBitmap();
-    this.x = attIconPosX//-34;
-    this.y = attIconPosY//-40;
-    this.z = 9;
-    this.anchor.x = 0.5;
-    this.anchor.y = 0.5;
-    this.scale.x = 0.5;
-    this.scale.y = 0.5;
-    this._iconWidth  = 32;
-    this._iconHeight = 32;
-    this._battler = battler;
-};
-
-Sprite_AttIcon.prototype.loadAttBitmap = function() {
-      this.AttIconBitmap = ImageManager.loadSystem('IconSet');
-      this.setFrame(0, 0, 0, 0);
-};
-
-Sprite_AttIcon.prototype.setup = function(battler) {
-      this._battler = battler;
-};
-
-// update icon if "this._index" has a icon_index stored
-Sprite_AttIcon.prototype.update = function() {
-    Sprite.prototype.update.call(this);
-    if (this._iconIndex !== 0) {
-        this.updateIcon();
-        this.updateFrame();
-        this.refresh();
-    }
-};
-
-// assign icon index here
-Sprite_AttIcon.prototype.updateIcon = function() {
-    if (this._battler[0] === 'actor') { 
-        this._iconIndex = this._battler.weapons()[0].iconIndex;  // actor
-    }
-    if (this._battler[0] === 'enemy') { 
-        this._iconIndex = $dataWeapons[Number(this._battler.enemy().meta.srpgWeapon)].iconIndex; // enemy
-    }
-};
-
-Sprite_AttIcon.prototype.updateFrame = function() {
-    var pw = 32;
-    var ph = 32;
-    var sx = 101 % 16 * pw;
-    var sy = Math.floor(101 / 16) * ph;
-    this.setFrame(sx, sy, pw, ph);
-};
-
-// draw the icon text here
-Sprite_AttIcon.prototype.refresh = function() {
-    //this.AttIconBitmap.clear();
-    if (this._iconIndex === 0) return;
-    var pw = this._iconWidth;
-    var ph = this._iconHeight;
-    var sx = this._iconIndex % 16 * pw;
-    var sy = Math.floor(this._iconIndex / 16) * ph;
-    this.AttIconBitmap.blt(this.AttIconBitmap, sx, sy, pw, ph, x, y);
-};
-
-
-
 
 })();

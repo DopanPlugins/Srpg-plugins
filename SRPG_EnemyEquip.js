@@ -352,64 +352,64 @@
 
 //Game_Temp: ScripCalls
 
-    // scriptcall "$gameTemp.changeEnemyItem(eventID, SlotID, ItemID, typeID);"
-    Game_Temp.prototype.changeEnemyItem = function(eventID, SlotID, ItemID, typeID) {
+    // scriptcall "$gameTemp.changeEnemyItem(eventID, slotID, itemID, typeID);"
+    Game_Temp.prototype.changeEnemyItem = function(eventID, slotID, itemID, typeID) {
         var battleUnit = $gameSystem.EventToUnit(eventID);
         if ((battleUnit[0] === 'enemy') && (battleUnit[1]._itemSlot)) {
-            battleUnit[1]._itemSlot[SlotID]._itemId = ItemID;
-            battleUnit[1]._itemSlot[SlotID]._dataClass = typeID;
-            if (ItemID === 0)  {
-                battleUnit[1]._equips[SlotID]._dataClass = "";
+            battleUnit[1]._itemSlot[slotID]._itemId = itemID;
+            battleUnit[1]._itemSlot[slotID]._dataClass = typeID;
+            if (itemID === 0)  {
+                battleUnit[1]._equips[slotID]._dataClass = "";
             }
         }
-    return battleUnit[1]._itemSlot[SlotID];
+    return battleUnit[1]._itemSlot[slotID];
     };
 
-    // scriptcall "$gameTemp.changeUnitArmor(eventID, SlotID, ArmorID);"
-    Game_Temp.prototype.changeUnitArmor = function(eventID, SlotID, ArmorID) {
+    // scriptcall "$gameTemp.changeUnitArmor(eventID, slotID, armorID);"
+    Game_Temp.prototype.changeUnitArmor = function(eventID, slotID, armorID) {
         var battleUnit = $gameSystem.EventToUnit(eventID);
         if ((battleUnit[0] === 'enemy') && (battleUnit[1]._equips)) {
-            battleUnit[1]._equips[SlotID]._itemId = ArmorID;
-            battleUnit[1]._equips[SlotID]._dataClass = "armor";
-            battleUnit[1]._equips[SlotID].equipIsGone = false;
-            if (ArmorID === 0)  {
-            battleUnit[1]._equips[SlotID]._dataClass = "";
-            battleUnit[1]._equips[SlotID].equipIsGone = true;
+            battleUnit[1]._equips[slotID]._itemId = armorID;
+            battleUnit[1]._equips[slotID]._dataClass = "armor";
+            battleUnit[1]._equips[slotID].equipIsGone = false;
+            if (armorID === 0)  {
+            battleUnit[1]._equips[slotID]._dataClass = "";
+            battleUnit[1]._equips[slotID].equipIsGone = true;
             }
         }
         if ((battleUnit[0] === 'actor') && (battleUnit[1]._equips)) {
-            battleUnit[1]._equips[SlotID]._itemId = ArmorID;
-            battleUnit[1]._equips[SlotID]._dataClass = "armor";
-            battleUnit[1]._equips[SlotID].equipIsGone = false;
-            if (ArmorID === 0)  {
-            battleUnit[1]._equips[SlotID]._dataClass = "";
-            battleUnit[1]._equips[SlotID].equipIsGone = true;
+            battleUnit[1]._equips[slotID]._itemId = armorID;
+            battleUnit[1]._equips[slotID]._dataClass = "armor";
+            battleUnit[1]._equips[slotID].equipIsGone = false;
+            if (armorID === 0)  {
+            battleUnit[1]._equips[slotID]._dataClass = "";
+            battleUnit[1]._equips[slotID].equipIsGone = true;
             }
         }	   
-    return battleUnit[1]._equips[SlotID];
+    return battleUnit[1]._equips[slotID];
     };
-    // scriptcall to change enemy weapon "$gameTemp.changeUnitWeapon(eventID, SlotID, WeaponID);"
-    Game_Temp.prototype.changeUnitWeapon = function(eventID, SlotID, WeaponID) {
+    // scriptcall to change enemy weapon "$gameTemp.changeUnitWeapon(eventID, slotID, weaponID);"
+    Game_Temp.prototype.changeUnitWeapon = function(eventID, slotID, weaponID) {
         var battleUnit = $gameSystem.EventToUnit(eventID);
         if ((battleUnit[0] === 'enemy') && (battleUnit[1]._equips)) {
-            battleUnit[1]._equips[SlotID]._itemId = WeaponID;
-            battleUnit[1]._equips[SlotID]._dataClass = "weapon";
-            battleUnit[1]._equips[SlotID].equipIsGone = false;
-            if (WeaponID === 0)  {
-            battleUnit[1]._equips[SlotID]._dataClass = "";
-            battleUnit[1]._equips[SlotID].equipIsGone = true;
+            battleUnit[1]._equips[slotID]._itemId = weaponID;
+            battleUnit[1]._equips[slotID]._dataClass = "weapon";
+            battleUnit[1]._equips[slotID].equipIsGone = false;
+            if (weaponID === 0)  {
+            battleUnit[1]._equips[slotID]._dataClass = "";
+            battleUnit[1]._equips[slotID].equipIsGone = true;
             }
         }
         if ((battleUnit[0] === 'actor') && (battleUnit[1]._equips)) {
-            battleUnit[1]._equips[SlotID]._itemId = WeaponID;
-            battleUnit[1]._equips[SlotID]._dataClass = "weapon";
-            battleUnit[1]._equips[SlotID].equipIsGone = false;
-            if (WeaponID === 0)  {
-            battleUnit[1]._equips[SlotID]._dataClass = "";
-            battleUnit[1]._equips[SlotID].equipIsGone = true;
+            battleUnit[1]._equips[slotID]._itemId = weaponID;
+            battleUnit[1]._equips[slotID]._dataClass = "weapon";
+            battleUnit[1]._equips[slotID].equipIsGone = false;
+            if (weaponID === 0)  {
+            battleUnit[1]._equips[slotID]._dataClass = "";
+            battleUnit[1]._equips[slotID].equipIsGone = true;
             }
         }	 
-    return battleUnit[1]._equips[SlotID];
+    return battleUnit[1]._equips[slotID];
     };
 
     Game_Temp.prototype.resetActorEquip = function() {

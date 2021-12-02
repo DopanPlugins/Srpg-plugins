@@ -334,8 +334,13 @@
                         this._AttIcon.bitmap = this.AttIconBitmap;
 		        // install Sprite data
                         this._AttIcon.setFrame(sx, sy, pw, ph);
-		        // make sprite visible	
-                        this._AttIcon.visible = true;
+			// check if Unit is alive    
+			if (!this._AttIcon._battler.isDead()) {     
+		             // make sprite visible	
+                             this._AttIcon.visible = true;
+			} else { // make sprite non visible if Unit is Dead
+			   if (this._AttIcon.visible === true) {this._AttIcon.visible = false};
+			}
 		    } 
 		}    
             }

@@ -540,8 +540,21 @@
                 if (slotType === "weapon") {this._equips[9].setObject($dataWeapons[Number(enemy.meta.srpgSlot9EquipID)])}
 	        if (slotType === "armor") {this._equips[9].setObject($dataArmors[Number(enemy.meta.srpgSlot9EquipID)])}
             } 
-        } if (this._equips) {return this.enemyEquips()} else {return 0};
+        this.metaDebug();
+        } 
+    if (this._equips) {return this.enemyEquips()} else {return 0};
     };
+
+    Game_Enemy.prototype.metaDebug = function() {
+        var eMeta = this.enemy().meta;
+        if (!eMeta.srpgWeapon) {
+            var count = _enemySlotSize;
+            for (var i = 0; i < count; i++) {
+                 if (this._equips[i]._dataClass === "weapon") eMeta.srpgWeapon = this._equips[i]._itemId;return;
+            }
+        }
+    };
+
     // Reflect the characteristics of the Enemy_equipment  (add trairs ect)
     var _SRPG_Game_Enemy_traitObjects = Game_Enemy.prototype.traitObjects;
     Game_Enemy.prototype.traitObjects = function() {

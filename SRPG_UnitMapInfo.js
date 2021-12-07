@@ -236,7 +236,9 @@
     // this YEP function is supposses to happen in "status" window scene ,
     // so this should be no problem if its disabled in battleaction
     Sprite_StateIcon.prototype.textColor = function(n) {
-          if (_debugSwitch === true) {return SceneManager._scene._statusWindow.textColor(n)};
+          if ((_debugSwitch === true) && (SceneManager._scene._statusWindow)) {
+	      return SceneManager._scene._statusWindow.textColor(n);
+	  };
     };
 
 //=============================================================================

@@ -240,7 +240,10 @@
 	      return SceneManager._scene._statusWindow.textColor(n);
 	  };
     };
-
+    // incase the code above doesnt work correctly, try the "if contidition" below
+    // Incase "SceneManager._scene._statusWindow" can't be "true" this way in a "if condition"..
+    //	..this "if condition" below should work 	
+    // if (SceneManager._scene instanceof Scene_Status === true) { 
 //=============================================================================
 // Sprite_Character
 //=============================================================================

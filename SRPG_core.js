@@ -4276,7 +4276,7 @@ Game_Interpreter.prototype.unitAddState = function(eventId, stateId) {
     };
 
     Window_SrpgStatus.prototype.windowWidth = function() {
-        return 408;
+        return Graphics.boxWidth / 2;
     };
 
     Window_SrpgStatus.prototype.windowHeight = function() {

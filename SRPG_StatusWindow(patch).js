@@ -208,6 +208,27 @@
             this.drawText(this._battler.elementRate(7) * 100 + '%', 6 + 120, lineHeight * 7, 48, 'right');
             this.drawText(this._battler.elementRate(8) * 100 + '%', 6 + 120, lineHeight * 8, 48, 'right');
             this.drawText(this._battler.elementRate(9) * 100 + '%', 6 + 120, lineHeight * 9, 48, 'right');
+            //displayActorItemSlots
+            this.changeTextColor(this.systemColor());
+            this.drawText('Items:', 220, lineHeight * 2);
+            this.resetTextColor();
+            var storage = this._battler._itemSlots;
+            var count = storage.length;
+            for (var i = 0; i < count; i++) {
+                 var itemID = this._battler._itemSlots[i]._itemId;
+                 var dataType = this._battler._itemSlots[i]._dataClass;
+                 var amount = this._battler._itemSlots[i].amount;
+                 if (itemID > 0) {
+                     if (dataType === "item") {var itemStorage = $dataItems[itemID]}; 
+                     if (dataType === "armor") {var itemStorage = $dataArmors[itemID]};
+                     if (dataType === "weapon") {var itemStorage = $dataWeapons[itemID]};
+                     this.drawItemName(itemStorage, 250, lineHeight * 3 + this.lineHeight() * i);
+                     this.changeTextColor(this.systemColor());
+                     this.drawText(amount + 'x', 220, lineHeight * 3 + this.lineHeight() * i);
+                 }
+
+            };
+
         } else if (this._page == 2){
             //TODO: this part is for page 2
             //add data:
@@ -261,7 +282,7 @@
             this.drawText(this._battler.elementRate(9) * 100 + '%', 6 + 120, lineHeight * 9, 48, 'right');
             //EnemyItemStore Setup:
             this.changeTextColor(this.systemColor());
-            this.drawText('Items:', 220, lineHeight * 6);
+            this.drawText('Items:', 220, lineHeight * 5);
             this.resetTextColor();
             var storage = this._battler._itemSlot;
             var count = storage.length;
@@ -272,7 +293,7 @@
                      if (dataType === "item") {var itemStorage = $dataItems[itemID]}; 
                      if (dataType === "armor") {var itemStorage = $dataArmors[itemID]};
                      if (dataType === "weapon") {var itemStorage = $dataWeapons[itemID]};
-                     this.drawItemName(itemStorage, 230, lineHeight * 7 + this.lineHeight() * i);
+                     this.drawItemName(itemStorage, 230, lineHeight * 6 + this.lineHeight() * i);
                  }
             };
             //EnemyItemStore Setup End

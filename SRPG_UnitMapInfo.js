@@ -211,6 +211,7 @@
     var SRPG_Game_Action_apply = Game_Action.prototype.apply;
     Game_Action.prototype.apply = function(target) {
         SRPG_Game_Action_apply.call(this, target);
+        if ($gameSystem.isSRPGMode() == true) {
             // add stuff to Game action if Break/Steal Meta & Hit
              var result = target.result();
              if ((this.item().meta.srpgSteal && result.isHit()) ||
@@ -220,10 +221,11 @@
              if (this.item().meta.actorStealItem && result.isHit()) {
                  _debugSwitch = false;
              }
+        }
     };
 
     // add stuff to eventAfterAction_scene
-    // add debug Switch Setup
+    //  add debug Switch Setup
     var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
     Scene_Map.prototype.srpgAfterAction = function() {
 	 _srpgAfterActionScene.call(this);
@@ -232,25 +234,22 @@
          if (_debugSwitch === false) {this.setSkillWait(30);_debugSwitch = true};
     };
 
-    // overwrite error causing function from Yep BuffstatesCore to not trigger if steal action happens
+    // override error causing function from Yep BuffstatesCore to not trigger if steal action happens
     // this YEP function is supposses to happen in "status" window scene ,
     // so this should be no problem if its disabled in battleaction
     Sprite_StateIcon.prototype.textColor = function(n) {
-          if ((_debugSwitch === true) && (SceneManager._scene._statusWindow)) {
-	      return SceneManager._scene._statusWindow.textColor(n);
-	  };
-    };
-    // incase the code above doesnt work correctly, try the "if contidition" below
-    // Incase "SceneManager._scene._statusWindow" can't be "true" this way in a "if condition"..
-    //	..this "if condition" below should work 	
-    // if (SceneManager._scene instanceof Scene_Status === true) { 
+          if (SceneManager._scene._statusWindow && _debugSwitch === true) {
+              return SceneManager._scene._statusWindow.textColor(n);
+          }
+};
+
 //=============================================================================
 // Sprite_Character
 //=============================================================================
 
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
-// Sprite_Character AttackIcon Setup
+// Sprite_Character create AttackIcon
 
 
     // load attIcon Bitmap
@@ -261,7 +260,7 @@
     };
     
     Sprite_Character.prototype.getIconIndex = function() {
-	  // get data  
+	  //get data  
 	  var battler = $gameSystem.EventToUnit(this._character.eventId());
 	  var iconID = 0; // <-this is used to check if an weapon and related icon is not there
 	  // check if a weapon is equiped
@@ -282,7 +281,7 @@
     return iconID
     };
 
-    // sprite Char create AttackIcon	
+    // create AttackIcon	
     Sprite_Character.prototype.createAttIcon = function() {
 	  //get data  
 	  var battler = $gameSystem.EventToUnit(this._character.eventId());
@@ -339,7 +338,6 @@
                         this._AttIcon.bitmap = this.AttIconBitmap;
 		        // install Sprite data
                         this._AttIcon.setFrame(sx, sy, pw, ph);
-			// check if Unit is alive    
 			if (!this._AttIcon._battler.isDead()) {     
 		             // make sprite visible	
                              this._AttIcon.visible = true;
@@ -353,6 +351,7 @@
     };
 
 //sprite Char create hpGaugeSprite
+	
     Sprite_Character.prototype.createhpGaugeSprite = function() {
         if (!this._hpGaugeSprite) {
             this._hpGaugeSprite = new Sprite_hpGaugeSprite();

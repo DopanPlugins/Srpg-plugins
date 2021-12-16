@@ -577,28 +577,22 @@
         };
     return objects;
     };
-    // Reflects the ability change value of the Enemy_equipment (add item stats)
-    Game_Enemy.prototype.paramPlus = function(paramId) {
-        var value = Game_Battler.prototype.paramPlus.call(this, paramId);
-        if ($gameSystem.isSRPGMode() == true) {
-            var equips = this.equips();
-            for (var i = 0; i < equips.length; i++) {
-                 var equipSlot = equips[i];
-                 if (equipSlot && (equipSlot._itemId !== 0)) {
-                     if (equipSlot._dataClass === "weapon") {
-                         item = $dataWeapons[equipSlot._itemId];
-                         value += item.params[paramId];
-                     }
-                     if (equipSlot._dataClass === "armor") {
-                         item = $dataArmors[equipSlot._itemId];
-                         value += item.params[paramId];
-                     }
-                 };
-            };
-        };
-    return value;
-    };
 
+// Reflects the ability change value of the Enemy_equipment (add item stats)
+Game_Enemy.prototype.paramPlus = function(paramId) {
+    var value = Game_Battler.prototype.paramPlus.call(this, paramId);
+    if ($gameSystem.isSRPGMode() == true) {
+        var equips = this.equips();
+        for (var i = 0; i < equips.length; i++) {
+            var item = equips[i];
+            if (item) {
+                value += item.params[paramId];
+            }
+        }
+    return value;
+    }
+};
+	
     // overwrite srpg core stuff
    
     Game_Enemy.prototype.hasNoWeapons = function() {

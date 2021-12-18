@@ -418,7 +418,7 @@
  * "x" is a number betwen 1 and 100. Example => 100 would mean %100 chance => <srpgSkillBreakChance:100>
  * (these Skill_NOTETAGs are only needed if you want a skill with other chances)
  *
- * Chances can be changed global with Scriptcall for usage with "custom execution" or in the "preActionPhase"
+ * "Chances" can be changed global with Scriptcall for usage with "custom execution" or in the "preActionPhase"
  * The "BreakChance"&"StealChance" will always be reseted to the Plugin param "BreakChance"&"StealChance",
  * ..in the AfterAction_Scene.
  * 
@@ -442,16 +442,17 @@
  *--------------------------------------------- 
  * planed NEXT Update: enemy EXP/Levels/ & extend the default dummyClass
  *-------------------
- *  Pls Note This is NOT the Final plugin version , i plan to add enemy Levels/EXP..
- *  an a minimum enemy Class setup that is only used to handle the EXP Curves related to Classes. 
+ * Pls Note This is NOT the Final plugin version , i plan to add enemy Levels/EXP..
+ * an a minimum enemy Class setup that is only used to handle the EXP Curves related to Classes. 
  * (i will try to avoid any "classRestrictions" or other class-"treats" for enemys,.. ect)
  * => so i hope to make enemy classes that can be displayed in the status window,
- *     and that can be used for "enemy Class"- if conditions.
+ * while the i "Team"- display replaces the default dummy Class 2enemy" 
+ * That EnemyClass can be used for "EnemyClass"-if conditions.
  * While avoiding the default Class Stuff that works for Actors. 
  *
- * And i plan to find a way to let Actors & Enemys use all Weapons wicht are Equiped,
- * not just the main Weapon, how it works by default
- * ( not sure if in this plugin or in an optional Extension Plugin )
+ * And i plan to find a way to let Actors & Enemys use all Weapons that are Equiped,
+ * not just the mainHand Weapon, how it works by default..
+ * ( not sure if i put that in this plugin or in an optional Extension Plugin )
  *
  *
  * ============================================================================

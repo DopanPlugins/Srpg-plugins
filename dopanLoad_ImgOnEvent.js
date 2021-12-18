@@ -209,14 +209,14 @@
   var _globaLoadSwitch = parameters['Global Load Switch'] || 'true' || 'false';
   var _globaLoadSwitchRegion = parameters['Global Load Switch Region'] || 'true' || 'false';
   var _globaLoadSwitchWtypeID = parameters['Global Load Switch WtypeID'] || 'true' || 'false';
-  var _Index0WtypeID = Number(parameters['Region ID Index0'] || 1);
-  var _Index1WtypeID = Number(parameters['Region ID Index1'] || 2);
-  var _Index2WtypeID = Number(parameters['Region ID Index2'] || 3);
-  var _Index3WtypeID = Number(parameters['Region ID Index3'] || 4);
-  var _Index4WtypeID = Number(parameters['Region ID Index4'] || 5);
-  var _Index5WtypeID = Number(parameters['Region ID Index5'] || 6);
-  var _Index6WtypeID = Number(parameters['Region ID Index6'] || 7);
-  var _Index7WtypeID = Number(parameters['Region ID Index7'] || 8);
+  var _Index0WtypeID = Number(parameters['WtypeID Index0'] || 1);
+  var _Index1WtypeID = Number(parameters['WtypeID Index1'] || 2);
+  var _Index2WtypeID = Number(parameters['WtypeID Index2'] || 3);
+  var _Index3WtypeID = Number(parameters['WtypeID Index3'] || 4);
+  var _Index4WtypeID = Number(parameters['WtypeID Index4'] || 5);
+  var _Index5WtypeID = Number(parameters['WtypeID Index5'] || 6);
+  var _Index6WtypeID = Number(parameters['WtypeID Index6'] || 7);
+  var _Index7WtypeID = Number(parameters['WtypeID Index7'] || 8);
 //-----------------------------------------------------------------------------------------
 
    // this.globalSwitch(true/false);

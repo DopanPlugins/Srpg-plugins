@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
@@ -271,8 +271,8 @@
  * 
  *
  *------------------------------------------------------------------------------------
- * EquipSlotAmount:
- *-----------------
+ * ENEMY EquipSlotAmount & ItemSlotAmount:
+ *---------------------------------------------------
  * by default the Global EquipSlotAmount for enemys is set in the plugin param, 
  * it can be any number from 1 up to 10 (default is 5) 
  *
@@ -373,7 +373,9 @@
  *(looting needs scripting/eventing this is not supported by default, but it should be possible with having eventGraves)
  *
  * The enemySlots_Size can be changed global for all enemys in the Plugin param
- * (there is no enemyNote, for changing this at the moment, but that would affect enemy clones aswell anyWay)
+ * or with this EnemyNoteTage (affects all enemys with the same enemyID)
+ *
+ *    <enemyEquipSlotSize:x>    // "x" is the size of enemySlot.. minimum is 3 ! default is 5
  *
  *
  * ActorItemslots: 
@@ -392,7 +394,7 @@
  * ActorNoteTag ItemSlots
  *-----------------------
  *
- * <actorItemSlotSize:x> // actorNote
+ * <actorItemSlotSize:x> // actorNote miniMum is 1, default is 5
  *
  * this can change the ItemSlotsize for each single Actor individually
  * there is also a global Option for all actors in the Param which get overwriten when using this
@@ -717,9 +719,10 @@ Game_Enemy.prototype.initialize = function(enemyId, x, y) {
     this._itemSlots = [new Game_Item(), new Game_Item(), new Game_Item()];
     this.enemyItemStorage();
 };
-// get dropItems Into the EnemyItemStorage and set max slot size 3;//
+// get dropItems Into the EnemyItemStorage and set max slot size 3;Note: <enemyEquipSlotSize:x>
 Game_Enemy.prototype.enemyItemStorage = function() {
     var count = _srpg_enemyItemSlotSize;
+    if (this.enemy().meta.enemyItemSlotSize) {count = this.enemy().meta.enemyItemSlotSize};
     for (var i = 0; i < count; i++) {
 	 this._itemSlots[i] = new Game_Item();
          if (i < 3) {

@@ -303,7 +303,7 @@
  *                      // X data info:
  *                             
  * <srpgBreak:x>           //"x" is "item" "armor" "weapon" ("item" = ItemSlot else=> EquipSlot)
- * <srpgItemBreak:x>       //"x" is itemName (example "potion" => "<srpgItemBreak:"potion">" only for items!!)
+ * <srpgItemBreak:x>       //"x" is itemName (example "potion" => "<srpgItemBreak:potion>" only for items!!)
  * <srpgTypeBreakEquip:x>  //"x" is eTypeID = EquipmentTypeID of your System (starts with 1)
  * <srpgTypeBreakWeapon:x> //"x" is wTypeID = WeaponTypeID of your System (starts with 1)
  * <srpgTypeBreakArmor:x>  //"x" is aTypeID = ArmorTypeID of your System  (starts with 1)

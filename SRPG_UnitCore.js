@@ -149,7 +149,7 @@
  * Everything else is handled with EnemyNotetags, SkillNoteTags & Scriptcalls..
  *
  * (by editing the Plugins JS_code the battleStatusWindow can be changed if needed,
- *  but i think i already made the best of it)
+ *  but i think i already made the best of it) pls use resolutionof  "1110 x 768"
  *
  * When using EnemyNote to set Equip,
  * every enemyClone with the same EnemyID will have the same Equip..
@@ -291,7 +291,7 @@
  *
  * incase of combining Notetags it can be helpfull to know in witch order they are executed..
  * => its the same order from top to down in which they are displayed and explained below!  
- *    (for obius reasons all break skills are executed first, broken stuff cant be stolen^^)
+ *    (for obvius reasons all break skills are executed first, broken stuff cant be stolen^^)
  *
  * by default "x" is used to define whats explained below,
  *  and that will always just steal 1 Item/Equip per NoteTag_Usage

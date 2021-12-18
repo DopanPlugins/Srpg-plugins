@@ -139,9 +139,11 @@
  *
  * @help  
  *-------------------------------------------------------------------------------------------
- * Check region id of gameplayer in console F8
+ * Check region id of gameplayer & wtypeId of gamePartyLeader in console F8
  *
  *   "$gamePlayer.regionId();" 
+ *
+ *   "$gameParty.leader().weapons()[0].wtypeId;"
  *
  * Scriptcall to Change the "Global Load Switch" from the pluginParam
  *
@@ -149,7 +151,7 @@
  *   "this.globalSwitchRegion(true/false);"
  *   "this.globalSwitchWtypeID(true/false);"
  *
- * (scriptcall is not tested yet, but the paramSwitch is tested and it works)
+ *
  *-------------------------------------------------------------------------------------------
  * This plugin is made to work on rpg MV projects that use 3x4_frame charFrame_Imgs.
  *
@@ -167,7 +169,7 @@
  * But with a few Edits on the "if conditions" it could also be used to display different Armors/Weapons ect.
  *
  * (Or it can be used for whatever it might be needed)
- *
+ *-----------------------------------------------------------------------------
  * Update! : added another setup with a second IMG and more Switches
  * 
  * This is used to choose 8 weaponTypes that can trigger an IMG load on GamePlayer,

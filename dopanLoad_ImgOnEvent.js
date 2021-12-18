@@ -6,11 +6,26 @@
  *                          ..depending on Region id & WeaponTypeID.
  * @author dopan
  *
+ *
  * @param Global Load Switch 
  * @desc  Switch that enables/disables Both Img Load Setups
  * @type boolean
  * @default true
- * 
+ *
+ * @param WtypeID Z Anchor
+ * @desc WtypeID Z Anchor min is 1,max is 20 (this should be somewhere above 8 i guess)
+ * @type number
+ * @min 1
+ * @max 20
+ * @default 8
+ *
+ * @param RegionID Z Anchor
+ * @desc RegionID Z Anchor min is 1,max is 20 (this should be somewhere above 8 i guess)
+ * @type number
+ * @min 1
+ * @max 20
+ * @default 9
+ *
  * @param ----- Region ID -----
  *
  * @param Loaded Img Region
@@ -198,8 +213,8 @@
   var parameters = PluginManager.parameters("Load_ImgOnEvent") ||
   $plugins.filter(function (plugin) { return plugin.description.contains('<Load_ImgOnEvent>'); });
 
-  var _imgRegion = parameters['regionIdLoad'] || 'srpgSet';
-  var _imgWtypeID = parameters['weaponTypeLoad'] || 'srpgSet';
+  var _imgRegion = parameters['Loaded Img Region'] || 'regionIdLoad';
+  var _imgWtypeID = parameters['Loaded Img WtypeID'] || 'weaponTypeLoad';
   var _Index0Region = Number(parameters['Region ID Index0'] || 10);
   var _Index1Region = Number(parameters['Region ID Index1'] || 11);
   var _Index2Region = Number(parameters['Region ID Index2'] || 12);
@@ -219,6 +234,8 @@
   var _Index5WtypeID = Number(parameters['WtypeID Index5'] || 6);
   var _Index6WtypeID = Number(parameters['WtypeID Index6'] || 7);
   var _Index7WtypeID = Number(parameters['WtypeID Index7'] || 8);
+  var _regionZanchor = Number(parameters['RegionID Z Anchor'] || 9);
+  var _wTypeIDZanchor = Number(parameters['WtypeID Z Anchor'] || 8);
 //-----------------------------------------------------------------------------------------
 
    // this.globalSwitch(true/false);
@@ -242,18 +259,20 @@
        return _setGlobalSwitchWtypeID;
    };
 //-----------------------------------------------------------------------------------------
-
-
+//_imgRegion
+//_imgWtypeID
     var _ImgLoad_Character_setCharacterBitmap = Sprite_Character.prototype.setCharacterBitmap;
     Sprite_Character.prototype.setCharacterBitmap = function() {
           _ImgLoad_Character_setCharacterBitmap.call(this);
 	  if (_globaLoadSwitch === 'true') {
+
               if (_globaLoadSwitchRegion === 'true') {
-                  this._dopanImgLoadBitmapRegion = ImageManager.loadCharacter(_imgRegion);
+                  this._dopanImgLoadBitmapRegion = ImageManager.loadCharacter('srpg_set');
               };
               if (_globaLoadSwitchWtypeID === 'true') {
-                  this._dopanImgLoadBitmapWtypeID = ImageManager.loadCharacter(_imgWtypeID);
+                  this._dopanImgLoadBitmapWtypeID = ImageManager.loadCharacter('Nymph_States');
               };
+
           };
     };
         // create Overlay
@@ -264,48 +283,56 @@
                        this._dopanImgLoad0 = new Sprite();
                        this._dopanImgLoad0.anchor.x = 0.5;
                        this._dopanImgLoad0.anchor.y = 1;
+                       this._dopanImgLoad0.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad0);
                   }
 		  if (!this._dopanImgLoad1 ) {
                        this._dopanImgLoad1 = new Sprite();
                        this._dopanImgLoad1.anchor.x = 0.5;
                        this._dopanImgLoad1.anchor.y = 1;
+                       this._dopanImgLoad1.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad1);
                   }
 		  if (!this._dopanImgLoad2 ) {
                        this._dopanImgLoad2 = new Sprite();
                        this._dopanImgLoad2.anchor.x = 0.5;
                        this._dopanImgLoad2.anchor.y = 1;
+                       this._dopanImgLoad2.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad2);
                   }
 		  if (!this._dopanImgLoad3 ) {
                        this._dopanImgLoad3 = new Sprite();
                        this._dopanImgLoad3.anchor.x = 0.5;
                        this._dopanImgLoad3.anchor.y = 1;
+                       this._dopanImgLoad3.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad3);
                   }
 		  if (!this._dopanImgLoad4 ) {
                        this._dopanImgLoad4 = new Sprite();
                        this._dopanImgLoad4.anchor.x = 0.5;
                        this._dopanImgLoad4.anchor.y = 1;
+                       this._dopanImgLoad4.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad4);
                   }
 		  if (!this._dopanImgLoad5 ) {
                        this._dopanImgLoad5 = new Sprite();
                        this._dopanImgLoad5.anchor.x = 0.5;
                        this._dopanImgLoad5.anchor.y = 1;
+                       this._dopanImgLoad5.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad5);
                   }
 		  if (!this._dopanImgLoad6 ) {
                        this._dopanImgLoad6 = new Sprite();
                        this._dopanImgLoad6.anchor.x = 0.5;
                        this._dopanImgLoad6.anchor.y = 1;
+                       this._dopanImgLoad6.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad6);
                   }
 		  if (!this._dopanImgLoad7 ) {
                        this._dopanImgLoad7 = new Sprite();
                        this._dopanImgLoad7.anchor.x = 0.5;
                        this._dopanImgLoad7.anchor.y = 1;
+                       this._dopanImgLoad7.z = _regionZanchor;
                        this.addChild(this._dopanImgLoad7);
                   }
                 }
@@ -314,50 +341,59 @@
                        this._dopanImgLoad8 = new Sprite();
                        this._dopanImgLoad8.anchor.x = 0.5;
                        this._dopanImgLoad8.anchor.y = 1;
+                       this._dopanImgLoad8.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad8);
                   }
 		  if (!this._dopanImgLoad9 ) {
                        this._dopanImgLoad9 = new Sprite();
                        this._dopanImgLoad9.anchor.x = 0.5;
                        this._dopanImgLoad9.anchor.y = 1;
+                       this._dopanImgLoad9.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad9);
                   }
 		  if (!this._dopanImgLoad10 ) {
                        this._dopanImgLoad10 = new Sprite();
                        this._dopanImgLoad10.anchor.x = 0.5;
                        this._dopanImgLoad10.anchor.y = 1;
+                       this._dopanImgLoad10.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad10);
                   }
 		  if (!this._dopanImgLoad11 ) {
                        this._dopanImgLoad11 = new Sprite();
                        this._dopanImgLoad11.anchor.x = 0.5;
                        this._dopanImgLoad11.anchor.y = 1;
+                       this._dopanImgLoad11.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad11);
                   }
 		  if (!this._dopanImgLoad12 ) {
                        this._dopanImgLoad12 = new Sprite();
                        this._dopanImgLoad12.anchor.x = 0.5;
                        this._dopanImgLoad12.anchor.y = 1;
+                       this._dopanImgLoad12.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad12);
                   }
 		  if (!this._dopanImgLoad13 ) {
                        this._dopanImgLoad13 = new Sprite();
                        this._dopanImgLoad13.anchor.x = 0.5;
                        this._dopanImgLoad13.anchor.y = 1;
+                       this._dopanImgLoad13.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad13);
                   }
 		  if (!this._dopanImgLoad14 ) {
                        this._dopanImgLoad14 = new Sprite();
                        this._dopanImgLoad14.anchor.x = 0.5;
                        this._dopanImgLoad14.anchor.y = 1;
+                       this._dopanImgLoad14.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad14);
                   }
 		  if (!this._dopanImgLoad15 ) {
                        this._dopanImgLoad15 = new Sprite();
                        this._dopanImgLoad15.anchor.x = 0.5;
                        this._dopanImgLoad15.anchor.y = 1;
+                       this._dopanImgLoad15.z = _wTypeIDZanchor;
                        this.addChild(this._dopanImgLoad15);
                   }
+                }
 	      }
 	};
 
@@ -615,7 +651,7 @@
                     };
                 }
                 if (!this._character.eventId && _globaLoadSwitchWtypeID === 'true') {
-                    if ($gameParty.leader().weapons()[0].wtypeId === _Index15WtypeID) {
+                    if ($gameParty.leader().weapons()[0].wtypeId === _Index7WtypeID) {
                         this.createImgLoad();
                         this._dopanImgLoad15.bitmap = this._dopanImgLoadBitmapWtypeID;
                         this._dopanImgLoad15.setFrame(sx15, sy15, pw, ph);

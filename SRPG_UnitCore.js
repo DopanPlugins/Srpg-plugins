@@ -478,7 +478,7 @@
   var _actorTeam = parameters['Default Actor Team'] || "";
   var _enemyTeam = parameters['Default Enemy Team'] || "";	
 		
- // EquipSlots	
+ // SRPG EquipCore	
   var _srpg_Yep_ItemCore = (parameters['Yep Item Core Compatiblety'] || 'false');
   var _breakChance = Number(parameters['Break Chance'] || 50);
   var _stealChance = Number(parameters['Steal Chance'] || 50); 	

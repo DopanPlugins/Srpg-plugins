@@ -538,7 +538,7 @@ Game_Interpreter.prototype.changeStealChance = function(chanceNumber) {
 // scriptcall "$gameTemp.changeEnemyItem(eventID, slotID, itemID, typeID);"
 Game_Temp.prototype.changeEnemyItem = function(eventID, slotID, itemID, typeID) {
     var battleUnit = $gameSystem.EventToUnit(eventID);
-    if ((battleUnit[0] === 'enemy') && (battleUnit[1]._itemSlot)) {
+    if ((battleUnit[0] === 'enemy') && (battleUnit[1]._itemSlots)) {
         battleUnit[1]._itemSlots[slotID]._itemId = itemID;
         battleUnit[1]._itemSlots[slotID]._dataClass = typeID;
         if (itemID === 0)  {
@@ -734,7 +734,7 @@ Game_Enemy.prototype.enemyItemStorage = function() {
             if (itemID > 0) {this._itemSlots[i].setObject(dataType)};
          }   
     }
-return this._itemSlot;
+return this._itemSlots;
 };
 // add EquipSlots to Game_Enemy
 Game_Enemy.prototype.setEquipSlots = function() {

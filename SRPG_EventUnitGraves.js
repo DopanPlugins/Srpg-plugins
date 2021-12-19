@@ -567,17 +567,11 @@
         return eventId;
     };
      
-    // overwrite Battlestart Event calling Function 
+    // use Battlestart Event 
+    var _SRPG_runBattleStartEvent = Game_System.prototype.runBattleStartEvent; 
     Game_System.prototype.runBattleStartEvent = function() {
-        $gameMap.events().forEach(function(event) {
-            if (event.isType() === 'battleStart') {
-                if (event.pageIndex() >= 0) event.start();
-                    $gameTemp.pushSrpgEventList(event);
-                
-            }
-        });
-
-        //Dopan INFO=> stuff above is default content, stuff below initializes at Battlestart
+	_SRPG_runBattleStartEvent.call(this);
+        //Dopan INFO=>  initializes at Battlestart
         $gameMap.setEnemytUnitID();$gameMap.graveSetup(); 
     };
 	

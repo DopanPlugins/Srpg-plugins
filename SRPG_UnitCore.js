@@ -488,7 +488,7 @@
  * So it would make no sence to add restrictions to the enemys , when the player can not controll the Enemys.
  *
  * This oppinion forced me, to not just copy paste The whole Setup, from actors to enemys..
- * -> i had to figure which Functions are required and which Functions doesnt help for my purposes.
+ * -> i had to figure which out Functions are required and which Functions doesnt help for my purposes.
  *
  * => also my main Purpose was to make all this compatible to the used srpg System.
  * =======================

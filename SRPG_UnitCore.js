@@ -231,8 +231,12 @@
  *
  * Plugin NoteTags:
  *-----------------
+ * Enemy noteTags: (for classes and Levels)
+ *
+ *   <srpgClass:X>      # set class id.THIS IS REQUIRED! (number)
+ *   <srpgLevel:X>      # set level id (number).If not used default level is 1
  *----------------
- * Enemy noteTags:
+ * Enemy noteTags: (for equip)
  *----------------
  *   <srpgSlot0Type:x>
  *   <srpgSlot1Type:x>

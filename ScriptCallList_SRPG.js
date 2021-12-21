@@ -163,10 +163,13 @@ if ($gameSystem.ActorToEvent(ActorID) > 0) {$gameSystem.EventToUnit($gameSystem.
    $gameSystem.ActorToEvent(ActorID); 
 // and return 0 if the unit is not in battle & has no event used
  
-
- 
 //----------------------------------------------------------------------------------------------------------
+ // If Using the "SRPG_UnitCore" i will add some script examples here:
  
+var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+if (target[1].isStateAffected(StateID)) this.changeStealChance(100);
+// trigger this with "Custom Execution" or the "eventBeforeBattle"
+// this will change the stealchance to 100% if the target is StateAffected (insert state Id!) 
  
  
  

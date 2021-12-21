@@ -333,9 +333,9 @@
  *
  * <srpgBreak:allItems>              //"x" can be "allItems" or "allWeapons" or "allArmors"
  * <srpgItemBreak:allNames>          //"x" can be only "allNames"
- * <srpgTypeBreakEquip:allTypes>     //"x" can be only  
- * <srpgTypeBreakWeapon:allTypes>    //"x" can be only  
- * <srpgTypeBreakArmor:allTypes>     //"x" can be only  
+ * <srpgTypeBreakEquip:allTypes>     //"x" can be only "allTypes"
+ * <srpgTypeBreakWeapon:allTypes>    //"x" can be only "allTypes"  
+ * <srpgTypeBreakArmor:allTypes>     //"x" can be only "allTypes"  
  * <srpgSlotBreakEquip:allSlots>     //"x" can be "allSlots" or "nextSlot"
  * <srpgSlotBreakItem:nextSlot>      //"x" can be "allSlots" or "nextSlot" 
  *

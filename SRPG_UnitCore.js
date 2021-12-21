@@ -231,12 +231,8 @@
  *
  * Plugin NoteTags:
  *-----------------
- * Enemy noteTags: (for classes and Levels)
- *
- *   <srpgClass:X>      # set class id.THIS IS REQUIRED! (number)
- *   <srpgLevel:X>      # set level id (number).If not used default level is 1
  *----------------
- * Enemy noteTags: (for equip)
+ * Enemy noteTags:
  *----------------
  *   <srpgSlot0Type:x>
  *   <srpgSlot1Type:x>
@@ -984,7 +980,7 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
       var equips = this._battler._equips;
       // only 5 slots are used by default
       // slot 0 check if weapon or shield assume weapon
-      if (equips[0]._itemId === 0) {
+      if (equips[0] && (equips[0]._itemId === 0) {
           if (this._battler.enemy().meta.srpgSlot0Type === "armor") {
               if (_drawText === 'true' && this._battler._equipIsGone[0] === false) {
                   this.drawText(_textNoShield, 240, lineHeight * 5);
@@ -1006,7 +1002,7 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
                this.drawItemName(equips[0].object(), 200, lineHeight * 5 ); 
       };
       //slot 1 check if weapon or shield,assume shield
-      if (equips[1]._itemId === 0) {
+      if (equips[1] && (equips[1]._itemId === 0)) {
           if (this._battler.enemy().meta.srpgSlot1Type === "weapon") {
               if (_drawText === 'true' && this._battler._equipIsGone[1] === false) {
                   this.drawText(_textNoWeapon, 240, lineHeight * 6);
@@ -1028,7 +1024,7 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
                this.drawItemName(equips[1].object(), 200, lineHeight * 6 ); 
       };
       //slot 2 assume Head
-      if (equips[2]._itemId === 0) {
+      if (equips[2] && (equips[2]._itemId === 0)) {
           if (_drawText === 'true' && this._battler._equipIsGone[2] === false) {
               this.drawText(_textNoHead, 240, lineHeight * 7);
           } else {
@@ -1040,7 +1036,7 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
                this.drawItemName(equips[2].object(), 200, lineHeight * 7 ); 
       };  
       //slot 3 assume Body
-      if (equips[3]._itemId === 0) {
+      if (equips[3] && (equips[3]._itemId === 0)) {
           if (_drawText === 'true' && this._battler._equipIsGone[3] === false) {
               this.drawText(_textNoBody, 240, lineHeight * 8);
           } else {
@@ -1052,7 +1048,7 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
                this.drawItemName(equips[3].object(), 200, lineHeight * 8 ); 
       };
       //slot 4 assume Accessory
-      if (equips[4]._itemId === 0) {
+      if (equips[4] && (equips[4]._itemId === 0)) {
           if (_drawText === 'true' && this._battler._equipIsGone[4] === false) {
               this.drawText(_textNoAccessory, 240, lineHeight * 9);
           } else {
@@ -1109,7 +1105,7 @@ Window_SrpgStatus.prototype.drawContentsActor = function() {
       var equips = this._battler._equips;
       // only 5 slots are used by default
       // slot 0 check if weapon or shield assume weapon
-      if (equips[0]._itemId === 0) {
+      if (equips[0] && (equips[0]._itemId === 0)) {
           if (this._battler.enemy().meta.srpgSlot0Type === "armor") {
               if (_drawText === 'true' && this._battler._equipIsGone[0] === false) {
                   this.drawText(_textNoShield, 240, lineHeight * 5);
@@ -1131,7 +1127,7 @@ Window_SrpgStatus.prototype.drawContentsActor = function() {
                this.drawItemName(equips[0].object(), 200, lineHeight * 5 ); 
       };
       //slot 1 check if weapon or shield,assume shield
-      if (equips[1]._itemId === 0) {
+      if (equips[1] && (equips[1]._itemId === 0)) {
           if (this._battler.enemy().meta.srpgSlot1Type === "weapon") {
               if (_drawText === 'true' && this._battler._equipIsGone[1] === false) {
                   this.drawText(_textNoWeapon, 240, lineHeight * 6);
@@ -1153,7 +1149,7 @@ Window_SrpgStatus.prototype.drawContentsActor = function() {
                this.drawItemName(equips[1].object(), 200, lineHeight * 6 ); 
       };
       //slot 2 assume Head
-      if (equips[2]._itemId === 0) {
+      if (equips[2] && (equips[2]._itemId === 0)) {
           if (_drawText === 'true' && this._battler._equipIsGone[2] === false) {
               this.drawText(_textNoHead, 240, lineHeight * 7);
           } else {
@@ -1165,7 +1161,7 @@ Window_SrpgStatus.prototype.drawContentsActor = function() {
                this.drawItemName(equips[2].object(), 200, lineHeight * 7 ); 
       };  
       //slot 3 assume Body
-      if (equips[3]._itemId === 0) {
+      if (equips[3] && (equips[3]._itemId === 0)) {
           if (_drawText === 'true' && this._battler._equipIsGone[3] === false) {
               this.drawText(_textNoBody, 240, lineHeight * 8);
           } else {
@@ -1177,7 +1173,7 @@ Window_SrpgStatus.prototype.drawContentsActor = function() {
                this.drawItemName(equips[3].object(), 200, lineHeight * 8 ); 
       };
       //slot 4 assume Accessory
-      if (equips[4]._itemId === 0) {
+      if (equips[4] && (equips[4]._itemId === 0)) {
           if (_drawText === 'true' && this._battler._equipIsGone[4] === false) {
               this.drawText(_textNoAccessory, 240, lineHeight * 9);
           } else {
@@ -1293,9 +1289,13 @@ Game_Action.prototype.stealRandom = function(random, amount, type) {
     var randomAmount = Number(amount); 
     // return false if target has not enough amount
     if (type === "gold" && targetBattler[1] === 'actor' && ($gameParty.gold < finalAmount)) {
-        finalAmount = Number($gameParty.gold);this.srpgStealGoldText(finalAmount);return false};
+        finalAmount = Number($gameParty.gold);this.srpgStealGoldText(finalAmount);
+        $gameParty.gainGold(-finalAmount);return true; 
+    };
     if (type === "exp" && (targetBattler[1]._exp < finalAmount)) {
-        finalAmount = Number(targetBattler[1]._exp);this.srpgStealExpText(finalAmount); return false}; 
+        finalAmount = Number(targetBattler[1]._exp);this.srpgStealExpText(finalAmount);
+        targetBattler[1].gainExp(-finalAmount);return true; 
+    }; 
     // prepare variables
     if (random === "true") {randomAmount = Math.round(Math.floor(Math.random() * finalAmount + finalAmount / 2))};  
     if (activeLevel > targetLevel) var activeStrong = activeLevel - targetLevel;

@@ -1957,7 +1957,15 @@ Window_PartyItemStorage.prototype.isEnabled = function(item) {
 Window_ItemList.prototype.makeItemList = function() {
       if ($gameSystem.isSRPGMode() == true) {
 	    this._data = [];
-	    var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
+            // check which actor can be used and use it
+            if ($gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]) {
+                var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
+            } else {
+                if ($gameParty.menuActor()) {
+	            var actor = $gameParty.menuActor();
+	        };
+	    };
+            // set Object from item to the ItemList
 	    for (var i = 0; i < actor._itemSlots.length; i++) {
                  this._data[i] = actor._itemSlots[i].object();
 	    };

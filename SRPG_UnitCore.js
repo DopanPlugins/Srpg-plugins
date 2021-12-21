@@ -2,7 +2,7 @@
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
- * @plugindesc v2.0 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
+ * @plugindesc v2.1 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
  *               And it replaces the "SRPG_EnemyEquip"-Plugin.                     
  *
  * @author dopan ("SRPG_Teams" is made by doctorQ)
@@ -133,14 +133,16 @@
  *  "SRPG_Core.js" 
  *
  * This Plugin let Enemys use Equipment (default is = 5 base slots) & and it adds the Equipment
- * into the battleStatusWindow of actor&enemys 
+ * into the battleStatusWindow of actor&enemys.And it adds enemyClasses & enemyEXP. 
  * 
  * => the max Amount of used EnemySlots is 10
- * (but if using more than the default 5, you need to edit the BattleStatusWindow,or only default5 will be displayed)
- * (such BattleStatusWindow_edit can be made in this plugin or in the "SRPG_StatusWindow(patch)" plugin)
+ * (but if using more than the default 5, you need to edit the BattleStatusWindow,or only the default_5 will be displayed)
+ *  =>such BattleStatusWindow_edit can be made in this plugin or in the "SRPG_StatusWindow(patch)" plugin
  * 
- * => the max Amount of Slots from which can be stolen/broken is also 10
- * 
+ * => the max Amount of  EquipSlots from which can be stolen/broken is also 10
+ * (itemSlotSize can be 20 or more if changing the param, but never try to change a ItemSlot which doesnt exist) 
+ *
+ *
  * => this Plugin includes a stealing/breaking function!
  *
  * 
@@ -196,7 +198,7 @@
  *  "eventID" of the enemyUnit
  *  "slotID" can be 0 or higher, depending on the ItemslotSize (it starts with 0 = first slot)
  *  "itemID" the ID of the Item or Equip, if id 0 this will leave an empty Slot!!
- *  "typeID" can be "item","armor" or "weapon"
+ *  "typeID" can be "item","armor" or "weapon" 
  * 
  * 
  * Example:  $gameTemp.changeEnemyItem(30, 0, 3, "item");
@@ -206,16 +208,16 @@
  *----------------------------------------------
  * BreakChance:
  *--------------
- * "this.changeBreakChance(chanceNumber);"// usage in Events ,commonEvents ,"Game_Interpreter.prototype"-functions ect
  *
- * or "Game_Interpreter.prototype.changeBreakChance.call(this, chanceNumber);"// usage if used in other plugins'Codes
+ *
+ *  "this.changeBreakChance(chanceNumber);" // usage in Events ,commonEvents  ect
  *
  *
  * StealChance:
  *--------------
- * "this.changeStealChance(chanceNumber);"// usage in Events ,commonEvents ,"Game_Interpreter.prototype"-functions ect
  *
- * or "Game_Interpreter.prototype.changeStealChance.call(this, chanceNumber);"// usage if used in other plugins'Codes
+ *
+ *   "this.changeStealChance(chanceNumber);" // usage in Events ,commonEvents  ect
  *
  *
  *
@@ -274,12 +276,12 @@
  * ENEMY EquipSlotAmount & ItemSlotAmount:
  *---------------------------------------------------
  * by default the Global EquipSlotAmount for enemys is set in the plugin param, 
- * it can be any number from 1 up to 10 (default is 5) 
+ * it can be any number from 1 up to 20 (default is 5) 
  *
  * This enemyNote can set the slotAmount for that enemy ID individually!
  * (if not used default 5 will be used)
  *
- *   <enemyEquipSlotSize:x>
+ *   <enemyEquipSlotSize:x>  //enemyNote
  * 
  *---------------
  * SkillNoteTags: (for actors & enemys)
@@ -289,13 +291,13 @@
  * BUT make sure to NEVER use the SAME NoteTag 2 times in the same skill
  * (or else the second one will overwrite the first, even if "x" is different)
  *
- * incase of combining Notetags it can be helpfull to know in witch order they are executed..
+ * incase of combining Notetags it can be helpfull to know in what order they are executed..
  * => its the same order from top to down in which they are displayed and explained below!  
  *    (for obvius reasons all break skills are executed first, broken stuff cant be stolen^^)
  *
  * by default "x" is used to define whats explained below,
  *  and that will always just steal 1 Item/Equip per NoteTag_Usage
- * But we cann also use the "all&next-Options" for more complex Usage
+ * But we can also use the "all&next-Options" for more complex Usage
  * (the "all&next-Options" will be explained below after the NoteTags)
  *
  *                      //EXPLANATION: "breakSkills" show what "x" is, "stealSkills" add usage info
@@ -341,16 +343,55 @@
  * <srpgSlotStealEquip:x>   // this targets "all" or only 1 which is the "next" Equiped from the Top (EquipSlot)
  * <srpgSlotStealItem:x>    // this targets "all" or only 1 which is the "next" Item from the Top (ItemSlot)
  *
+ *
  * Note: I admit i only tested a few NoteTags, but they are all bound into 1 Function,
  *        and on this Version i had no Bugs left with the tested skills & NoteTags
  *(normaly that means they should all work,no matter how they are combined,but if you find a buged One pls let me know!)       
+ *
+ *------------------------------------
+ * gain Exp & gain Gold -Skills:
+ *------------------------------------
+ *
+ * <srpgGoldStealAmount:x> // Steals Gold using a fixed amount that is influenced by the Units Levels
+ *
+ * <srpgGoldStealRandom:x> // Steals Gold ,influenced by Units Levels and an randomized around the number "x"
+ *
+ * <srpgExpStealAmount:x> // Steals EXP using a fixed amount that is influenced by the Units Levels
+ *
+ * <srpgExpStealRandom:x> // Steals EXP ,influenced by Units Levels and an randomized around the number "x"
+ *
+ *
+ * "x" can be any number, i can recommend using 99, 111 & 123 for example..
+ *
+ *
+ * Explanation, in all 4 cases the Levels of the Units do Influence the outcome 
+ * (if the target has a higher level,than the user,.. the outcome gets higher)
+ * => and the levels also change the Final Amount
+ *
+ * used formulas are these: (can be tested in console F8, to figure out what "x" data you wanna use)
+ *
+ * 1.Random Amount => Math.round(Math.floor(Math.random() * finalAmount + finalAmount / 2))
+ *
+ * 2a.Normal Amount => Math.round((randomAmount / (activeLevel + 1)) * targetLevel); 
+ *
+ * 2b.Normal Amount => Math.round((randomAmount / (activeLevel - 1)) * targetLevel); 
+ * 
+ * "finalAmount" is where the "x" data is used, "random skills" use both (1.Random Amount & 2.Normal Amount)
+ *
+ * "normal amount skills" uses only the second formula (1.Normal Amount)
+ *
+ * "randomAmount" is also where the "x" data is used. "activeLevel" is the users level
+ *
+ * "targetLevel" is the targets level..
+ *
+ * 2a. is used,when the "user" has a higher level",.. 2b is used when the "target" has the higher Level
  *
  *--------------------------------------------------
  * Item or Equip "Protection NoteTags"
  *--------------------------------------------------
  *
- * <noSteal> //protects the Item Or Equip permanent from beein Stolen
- * <noBreak> //protects the Item Or Equip permanent from beein Broken       
+ * <noSteal> //protects the Item Or Equip permanent from beeing Stolen
+ * <noBreak> //protects the Item Or Equip permanent from beeing Broken       
  *
  *----------------------------------------------------
  * Explanation about EnemyItemSlots & ActorItemSlots
@@ -394,7 +435,7 @@
  * ActorNoteTag ItemSlots
  *-----------------------
  *
- * <actorItemSlotSize:x> // actorNote miniMum is 1, default is 5
+ * <actorItemSlotSize:x> // actorNote minimum is 1, default is 5
  *
  * this can change the ItemSlotsize for each single Actor individually
  * there is also a global Option for all actors in the Param which get overwriten when using this
@@ -422,40 +463,40 @@
  * The "BreakChance"&"StealChance" will always be reseted to the Plugin param "BreakChance"&"StealChance",
  * ..in the AfterAction_Scene.
  * 
- *------------------------------------
- * About gain Exp & gain Gold -Skills:
- *------------------------------------
- *
- * for Skills that add gold or extra exp, you can use an CommonEvent on the Skill.
- * (This can probably also be solved with the battleformula)
- * There you can put a math script or a variable that rolls the succes rate.
- * Default Scripts for gainGold and gainExp are :
- * 
- *  $gameParty.gainGold(n);
- *  $gameActors.actor(ActorID).gainExp(exp)
- *
- *
- * (i might implement such Steal Skills with later Plugin updates,but for now i preffer
- * to figure out if this plugins works completly bugfree,before adding such Skills)
- *
- * => if you find any bugs pls let me know!
- *--------------------------------------------- 
- * planed NEXT Update: enemy EXP/Levels/ & extend the default dummyClass
- *-------------------
- * Pls Note This is NOT the Final plugin version , i plan to add enemy Levels/EXP..
- * an a minimum enemy Class setup that is only used to handle the EXP Curves related to Classes. 
- * (i will try to avoid any "classRestrictions" or other class-"treats" for enemys,.. ect)
- * => so i hope to make enemy classes that can be displayed in the status window,
- * while the i "Team"- display replaces the default dummy Class 2enemy" 
- * That EnemyClass can be used for "EnemyClass"-if conditions.
- * While avoiding the default Class Stuff that works for Actors. 
- *
- * And i plan to find a way to let Actors & Enemys use all Weapons that are Equiped,
- * not just the mainHand Weapon, how it works by default..
- * ( not sure if i put that in this plugin or in an optional Extension Plugin )
- *
- *
  * ============================================================================
+ * about enemyClass & enemyEXP (Classes are required to handle EXP)
+ * ============================================================================
+ *
+ * The Class for enemys must be added in the enemy Note!
+ *
+ * use a Number for this (id of class)
+ *
+ * Enemy Classes wont let enemy learn skills or Class param, they are only used for:
+ *
+ * - using Class Notetags
+ *
+ * - using the EXP curves of the Class to handle the EXP Setup
+ *
+ * also enemys dont need to care about Equip restrictions,.. 
+ *
+ * In my oppinion, Class/Equip Restrictions are made for the "player" of your Game.Not for you the Dev.
+ *
+ * So it would make no sence to add restrictions to the enemys , when the player can not controll the Enemys.
+ *
+ * This oppinion forced me, to not just copy paste The whole Setup, from actors to enemys..
+ * -> i had to figure which Functions are required and which Functions doesnt help for my purposes.
+ *
+ * => also my main Purpose was to make all this compatible to the used srpg System.
+ * =======================
+ * about "dual wield" ect
+ * =======================
+ *
+ * This plugin doesnt change that the System always only use the main hand weapon.
+ * If i will be able to change this into actually using each equiped weapon,
+ *  this will not happen in this plugin. I will build an Extension plugin for that,
+ * if i can make this happen.
+ * ============================================================================
+ *
  * Terms of Use
  * ============================================================================
  * Free for any commercial or non-commercial project!
@@ -463,9 +504,10 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 2.0:
+ * Version 2.1:
  * - first Release 18.12.2021 for SRPG (rpg mv)!
  * -> this REPLACES the old "enemyEquip"-Plugin
+ * -> add Enemy class and enemy Level and "steal"Gold/Exp -Skills
  */
  
 (function() {
@@ -503,9 +545,26 @@
   var _lastSlot = 0;
   var _slotActorId = 0;	
 	
-// Enemy EXP/Level/Class	
 
 //-----------------------------------------------------------------------------------------
+
+
+
+//Game_System:
+
+// init Enemy UnitCore Setup
+var _srpg_setEventToUnit = Game_System.prototype.setEventToUnit;
+Game_System.prototype.setEventToUnit = function(event_id, type, data) {
+    _srpg_setEventToUnit.call(this, event_id, type, data);
+    var battler = this._EventToUnit[event_id];
+    if (battler && (battler[0] === 'enemy')) {
+        var mapEventMetaUnitID = $gameMap.event(event_id).event().meta.unit;
+        $gameMap.event(event_id)._eventEnemyUnitId = mapEventMetaUnitID;
+        battler[1]._enemyUnitId = mapEventMetaUnitID;
+        battler[1].initEnemyUnitCoreSetup(event_id);
+        battler[1].level = battler[1]._level;
+    }
+};
 
 //Scene.map.AfterAction:
 
@@ -548,10 +607,11 @@ Game_Temp.prototype.changeEnemyItem = function(eventID, slotID, itemID, typeID) 
     }
 return battleUnit[1]._itemSlots[slotID];
 };
+
 // scriptcall "$gameTemp.changeUnitArmor(eventID, slotID, armorID);"
 Game_Temp.prototype.changeUnitArmor = function(eventID, slotID, armorID) {
     var battleUnit = $gameSystem.EventToUnit(eventID);
-    if ((battleUnit[0] === 'enemy') && (battleUnit[1]._equips)) {
+    if (battleUnit[1]._equips) {
         battleUnit[1]._equips[slotID]._itemId = armorID;
         battleUnit[1]._equips[slotID]._dataClass = "armor";
         battleUnit[1]._equips[slotID].equipIsGone = false;
@@ -559,22 +619,14 @@ Game_Temp.prototype.changeUnitArmor = function(eventID, slotID, armorID) {
             battleUnit[1]._equips[slotID]._dataClass = "";
             battleUnit[1]._equips[slotID].equipIsGone = true;
         }
-    }
-    if ((battleUnit[0] === 'actor') && (battleUnit[1]._equips)) {
-        battleUnit[1]._equips[slotID]._itemId = armorID;
-        battleUnit[1]._equips[slotID]._dataClass = "armor";
-        battleUnit[1]._equips[slotID].equipIsGone = false;
-        if (armorID === 0)  {
-            battleUnit[1]._equips[slotID]._dataClass = "";
-            battleUnit[1]._equips[slotID].equipIsGone = true;
-        }
-    }	   
+    }   
 return battleUnit[1]._equips[slotID];
 };
+
 // scriptcall to change enemy weapon "$gameTemp.changeUnitWeapon(eventID, slotID, weaponID);"
 Game_Temp.prototype.changeUnitWeapon = function(eventID, slotID, weaponID) {
     var battleUnit = $gameSystem.EventToUnit(eventID);
-    if ((battleUnit[0] === 'enemy') && (battleUnit[1]._equips)) {
+    if (battleUnit[1]._equips) {
         battleUnit[1]._equips[slotID]._itemId = weaponID;
         battleUnit[1]._equips[slotID]._dataClass = "weapon";
         battleUnit[1]._equips[slotID].equipIsGone = false;
@@ -582,18 +634,10 @@ Game_Temp.prototype.changeUnitWeapon = function(eventID, slotID, weaponID) {
             battleUnit[1]._equips[slotID]._dataClass = "";
             battleUnit[1]._equips[slotID].equipIsGone = true;
         }
-    }
-    if ((battleUnit[0] === 'actor') && (battleUnit[1]._equips)) {
-        battleUnit[1]._equips[slotID]._itemId = weaponID;
-        battleUnit[1]._equips[slotID]._dataClass = "weapon";
-        battleUnit[1]._equips[slotID].equipIsGone = false;
-        if (weaponID === 0)  {
-            battleUnit[1]._equips[slotID]._dataClass = "";
-            battleUnit[1]._equips[slotID].equipIsGone = true;
-        }
-    }	 
+    } 
 return battleUnit[1]._equips[slotID];
 };
+
 // reset Actor Equip if actors re_equip
 Game_Temp.prototype.resetActorEquip = function() {
     if ($gameSystem.isSRPGMode() == true) {
@@ -719,7 +763,28 @@ Game_Enemy.prototype.initialize = function(enemyId, x, y) {
     this._battleUnit = 'enemy'; 
     this._itemSlots = [new Game_Item(), new Game_Item(), new Game_Item()];
     this.enemyItemStorage();
+
 };
+
+Game_Enemy.prototype.initEnemyUnitCoreSetup = function(event_id) {
+    this._exp = {};
+    this._skills = [];
+    this._classId = 0;
+    this._level = 0;
+    this._name = '';
+    var enemyMeta = this.enemy().meta;
+    this.initSkills();
+    this._team = this.srpgTeam();
+    this._name = this.name();
+    if (enemyMeta.srpgClass) {
+        this._classId = Number(enemyMeta.srpgClass);
+    } else {this._classId = 1};
+    if (enemyMeta.srpgClass) {
+        this._level = Number(enemyMeta.srpgLevel);
+    } else {this._level = 1};
+    this.initExp();
+};
+
 // get dropItems Into the EnemyItemStorage and set max slot size 3;Note: <enemyEquipSlotSize:x>
 Game_Enemy.prototype.enemyItemStorage = function() {
     var count = _srpg_enemyItemSlotSize;
@@ -901,9 +966,14 @@ Game_Enemy.prototype.weapons = function() {
 // drawn contents Enemy Status window
 Window_SrpgStatus.prototype.drawContentsEnemy = function() {   
       var lineHeight = this.lineHeight();
+      var srpgTeam = this._battler.srpgTeam();
+      this.changeTextColor(this.textColor(13));
+      this.drawText('Team:', 270, lineHeight * 0);
+      this.resetTextColor();
+      this.drawText(srpgTeam + ' ', 340, lineHeight * 0);
       this.drawActorName(this._battler, 12, lineHeight * 0);
-      this.drawEnemyClass(this._battler, 12, lineHeight * 5);
       this.drawEnemyFace(this._battler, 4, lineHeight * 1);
+      this.drawEnemyClass(this._battler, 12, lineHeight * 5);
       this.drawBasicInfoEnemy(4, lineHeight * 6);
       this.drawParameters(156, lineHeight * 1);
       this.drawSrpgParameters(156, lineHeight * 4); 
@@ -994,6 +1064,7 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
 // related to the function above "this.drawBasicInfoEnemy"
 Window_SrpgStatus.prototype.drawBasicInfoEnemy = function(x, y) {
       var lineHeight = this.lineHeight();
+      this.drawEnemyExpRate(this._battler, x, y + lineHeight * 1);
       this.drawEnemyLevel(this._battler, x, y + lineHeight * 1);
       this.drawActorIcons(this._battler, x, y + lineHeight * 0);
       this.drawActorHp(this._battler, x, y + lineHeight * 2);
@@ -1013,15 +1084,21 @@ Window_SrpgStatus.prototype.windowHeight = function() {
       return this.fittingHeight(10);
 };
 
+
 // actors:
 //--------
 
 // draw Actor Content
 Window_SrpgStatus.prototype.drawContentsActor = function() {    
       var lineHeight = this.lineHeight();
+      var srpgTeam = this._battler.srpgTeam();
+      this.changeTextColor(this.textColor(13));
+      this.drawText('Team:', 270, lineHeight * 0);
+      this.resetTextColor();
+      this.drawText(srpgTeam + ' ', 340, lineHeight * 0);
       this.drawActorName(this._battler, 12, lineHeight * 0);
-      this.drawActorClass(this._battler, 12, lineHeight * 5);
       this.drawActorFace(this._battler, 4, lineHeight * 1);
+      this.drawActorClass(this._battler, 12, lineHeight * 5);
       this.drawBasicInfoActor(4, lineHeight * 6);
       this.drawParameters(156, lineHeight * 1);
       this.drawSrpgParameters(156, lineHeight * 4);
@@ -1127,6 +1204,18 @@ Window_SrpgStatus.prototype.drawBasicInfoActor = function(x, y) {
 // Setup for Skills:
 //-----------------------
 
+//this.srpgStealExpText(finalAmount);
+Game_Action.prototype.srpgStealExpText = function(finalAmount) {
+    $gameMessage.setBackground(1);$gameMessage.setPositionType(2);
+    $gameMessage.add(finalAmount + "Exp stolen! \\|\\^");
+};
+
+//this.srpgStealGoldText(finalAmount);
+Game_Action.prototype.srpgStealGoldText = function(finalAmount) {
+    $gameMessage.setBackground(1);$gameMessage.setPositionType(2);
+    $gameMessage.add(finalAmount + "Gold stolen! \\|\\^");
+};
+
 //this.srpgStealProtectedText(itemName, msgIconID, eName);
 Game_Action.prototype.srpgStealProtectedText = function(itemName, msgIconID, eName) {
     $gameMessage.setBackground(1);$gameMessage.setPositionType(2);
@@ -1178,15 +1267,66 @@ Game_Action.prototype.setTargetEventId = function() {
     this._targetEventID = $gameTemp.targetEvent().eventId();
     return this._targetEventID;
 };
-	
+
+// handle => steal gold & steal exp
+Game_Action.prototype.stealRandom = function(random, amount, type) {
+    // check stealchance before anything else,..
+    if (this.item().meta.srpgSkillStealChance) {
+        _stealChance = this.item().meta.srpgSkillStealChance;
+    }   
+    // stealChanceRoll var that represents the chance you rolled.
+    var stealChanceRoll = Math.floor(Math.random() * 100) + 1; 
+    //_stealChance is the PluginVar that stores % chance 
+    if (stealChanceRoll > _stealChance) {		     
+        return false;
+    }; 
+    // get data  recommended numbers for "amount" are => 99 or 111 or 123
+    var activeBattler = $gameSystem.EventToUnit(this._userEventID);
+    var targetBattler = $gameSystem.EventToUnit(this._targetEventID);
+    var activeLevel = Number(activeBattler[1]._level);
+    var targetLevel = Number(targetBattler[1]._level);
+    var finalAmount = Number(amount); 
+    var randomAmount = Number(amount); 
+    // return false if target has not enough amount
+    if (type === "gold" && targetBattler[1] === 'actor' && ($gameParty.gold < finalAmount)) {
+        finalAmount = Number($gameParty.gold);this.srpgStealGoldText(finalAmount);return false};
+    if (type === "exp" && (targetBattler[1]._exp < finalAmount)) {
+        finalAmount = Number(targetBattler[1]._exp);this.srpgStealExpText(finalAmount); return false}; 
+    // prepare variables
+    if (random === "true") {randomAmount = Math.round(Math.floor(Math.random() * finalAmount + finalAmount / 2))};  
+    if (activeLevel > targetLevel) var activeStrong = activeLevel - targetLevel;
+    if (activeLevel < targetLevel) var targetStrong = targetLevel - activeLevel;
+    if (activeStrong) finalAmount = Math.round((randomAmount / (activeLevel + 1)) * targetLevel); 
+    if (targetStrong) finalAmount = Math.round((randomAmount / (activeLevel - 1)) * targetLevel);
+    // execute change 
+    if (activeBattler[0] === 'actor') { 
+        if (type === "gold") $gameParty.gainGold(finalAmount);
+        if (type === "exp") activeBattler[1].gainExp(finalAmount);
+    };   
+    if (activeBattler[0] === 'enemy') { 
+        if (type === "exp") activeBattler[1].gainExp(finalAmount);
+    }; 
+    if (targetBattler[0] === 'actor') { 
+        if (type === "gold") $gameParty.gainGold(-finalAmount);
+        if (type === "exp") targetBattler[1].gainExp(-finalAmount);
+    };   
+    if (targetBattler[0] === 'enemy') {  
+        if (type === "exp") targetBattler[1].gainExp(-finalAmount);
+    }; 
+    // blabla results display Text
+    if (type === "gold") this.srpgStealGoldText(finalAmount);
+    if (type === "exp") this.srpgStealExpText(finalAmount);
+return true;        
+};
+
+
 // Add UnitCore Skill Setup to Game Action apply (add Skill NoteTag Setup)
 var _SRPG_Game_Action_apply = Game_Action.prototype.apply;
 Game_Action.prototype.apply = function(target) {
     _SRPG_Game_Action_apply.call(this, target);
     if ($gameSystem.isSRPGMode() == true) {
-        // add stuff to Game action if Break/Steal -Meta & Hit
-        var result = target.result();
-	this._succesText = false;	    
+        // add stuff to Game action if Break/Steal Meta & Hit
+        var result = target.result();	    
         this._userEventID = 0;
         this._targetEventID = 0;
         this.setUserEventId();
@@ -1280,9 +1420,26 @@ Game_Action.prototype.apply = function(target) {
             if (this.item().meta.srpgSlotStealItem === "allSlots" || "nextSlot") { 
                 usedSlot = this.item().meta.srpgSlotStealItem};			
             this.checkChance("steal", "item", null, null, usedSlot);             
-        }	    
+        }	
+        if (this.item().meta.srpgGoldStealAmount && result.isHit()) {
+            var amount = Number(this.item().meta.srpgGoldStealAmount);
+            this.stealRandom("false", amount, "gold");
+        }
+        if (this.item().meta.srpgGoldStealRandom && result.isHit()) {
+            var amount = Number(this.item().meta.srpgGoldStealRandom);
+            this.stealRandom("true", amount, "gold");
+        }
+        if (this.item().meta.srpgExpStealAmount && result.isHit()) {
+            var amount = Number(this.item().meta.srpgExpStealAmount);
+            this.stealRandom("false", amount, "exp");
+        }
+        if (this.item().meta.srpgExpStealRandom && result.isHit()) {
+            var amount = Number(this.item().meta.srpgExpStealRandom);
+            this.stealRandom("true", amount, "exp");
+        }   
     }
 };
+
 // check skill chance for break & steal skills, if true process skills
 Game_Action.prototype.checkChance = function(skillType, metaType, iName, typeID, slotID) {
     if (skillType === "break") {
@@ -1320,6 +1477,7 @@ Game_Action.prototype.checkChance = function(skillType, metaType, iName, typeID,
         };
     }	
 };	
+
 // console.log(skillType, metaType, itemName, typeID, slotID);console.log(targetSlots[i]);
 // process all Steal & Break Skills related to their NoteTags	
 Game_Action.prototype.unitCoreSkill = function(skillType, metaType, iName, typeID, slotID) {
@@ -1350,7 +1508,7 @@ Game_Action.prototype.unitCoreSkill = function(skillType, metaType, iName, typeI
               if (dataSlot === "nextSlot") var slotID = i; // this is triggered with "allSkills = false"-mode
               var breakProtection = false;
               var stealProtection = false;
-	      var skillProcess = false;console.log(slotID);
+	      var skillProcess = false;
 	      // process -> metaType "srpgBreak" & "srpgSteal" 
 	      if ((iName === null) && (typeID === null) && (slotID === null)) {
         	   var skillProcess = true;
@@ -2297,9 +2455,233 @@ Game_System.prototype.teamIsDead = function(team) {
 };	
 	
 //-----------------------------------------------------------------------------------------
-// comming next -> enemy LV/EXP/Class
+// Code Stuff related to -> enemy LV/EXP/CLASS (all other related code is @plugin start)
 //-----------------------------------------------------------------------------------------                 
+
+Game_Enemy.prototype.initSkills = function() {
+    this._skills = [];
+    for (var i = 0; i < this.enemy().actions.length; ++i) {
+         var skill = $dataSkills[this.enemy().actions[i].skillId];
+         if (skill) this._skills.push(skill);
+    }
+};
+
+Game_Enemy.prototype.currentClass = function() {
+    return $dataClasses[this._classId];
+};
+
+Game_Enemy.prototype.maxLevel = function() {
+    return this.enemy().maxLevel;
+};
+
+Game_Enemy.prototype.isMaxLevel = function() {
+    return this._level >= this.maxLevel();
+};
 	
+Game_Enemy.prototype.levelUp = function() {
+    this._level++;
+};
+
+Game_Enemy.prototype.levelDown = function() {
+    this._level--;
+};
+
+Game_Enemy.prototype.initExp = function() {
+    this._exp[this._classId] = this.currentLevelExp();
+};
+
+Game_Enemy.prototype.currentExp = function() {
+    return this._exp[this._classId];
+};
+
+Game_Enemy.prototype.currentLevelExp = function() {
+    return this.expForLevel(this._level);
+};
+
+Game_Enemy.prototype.nextLevelExp = function() {
+    return this.expForLevel(this._level + 1);
+};
+
+Game_Enemy.prototype.nextRequiredExp = function() {
+    return this.nextLevelExp() - this.currentExp();
+};
+
+Game_Enemy.prototype.expForLevel = function(level) {
+    var c = this.currentClass();
+    var basis = c.expParams[0];
+    var extra = c.expParams[1];
+    var acc_a = c.expParams[2];
+    var acc_b = c.expParams[3];
+    return Math.round(basis*(Math.pow(level-1, 0.9+acc_a/250))*level*
+            (level+1)/(6+Math.pow(level,2)/50/acc_b)+(level-1)*extra);
+
+};
+
+Game_Enemy.prototype.gainExp = function(exp) {
+    var newExp = this.currentExp() + Math.round(exp * this.finalExpRate());
+    this.changeExp(newExp, this.shouldDisplayLevelUp());//(newExp, true);
+};
+
+Game_Enemy.prototype.shouldDisplayLevelUp = function() {
+    return true;
+};
+
+Game_Enemy.prototype.finalExpRate = function() {
+    return this.exr * (this.isBattleMember() ? 1 : this.benchMembersExpRate());
+};
+
+Game_Enemy.prototype.benchMembersExpRate = function() {
+    return $dataSystem.optExtraExp ? 1 : 0;
+};
+
+BattleManager.gainExp = function() {
+    if ($gameSystem.isSRPGMode() == true) {
+        var exp = this._rewards.exp;
+        var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
+        //console.log(activeBattler);console.log(exp);
+        if (activeBattler) activeBattler.gainExp(exp);
+
+    } else {
+        _SRPG_BattleManager_gainExp.call(this);
+    }
+};
+
+Game_Enemy.prototype.changeExp = function(exp, show) {
+    this._exp[this._classId] = Math.max(exp, 0);
+    var lastLevel = this._level;
+    var lastSkills = this.skills();
+    while (!this.isMaxLevel() && this.currentExp() >= this.nextLevelExp()) {
+        this.levelUp();
+    }
+    while (this.currentExp() < this.currentLevelExp()) {
+        this.levelDown();
+    }
+    if (show && this._level > lastLevel) {
+        this.displayLevelUp();//this.findNewSkills(lastSkills)
+    }
+    this.refresh();
+};
+
+Scene_Map.prototype.processSrpgVictory = function() {
+     var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
+     if (activeBattler && !activeBattler.isDead()) {
+	 this.makeRewards();
+         if (this._rewards.exp > 0 || this._rewards.gold > 0 || this._rewards.items.length > 0) {
+	     this._srpgBattleResultWindow.setBattler(activeBattler);
+	     this._srpgBattleResultWindow.setRewards(this._rewards);
+	     var se = {};
+	     se.name = 'Item3';
+	     se.pan = 0;
+	     se.pitch = 100;
+	     se.volume = 90;
+	     AudioManager.playSe(se);
+	     this._srpgBattleResultWindow.open();
+	     this._srpgBattleResultWindowCount = 60;
+	     this.gainRewards();
+	     return true;
+	 }
+     return false;
+     }
+};
+
+Scene_Battle.prototype.createSrpgBattleResultWindow = function() {
+     var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
+     this._srpgBattleResultWindow = new Window_SrpgBattleResult(activeBattler);
+     //console.log(activeBattler);
+     this._srpgBattleResultWindow.openness = 0;
+     this.addWindow(this._srpgBattleResultWindow);
+     BattleManager.setSrpgBattleResultWindow(this._srpgBattleResultWindow);
+};
+
+Game_Enemy.prototype.displayLevelUp = function() {
+    var text = TextManager.levelUp.format(this._name, TextManager.level, this._level);
+    $gameMessage.newPage();
+    $gameMessage.add(text);
+};
+
+Window_SrpgBattleResult.prototype.drawGainExp = function(x, y) {
+      var lineHeight = this.lineHeight();
+      //console.log(this._battler);
+      var exp = Math.round(this._rewards.exp * this._battler.finalExpRate()); 
+      var width = this.windowWidth() - this.padding * 2;
+      if (exp > 0) {
+          var text = TextManager.obtainExp.format(exp, TextManager.exp);
+          this.resetTextColor();
+          this.drawText(text, x, y, width);
+      } else {
+          this._changeExp = 1;
+      }
+      var color1 = this.hpGaugeColor1();
+      var color2 = this.hpGaugeColor2();
+      var nowExp = Math.floor(this._reserveExp + exp / 30 * (31 - this._changeExp));
+      if (nowExp >= this._battler.expForLevel(this._level + 1)) {
+          this._level += 1;
+          var se = {};
+          se.name = 'Up4';
+          se.pan = 0;
+          se.pitch = 100;
+          se.volume = 90;
+          AudioManager.playSe(se);
+      }
+      if (this._level >= this._battler.maxLevel()) {
+          var rate = 1.0;
+          var nextExp = '-------'
+      } else {
+          var rate = (nowExp - this._battler.expForLevel(this._level)) / 
+                     (this._battler.expForLevel(this._level + 1) - this._battler.expForLevel(this._level));
+          var nextExp = this._battler.expForLevel(this._level + 1) - nowExp;
+      }
+      //console.log(this._level);
+      this.drawGauge(x + 100, y + lineHeight, width - 100, rate, color1, color2);
+      this.changeTextColor(this.systemColor());
+      this.drawText(TextManager.levelA, x, y + lineHeight, 48);
+      this.resetTextColor();
+      this.drawText(this._level, x + 48, y + lineHeight, 36, 'right');
+      var expNext = TextManager.expNext.format(TextManager.level);
+      this.drawText(expNext, width - 270, y + lineHeight, 270);
+      this.drawText(nextExp, width - 270, y + lineHeight, 270, 'right');
+      this._changeExp -= 1;
+};
+
+Window_Base.prototype.drawEnemyClass = function(enemy, x, y, width) {
+      width = width || 168;
+      var className = enemy.currentClass().name;
+      if (className) {
+          this.resetTextColor();
+          this.drawText(className, x, y, width);
+      }
+};
+
+Window_Base.prototype.drawEnemyLevel = function(enemy, x, y) {
+      var srpgLevel = enemy._level;
+      if (srpgLevel) {
+          this.changeTextColor(this.systemColor());
+          this.drawText(TextManager.levelA, x, y, 48);
+          this.resetTextColor();
+          this.drawText(srpgLevel, x + 20, y, 36, 'right');
+      }
+};
+
+Window_Base.prototype.drawEnemyExpRate = function(enemy, x, y, width) {
+      width = width || 120;
+      var color1 = this.hpGaugeColor1();
+      var color2 = this.hpGaugeColor2();
+      this.drawGauge(x, y, width, enemy.expRate(), color1, color2);
+};
+
+Game_Enemy.prototype.expRate = function() {
+    if (this.isMaxLevel()) {
+        var rate = 1.0;
+    } else {
+        var rate = (this.currentExp() - this.currentLevelExp()) / (this.nextLevelExp() - this.currentLevelExp());
+    }
+return rate;
+};
+
+//-----------------------------------------------------------------------------------------   
+
+//-----------------------------------------------------------------------------------------   
+
 //--End:
 
 })();

@@ -333,9 +333,9 @@
  *
  * <srpgBreak:allItems>              //"x" can be "allItems" or "allWeapons" or "allArmors"
  * <srpgItemBreak:allNames>          //"x" can be only "allNames"
- * <srpgTypeBreakEquip:allTypes>     //"x" can be only "allTypes"
- * <srpgTypeBreakWeapon:allTypes>    //"x" can be only "allTypes"  
- * <srpgTypeBreakArmor:allTypes>     //"x" can be only "allTypes"  
+ * <srpgTypeBreakEquip:allTypes>     //"x" can be only  
+ * <srpgTypeBreakWeapon:allTypes>    //"x" can be only  
+ * <srpgTypeBreakArmor:allTypes>     //"x" can be only  
  * <srpgSlotBreakEquip:allSlots>     //"x" can be "allSlots" or "nextSlot"
  * <srpgSlotBreakItem:nextSlot>      //"x" can be "allSlots" or "nextSlot" 
  *
@@ -488,7 +488,7 @@
  * So it would make no sence to add restrictions to the enemys , when the player can not controll the Enemys.
  *
  * This oppinion forced me, to not just copy paste The whole Setup, from actors to enemys..
- * -> i had to figure out which Functions are required and which Functions doesnt help for my purposes.
+ * -> i had to figure which Functions are required and which Functions doesnt help for my purposes.
  *
  * => also my main Purpose was to make all this compatible to the used srpg System.
  * =======================
@@ -984,7 +984,7 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
       var equips = this._battler._equips;
       // only 5 slots are used by default
       // slot 0 check if weapon or shield assume weapon
-      if (equips[0] && (equips[0]._itemId === 0) {
+      if (equips[0] && (equips[0]._itemId === 0)) {
           if (this._battler.enemy().meta.srpgSlot0Type === "armor") {
               if (_drawText === 'true' && this._battler._equipIsGone[0] === false) {
                   this.drawText(_textNoShield, 240, lineHeight * 5);

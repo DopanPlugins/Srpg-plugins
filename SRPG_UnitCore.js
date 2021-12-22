@@ -599,6 +599,15 @@ Scene_Map.prototype.srpgAfterAction = function() {
      // reset break&steal-Chance to the Plugin param Setup
      _breakChance = Number(parameters['Break Chance']);
      _stealChance = Number(parameters['Steal Chance']);
+     //make sure the team data is properly stored if team has changed somehow
+     for (var i = 1; i <= $gameMap.events().length; i++) {
+          var battler = $gameSystem.EventToUnit([i]);
+          var eventUnit = $gameMap.event([i]);
+          if (battler && eventUnit && !battler[1].isDead()) {
+              if (battler[1]._team !== battler[1].srpgTeam()) battler[1]._team = battler[1].srpgTeam();
+          }
+     } 
+  
 };   
 
 //Game_interpreter  _enable_ItemSlotsCommand
@@ -802,15 +811,15 @@ Game_Enemy.prototype.initEnemyUnitCoreSetup = function(event_id) {
         eUnit[1]._level = 0;
         eUnit[1]._name = '';
         eUnit[1].initSkills();
-        eUnit[1]._team = this.srpgTeam();
-        eUnit[1]._name = this.name();
+        eUnit[1]._team = eUnit[1].srpgTeam();
+        eUnit[1]._name = eUnit[1].name();
 	var enemyMeta = eUnit[1].enemy().meta;
         if (enemyMeta.srpgClass) {
             eUnit[1]._classId = Number(enemyMeta.srpgClass);
-        } else {this._classId = 1};
+        } else {eUnit[1]._classId = 1};
         if (enemyMeta.srpgLevel) {
             eUnit[1]._level = Number(enemyMeta.srpgLevel);
-        } else {this._level = 1};
+        } else {eUnit[1]._level = 1};
         eUnit[1].initExp();
     };
 };

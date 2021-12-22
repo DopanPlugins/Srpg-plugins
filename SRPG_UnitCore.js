@@ -1081,7 +1081,7 @@ Window_SrpgStatus.prototype.drawBasicInfoEnemy = function(x, y) {
 };
 // Status Window Width
 Window_SrpgStatus.prototype.windowWidth = function() {
-      return 550;
+      return Graphics.boxWidth / 2;
 };
 // Status Window Height (amount of lines starts from the top with 0) 
 Window_SrpgStatus.prototype.windowHeight = function() {
@@ -1958,12 +1958,11 @@ Window_ItemList.prototype.makeItemList = function() {
       if ($gameSystem.isSRPGMode() == true) {
 	    this._data = [];
             // check which actor can be used and use it
-            if ($gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]) {
+            if (SceneManager._scene instanceof Scene_Map === true) {
                 var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
             } else {
-                if ($gameParty.menuActor()) {
-	            var actor = $gameParty.menuActor();
-	        };
+                //assume menu actor usage if not scene map
+	        var actor = $gameParty.menuActor();
 	    };
             // set Object from item to the ItemList
 	    for (var i = 0; i < actor._itemSlots.length; i++) {
@@ -2535,7 +2534,7 @@ Game_Enemy.prototype.expForLevel = function(level) {
 
 Game_Enemy.prototype.gainExp = function(exp) {
     var newExp = this.currentExp() + Math.round(exp * this.finalExpRate());
-    this.changeExp(newExp, this.shouldDisplayLevelUp());//(newExp, true);
+    this.changeExp(newExp, this.shouldDisplayLevelUp());
 };
 
 Game_Enemy.prototype.shouldDisplayLevelUp = function() {

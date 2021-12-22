@@ -2,7 +2,7 @@
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
- * @plugindesc v2.1 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
+ * @plugindesc v2.2 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
  *               And it replaces the "SRPG_EnemyEquip"-Plugin.                     
  *
  * @author dopan ("SRPG_Teams" is made by doctorQ)
@@ -521,10 +521,11 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 2.1:
+ * Version 2.2:
  * - first Release 18.12.2021 for SRPG (rpg mv)!
  * -> this REPLACES the old "enemyEquip"-Plugin
  * -> add Enemy class and enemy Level and "steal"Gold/Exp -Skills
+ * -> added Bugfixes
  */
  
 (function() {

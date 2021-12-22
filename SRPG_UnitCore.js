@@ -1955,23 +1955,17 @@ Window_PartyItemStorage.prototype.isEnabled = function(item) {
 
   var _srpg_AI_makeItemList = Window_ItemList.prototype.makeItemList;
 Window_ItemList.prototype.makeItemList = function() {
-      if ($gameSystem.isSRPGMode() == true) {
-	    this._data = [];
-            // check which actor can be used and use it
-            if (SceneManager._scene instanceof Scene_Map === true) {
-                var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
-            } else {
-                //assume menu actor usage if not scene map
-	        var actor = $gameParty.menuActor();
-	    };
-            // set Object from item to the ItemList
-	    for (var i = 0; i < actor._itemSlots.length; i++) {
+      if ($gameSystem.isSRPGMode() == true  && SceneManager._scene instanceof Scene_Map === true) {
+	  this._data = [];
+          var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
+          // set Object from item to the ItemList
+	  for (var i = 0; i < actor._itemSlots.length; i++) {
                  this._data[i] = actor._itemSlots[i].object();
-	    };
+	  };
       } else {
-         _srpg_AI_makeItemList.call(this);
-        // yep ItemCore compatiblety script
-        if (SceneManager._scene instanceof Scene_Item && (_srpg_Yep_ItemCore === 'true')) this.listEquippedItems();
+          _srpg_AI_makeItemList.call(this);
+          // yep ItemCore compatiblety script
+          if (SceneManager._scene instanceof Scene_Item && (_srpg_Yep_ItemCore === 'true')) this.listEquippedItems();
       };
 };
 
@@ -1985,7 +1979,7 @@ Window_ItemList.prototype.drawItem = function(index) {
 
   var _srpg_AI_drawItemNumber = Window_ItemList.prototype.drawItemNumber;
 Window_ItemList.prototype.drawItemNumber = function(item, x, y, width) {
-      if ($gameSystem.isSRPGMode() == true) {
+      if ($gameSystem.isSRPGMode() == true  && SceneManager._scene instanceof Scene_Map === true) {
 	  var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
 	  var itemSlot = actor._itemSlots[this._dummyIndex];
 	  var txt = itemSlot.amount + "/" + item.stackSize;
@@ -1995,19 +1989,19 @@ Window_ItemList.prototype.drawItemNumber = function(item, x, y, width) {
 
   var _srpg_AI_isEnabled = Window_ItemList.prototype.isEnabled;
 Window_ItemList.prototype.isEnabled = function(item) {
-      if ($gameSystem.isSRPGMode() == true) {
+      if ($gameSystem.isSRPGMode() == true  && SceneManager._scene instanceof Scene_Map === true) {
           var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
           return actor && actor.canUse(item);
       } else {
          // yep ItemCore compatiblety script
          if (SceneManager._scene instanceof Scene_Item && (_srpg_Yep_ItemCore === 'true')) return true;
-             return _srpg_AI_isEnabled.call(this, item);
+         return _srpg_AI_isEnabled.call(this, item);
       };
 };
 
   var _srpg_AI_maxCols = Window_ItemList.prototype.maxCols;   
 Window_ItemList.prototype.maxCols = function() {
-      if ($gameSystem.isSRPGMode() == true) {
+      if ($gameSystem.isSRPGMode() == true  && SceneManager._scene instanceof Scene_Map === true) {
           return 1;
       } else {return _srpg_AI_maxCols.call(this)};
 };

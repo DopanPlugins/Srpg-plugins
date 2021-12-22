@@ -13,7 +13,7 @@
  * @param number of pages
  * @desc Number of pages the status window have
  * @type number
- * @default 3
+ * @default 2
  *
  * @help
  *
@@ -43,7 +43,7 @@
                    return plugin.description.contains('<SRPG_StatusWindow>'); });
 
     var _enableStatus = !!eval(params['enable actor status command']);
-    var _pages = Number(params['number of pages'] || 3);
+    var _pages = Number(params['number of pages'] || 2);
 
     var _Window_SrpgStatus_initialize = Window_SrpgStatus.prototype.initialize
     Window_SrpgStatus.prototype.initialize = function(x, y) {
@@ -176,16 +176,16 @@
     var _SRPG_import_enemyEquip_actorStatus = Window_SrpgStatus.prototype.drawContentsActor;
     Window_SrpgStatus.prototype.drawContentsActor = function() {
         var lineHeight = this.lineHeight();
-        if (this._page == 0){ 
-            _SRPG_import_enemyEquip_actorStatus.call(this)
-        } else if (this._page == 1){
+        if (this._page == 0) { 
+            _SRPG_import_enemyEquip_actorStatus.call(this);
+        } else if (this._page == 1) {
             //TODO: this part is for page 1
             //add data:
             var characterName = this._battler._characterName;
             var characterIndex = this._battler._characterIndex;
             //TODO:  "page 1" + char img
             this.changeTextColor(this.systemColor());
-            this.drawText('1/2', 465, 20);
+            this.drawText('1/1', 465, 20);
             this.drawText('Element Rates:', 6, lineHeight * 0);
             this.resetTextColor();
             this.drawCharacter(characterName , characterIndex , 440, 60);
@@ -222,38 +222,40 @@
                      this.changeTextColor(this.systemColor());
                      this.drawText(amount + 'x', 220, lineHeight * 3 + this.lineHeight() * i);
                  }
-
+                 if (itemID === 0) {
+                     this.drawText('<Empty>', 250, lineHeight * 3 + this.lineHeight() * i);
+                 }
             };
 
-        } else if (this._page == 2){
+        //} else if (this._page == 2) {
             //TODO: this part is for page 2
             //add data:
-            var characterName = this._battler._characterName;
-            var characterIndex = this._battler._characterIndex;
+        //    var characterName = this._battler._characterName;
+        //    var characterIndex = this._battler._characterIndex;
             //TODO:  "page 2" + char img
-            this.changeTextColor(this.systemColor());
-            this.drawText('2/2', 465, 20);
-            this.resetTextColor();
-            this.drawCharacter(characterName, characterIndex, 440, 60);
+        //    this.changeTextColor(this.systemColor());
+        //    this.drawText('2/2', 465, 20);
+        //    this.resetTextColor();
+        //    this.drawCharacter(characterName, characterIndex, 440, 60);
             // add stuff here
 
-
         }
-        //Feel free to add/remove pages.
+        //Feel free to add/remove pages
+
     };
     var _SRPG_import_enemyEquip_enemyStatus = Window_SrpgStatus.prototype.drawContentsEnemy;
     Window_SrpgStatus.prototype.drawContentsEnemy = function() {
         var lineHeight = this.lineHeight();
-        if (this._page == 0){
+        if (this._page == 0) {
             _SRPG_import_enemyEquip_enemyStatus.call(this)
-        } else if (this._page == 1){
+        } else if (this._page == 1) {
             //add data:
             var enemyMeta = this._battler.enemy().meta;
             var characterName = enemyMeta.characterName;
             var characterIndex = enemyMeta.characterIndex;
             //TODO: "page 1" +char img
             this.changeTextColor(this.systemColor());
-            this.drawText('1/2', 465, 20);
+            this.drawText('1/1', 465, 20);
             this.drawText('Element Rates:', 2, lineHeight * 0);
             this.resetTextColor();
             this.drawCharacter(characterName, characterIndex, 440, 60);
@@ -287,10 +289,13 @@
                  if (itemID > 0) {
                      this.drawItemName(storage[i].object(), 230, lineHeight * 6 + this.lineHeight() * i);
                  }
+                 if (itemID === 0) {
+                     this.drawText('<Empty>', 230, lineHeight * 6 + this.lineHeight() * i);
+                 }
             };
             //EnemyItemStore Setup End
             this.changeTextColor(this.systemColor());
-            this.drawText('Sklls:', 230, lineHeight * 0);
+            this.drawText('Skills:', 230, lineHeight * 0);
             this.resetTextColor();
             var skills = [];
             for (var i = 0; i < this._battler.enemy().actions.length; ++i) {
@@ -300,22 +305,18 @@
             }
             // add stuff here
 
-
-
-        } else if (this._page == 2){
+        //} else if (this._page == 2) {
             //TODO: this part is content for page 2
             //add data:
-            var enemyMeta = this._battler.enemy().meta;
-            var characterName = enemyMeta.characterName;
-            var characterIndex = enemyMeta.characterIndex;
+        //    var enemyMeta = this._battler.enemy().meta;
+        //    var characterName = enemyMeta.characterName;
+        //    var characterIndex = enemyMeta.characterIndex;
             //TODO:  "page 2"+ char img
-            this.changeTextColor(this.systemColor());
-            this.drawText('2/2', 465, 20);
-            this.resetTextColor();
-            this.drawCharacter(characterName, characterIndex, 440, 60);
+        //    this.changeTextColor(this.systemColor());
+        //    this.drawText('2/2', 465, 20);
+        //    this.resetTextColor();
+        //    this.drawCharacter(characterName, characterIndex, 440, 60);
             // add stuff here
-
-
 
         }
         //Feel free to add/remove pages.

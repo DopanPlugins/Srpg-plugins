@@ -488,17 +488,19 @@
  *
  * use a Number for this (id of class)
  *
- * Enemy Classes wont let enemy learn skills or Class param, they are only used for:
+ * Enemy Classes wont let enemy learn skills or use the Class param,Classes are only used for:
  *
  * - using Class Notetags
  *
  * - using the EXP curves of the Class to handle the EXP Setup
  *
+ * - display the Classname in battleStatus window
+ *
  * also enemys dont need to care about Equip restrictions,.. 
  *
  * In my oppinion, Class/Equip Restrictions are made for the "player" of your Game.Not for you the Dev.
  *
- * So it would make no sence to add restrictions to the enemys , when the player can not controll the Enemys.
+ * So it would make no sence to add restrictions to the enemys , when the player can't controll the Enemys.
  *
  * This oppinion forced me, to not just copy paste The whole Setup, from actors to enemys..
  * -> i had to figure out which Functions are required and which Functions doesnt help for my purposes.
@@ -792,22 +794,23 @@ Game_Enemy.prototype.initialize = function(enemyId, x, y) {
 };
 
 Game_Enemy.prototype.initEnemyUnitCoreSetup = function(event_id) {
-    this._exp = {};
-    this._skills = [];
-    this._classId = 0;
-    this._level = 0;
-    this._name = '';
-    var enemyMeta = this.enemy().meta;
-    this.initSkills();
-    this._team = this.srpgTeam();
-    this._name = this.name();
-    if (enemyMeta.srpgClass) {
-        this._classId = Number(enemyMeta.srpgClass);
-    } else {this._classId = 1};
-    if (enemyMeta.srpgClass) {
-        this._level = Number(enemyMeta.srpgLevel);
-    } else {this._level = 1};
-    this.initExp();
+    if (this._EventToUnit[event_id]) {
+        this._exp = {};
+        this._skills = [];
+        this._classId = 0;
+        this._level = 0;
+        this._name = '';
+        this.initSkills();
+        this._team = this.srpgTeam();
+        this._name = this.name();
+	var enemyMeta = this.enemy().meta;
+        if (enemyMeta.srpgClass) {
+            this._classId = Number(enemyMeta.srpgClass);
+        } else {this._classId = 1};
+        if (enemyMeta.srpgLevel) {
+            this._level = Number(enemyMeta.srpgLevel);
+        } else {this._level = 1};
+        this.initExp();
 };
 
 // get dropItems Into the EnemyItemStorage and set max slot size 3;Note: <enemyEquipSlotSize:x>

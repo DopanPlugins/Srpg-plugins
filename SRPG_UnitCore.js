@@ -811,6 +811,7 @@ Game_Enemy.prototype.initEnemyUnitCoreSetup = function(event_id) {
             this._level = Number(enemyMeta.srpgLevel);
         } else {this._level = 1};
         this.initExp();
+    };
 };
 
 // get dropItems Into the EnemyItemStorage and set max slot size 3;Note: <enemyEquipSlotSize:x>

@@ -216,13 +216,9 @@
             var count = storage.length;
             for (var i = 0; i < count; i++) {
                  var itemID = this._battler._itemSlots[i]._itemId;
-                 var dataType = this._battler._itemSlots[i]._dataClass;
                  var amount = this._battler._itemSlots[i].amount;
                  if (itemID > 0) {
-                     if (dataType === "item") {var itemStorage = $dataItems[itemID]}; 
-                     if (dataType === "armor") {var itemStorage = $dataArmors[itemID]};
-                     if (dataType === "weapon") {var itemStorage = $dataWeapons[itemID]};
-                     this.drawItemName(itemStorage, 250, lineHeight * 3 + this.lineHeight() * i);
+                     this.drawItemName(storage[i].object(), 250, lineHeight * 3 + this.lineHeight() * i);
                      this.changeTextColor(this.systemColor());
                      this.drawText(amount + 'x', 220, lineHeight * 3 + this.lineHeight() * i);
                  }
@@ -284,16 +280,12 @@
             this.changeTextColor(this.systemColor());
             this.drawText('Items:', 220, lineHeight * 5);
             this.resetTextColor();
-            var storage = this._battler._itemSlot;
+            var storage = this._battler._itemSlots;
             var count = storage.length;
             for (var i = 0; i < count; i++) {
-                 var itemID = this._battler._itemSlot[i]._itemId;
-                 var dataType = this._battler._itemSlot[i]._dataClass;
+                 var itemID = this._battler._itemSlots[i]._itemId;
                  if (itemID > 0) {
-                     if (dataType === "item") {var itemStorage = $dataItems[itemID]}; 
-                     if (dataType === "armor") {var itemStorage = $dataArmors[itemID]};
-                     if (dataType === "weapon") {var itemStorage = $dataWeapons[itemID]};
-                     this.drawItemName(itemStorage, 230, lineHeight * 6 + this.lineHeight() * i);
+                     this.drawItemName(storage[i].object(), 230, lineHeight * 6 + this.lineHeight() * i);
                  }
             };
             //EnemyItemStore Setup End

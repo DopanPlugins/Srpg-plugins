@@ -29,7 +29,7 @@
  * @desc (true) is using SV battler IMG for the MenuChar of ItemSlots Menu.(false) is using MapChar. 
  * @type boolean
  * @default false
- *
+ * 
  * @param Break Chance
  * @desc this Number makes the Break chance in %. Min is "1", Max is "100".
  * @type number
@@ -81,7 +81,7 @@
  * @type number
  * @min 3
  * @max 20
- * @default 5
+ * @default 4
  *
  * @param Actor ItemSlot Size
  * @desc Global Size of ActorItemSlots.ActorNote can change this individually.
@@ -137,7 +137,7 @@
  * 
  * => the max Amount of used EnemySlots is 10
  * (but if using more than the default 5, you need to edit the BattleStatusWindow,or only the default_5 will be displayed)
- *  =>such BattleStatusWindow_edit can be made in this plugin or in the "SRPG_StatusWindow(patch)" plugin
+ *  => such BattleStatusWindow_edit can be made in this plugin or in the "SRPG_StatusWindow(patch)" plugin
  * 
  * => the max Amount of  EquipSlots from which can be stolen/broken is also 10
  * (itemSlotSize can be 20 or more if changing the param, but never try to change a ItemSlot which doesnt exist) 
@@ -146,12 +146,16 @@
  * => this Plugin includes a stealing/breaking function!
  *
  * 
- * The plugin param allows you to change a few things.
+ * Pls check out the Plugin param to change a few things if needed.
  *
  * Everything else is handled with EnemyNotetags, SkillNoteTags & Scriptcalls..
  *
  * (by editing the Plugins JS_code the battleStatusWindow can be changed if needed,
- *  but i think i already made the best of it) pls use resolutionof  "1110 x 768"
+ *  but i think i already made the best of it) 
+ *
+ * For the default  BattleStatusWindow Setup pls use resolution of  "1110 x 768"
+ * -> if using resolution of "1110 x 768", you can put "SRPG_StatusWindow(patch)" below this plugin.
+ * -> if using the default resoluton of "816x624", you can put "SRPG_StatusWindow(816x624)" below this plugin.
  *
  * When using EnemyNote to set Equip,
  * every enemyClone with the same EnemyID will have the same Equip..
@@ -229,6 +233,15 @@
  * (in such case the common event should be triggered with "custom execution" or the "preBattle phase" for example)
  *
  *
+ * Scriptcall to enable/disable "ItemSlots menuCommand":
+ *------------------------------------------------------
+ *  
+ *  "this.enableItemSlotsCommand(true/false);"
+ * 
+ * Plugin default is true, if false the MenuCommand is disabled.
+ * 
+ * 
+ *
  * Plugin NoteTags:
  *-----------------
  * Enemy noteTags: (for classes and Levels)
@@ -280,10 +293,10 @@
  * ENEMY EquipSlotAmount & ItemSlotAmount:
  *---------------------------------------------------
  * by default the Global EquipSlotAmount for enemys is set in the plugin param, 
- * it can be any number from 1 up to 20 (default is 5) 
+ * it can be any number from 1 up to 20 (default is 4) 
  *
  * This enemyNote can set the slotAmount for that enemy ID individually!
- * (if not used default 5 will be used)
+ * (if not used default 4 will be used)
  *
  *   <enemyEquipSlotSize:x>  //enemyNote
  * 
@@ -420,7 +433,7 @@
  * The enemySlots_Size can be changed global for all enemys in the Plugin param
  * or with this EnemyNoteTage (affects all enemys with the same enemyID)
  *
- *    <enemyEquipSlotSize:x>    // "x" is the size of enemySlot.. minimum is 3 ! default is 5
+ *    <enemyEquipSlotSize:x>    // "x" is the size of enemySlot.. minimum is 3 ! default is 4
  *
  *
  * ActorItemslots: 
@@ -548,6 +561,7 @@
   var _srpg_emptySlot = parameters['Empty Slot Text'];
   var _lastSlot = 0;
   var _slotActorId = 0;	
+  var _enable_ItemSlotsCommand = true; 
 	
 
 //-----------------------------------------------------------------------------------------
@@ -584,14 +598,20 @@ Scene_Map.prototype.srpgAfterAction = function() {
      _stealChance = Number(parameters['Steal Chance']);
 };   
 
-//Game_interpreter
+//Game_interpreter  _enable_ItemSlotsCommand
 
-// this.changeBreakChance(chanceNumber);Game_Interpreter.prototype.changeBreakChance.call(this, chanceNumber); 
+// this.enableItemSlotsCommand(true/false); 
+Game_Interpreter.prototype.enableItemSlotsCommand = function(switchControll) {
+    _enable_ItemSlotsCommand = switchControll;
+    return switchControll;
+};
+
+// this.changeBreakChance(chanceNumber); 
 Game_Interpreter.prototype.changeBreakChance = function(chanceNumber) {
     _breakChance = Number(chanceNumber);
     return _breakChance;
 };	
-// this.changeStealChance(chanceNumber);Game_Interpreter.prototype.changeStealChance.call(this, chanceNumber); 
+// this.changeStealChance(chanceNumber);
 Game_Interpreter.prototype.changeStealChance = function(chanceNumber) {
     _stealChance = Number(chanceNumber);
     return _stealChance;
@@ -972,9 +992,9 @@ Window_SrpgStatus.prototype.drawContentsEnemy = function() {
       var lineHeight = this.lineHeight();
       var srpgTeam = this._battler.srpgTeam();
       this.changeTextColor(this.textColor(13));
-      this.drawText('Team:', 270, lineHeight * 0);
+      this.drawText('Team:', 290, lineHeight * 0);
       this.resetTextColor();
-      this.drawText(srpgTeam + ' ', 340, lineHeight * 0);
+      this.drawText(srpgTeam + ' ', 360, lineHeight * 0);
       this.drawActorName(this._battler, 12, lineHeight * 0);
       this.drawEnemyFace(this._battler, 4, lineHeight * 1);
       this.drawEnemyClass(this._battler, 12, lineHeight * 5);
@@ -1083,11 +1103,11 @@ Window_SrpgStatus.prototype.drawBasicInfoEnemy = function(x, y) {
 Window_SrpgStatus.prototype.windowWidth = function() {
       return Graphics.boxWidth / 2;
 };
+
 // Status Window Height (amount of lines starts from the top with 0) 
 Window_SrpgStatus.prototype.windowHeight = function() {
       return this.fittingHeight(10);
 };
-
 
 // actors:
 //--------
@@ -1096,10 +1116,11 @@ Window_SrpgStatus.prototype.windowHeight = function() {
 Window_SrpgStatus.prototype.drawContentsActor = function() {    
       var lineHeight = this.lineHeight();
       var srpgTeam = this._battler.srpgTeam();
+      this.drawText(this._battler._nickname, 150, lineHeight * 0);
       this.changeTextColor(this.textColor(13));
-      this.drawText('Team:', 270, lineHeight * 0);
+      this.drawText('Team:', 290, lineHeight * 0);
       this.resetTextColor();
-      this.drawText(srpgTeam + ' ', 340, lineHeight * 0);
+      this.drawText(srpgTeam + ' ', 360, lineHeight * 0);
       this.drawActorName(this._battler, 12, lineHeight * 0);
       this.drawActorFace(this._battler, 4, lineHeight * 1);
       this.drawActorClass(this._battler, 12, lineHeight * 5);
@@ -1629,7 +1650,7 @@ Scene_Menu.prototype.onPersonalOk = function() {
   var _srpg_AI_ActorItemSlots_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
 Window_MenuCommand.prototype.addOriginalCommands = function() {
       _srpg_AI_ActorItemSlots_addOriginalCommands.call(this);
-      var enabled = true;
+      var enabled = _enable_ItemSlotsCommand;
       this.addCommand(_srpg_menuCommand, 'ActorItems'    , enabled);
 };
 	

@@ -3,7 +3,7 @@
 //=============================================================================
 /*:
  * @plugindesc Patched Version <SRPG_StatusWindow> allows you to show multiple status pages in SRPG battle
- * @author Shoukang
+ * @author Shoukang (dopan patch 1110x768)
  *
  * @param enable actor status command
  * @type boolean
@@ -32,7 +32,7 @@
  * Compatibility:
  * Place it below SRPG_UX_Window & SRPG_BattleUI & SRPG_EnemyEquip
  * =========================================================================================================================
- * v2.01 dopans Edited Patch for EnemyEquip!
+ * v2.01 dopans Edited Patch for EnemyEquip!1110x768
  */
 
 (function(){

@@ -1661,14 +1661,6 @@ Scene_Menu.prototype.createCommandWindow = function() {
 };
   
 //------------------------------Window_ActorSlot
-
-Window_Selectable.prototype.drawActorItemNumberOnMap = function(item, x, y, width) {
-      var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
-      var itemSlot = actor._itemSlots[this._iIteration];
-      var txt = itemSlot.amount + "/" + item.stackSize;
-      this.drawText(txt, x, y, width, 'right');
-};  
-
 //------------------------------
 // Window_MenuChar
 
@@ -1965,6 +1957,7 @@ Window_PartyItemStorage.prototype.maxCols = function() {
 
 Window_PartyItemStorage.prototype.isEnabled = function(item) {
       if (!item) {return false};
+      if (item && $gameSystem.isSRPGMode() == true && !$dataItems[item.id].meta.noActorItemSlot) return true;
       if (item && !$dataItems[item.id].meta.noActorItemSlot) {
           var actor = this._actor;
           return actor && actor.canUse(item);
@@ -1976,12 +1969,12 @@ Window_PartyItemStorage.prototype.isEnabled = function(item) {
 
   var _srpg_AI_makeItemList = Window_ItemList.prototype.makeItemList;
 Window_ItemList.prototype.makeItemList = function() {
-      if ($gameSystem.isSRPGMode() == true  && SceneManager._scene instanceof Scene_Map === true) {
+      if ($gameSystem.isSRPGMode() == true && SceneManager._scene instanceof Scene_Map === true) {
 	  this._data = [];
           var actor = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
           // set Object from item to the ItemList
 	  for (var i = 0; i < actor._itemSlots.length; i++) {
-                 this._data[i] = actor._itemSlots[i].object();
+               this._data[i] = actor._itemSlots[i].object();
 	  };
       } else {
           _srpg_AI_makeItemList.call(this);

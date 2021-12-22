@@ -794,23 +794,24 @@ Game_Enemy.prototype.initialize = function(enemyId, x, y) {
 };
 
 Game_Enemy.prototype.initEnemyUnitCoreSetup = function(event_id) {
-    if (this._EventToUnit[event_id]) {
-        this._exp = {};
-        this._skills = [];
-        this._classId = 0;
-        this._level = 0;
-        this._name = '';
-        this.initSkills();
-        this._team = this.srpgTeam();
-        this._name = this.name();
-	var enemyMeta = this.enemy().meta;
+    if ($gameSystem.isSRPGMode() == true && $gameSystem.EventToUnit(event_id)[1]) {
+        var eUnit = $gameSystem.EventToUnit(event_id);
+        eUnit[1]._exp = {};
+        eUnit[1]._skills = [];
+        eUnit[1]._classId = 0;
+        eUnit[1]._level = 0;
+        eUnit[1]._name = '';
+        eUnit[1].initSkills();
+        eUnit[1]._team = this.srpgTeam();
+        eUnit[1]._name = this.name();
+	var enemyMeta = eUnit[1].enemy().meta;
         if (enemyMeta.srpgClass) {
-            this._classId = Number(enemyMeta.srpgClass);
+            eUnit[1]._classId = Number(enemyMeta.srpgClass);
         } else {this._classId = 1};
         if (enemyMeta.srpgLevel) {
-            this._level = Number(enemyMeta.srpgLevel);
+            eUnit[1]._level = Number(enemyMeta.srpgLevel);
         } else {this._level = 1};
-        this.initExp();
+        eUnit[1].initExp();
     };
 };
 

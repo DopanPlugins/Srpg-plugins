@@ -2605,6 +2605,9 @@ Scene_Map.prototype.processSrpgVictory = function() {
      var targetBattler = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
      if (activeBattler[1] && !activeBattler[1].isDead()) {
 	 this.makeRewards();
+         // if enemy fight each other,cos of teams or "charm" exp would be doubled, this fix it
+         if (activeBattler[0] === 'enemy' && targetBattler[0] === 'enemy') this._rewards.exp = Number(this._rewards.exp / 2);
+         // if enemys target theirselfs, they should not get EXP by default ,ame ways it works for actors
          if (activeBattler[0] === 'enemy' && targetBattler[1] === activeBattler[1]) this._rewards.exp = 0;
          //console.log(this._rewards.exp);console.log(this._rewards.gold);console.log(this._rewards.items.length);
          if (this._rewards.exp > 0 || this._rewards.gold > 0 || this._rewards.items.length > 0) {
@@ -2618,7 +2621,8 @@ Scene_Map.prototype.processSrpgVictory = function() {
 	     AudioManager.playSe(se);
 	     this._srpgBattleResultWindow.open();
 	     this._srpgBattleResultWindowCount = 60;
-             if (activeBattler[0] === 'actor') {
+             // gain rewards works only on actors and is not required for enemys or enemyTeam_actors 
+             if (activeBattler[0] === 'actor' && !activeBattler[1].srpgTeam() === _enemyTeam) {
                  this.gainRewards();
 	     }
 	     return true;

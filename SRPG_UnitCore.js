@@ -2,7 +2,7 @@
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
- * @plugindesc v2.3 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
+ * @plugindesc v2.2 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
  *               And it replaces the "SRPG_EnemyEquip"-Plugin.                     
  *
  * @author dopan ("SRPG_Teams" is made by doctorQ)
@@ -523,12 +523,11 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 2.3:
+ * Version 2.2:
  * - first Release 18.12.2021 for SRPG (rpg mv)!
  * -> this REPLACES the old "enemyEquip"-Plugin
  * -> add Enemy class and enemy Level and "steal"Gold/Exp -Skills
  * -> added Bugfixes
- * -> added Bugfixes about "gainRewards"
  */
  
 (function() {
@@ -536,7 +535,14 @@
  // Plugin param Variables:
   var parameters = PluginManager.parameters("SRPG_UnitCore") || $plugins.filter(function (plugin) {
 	           return plugin.description.contains('<SRPG_UnitCore>')});
-									       
+  var coreParam = PluginManager.parameters('SRPG_core');
+  var _srpgBattleExpRate = Number(coreParam['srpgBattleExpRate'] || 0.4);
+  var _srpgBattleExpRateForActors = Number(coreParam['srpgBattleExpRateForActors'] || 0.1);
+  var _textSrpgDamage = coreParam['textSrpgDamage'] || 'Damage';
+  var _textSrpgHealing = coreParam['textSrpgHealing'] || 'Healing';
+  var _rewardSe = coreParam['rewardSound'] || 'Item3';
+  var _expSe = coreParam['expSound'] || 'Up4';
+							       
  // SRPG Teams
   var _actorTeam = parameters['Default Actor Team'] || "";
   var _enemyTeam = parameters['Default Enemy Team'] || "";	
@@ -2579,7 +2585,6 @@ BattleManager.gainExp = function() {
         var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
         //console.log(activeBattler);console.log(exp);
         if (activeBattler) activeBattler.gainExp(exp);
-
     } else {
         _SRPG_BattleManager_gainExp.call(this);
     }
@@ -2596,9 +2601,49 @@ Game_Enemy.prototype.changeExp = function(exp, show) {
         this.levelDown();
     }
     if (show && this._level > lastLevel) {
-        this.displayLevelUp();//this.findNewSkills(lastSkills)
+        this.displayLevelUp();
     }
     this.refresh();
+};
+
+var _SRPG_Game_Troop_expTotal = Game_Troop.prototype.expTotal;
+Game_Troop.prototype.expTotal = function() {
+    if ($gameSystem.isSRPGMode() == true) {
+        var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+        var targetBattler = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+        //console.log(activeBattler[1]);console.log(targetBattler[1]);
+        if (this.SrpgBattleEnemys() && this.SrpgBattleEnemys().length > 0) {
+            if (this.isAllDead()) {
+                return _SRPG_Game_Troop_expTotal.call(this);
+            } else {
+                var exp = 0;
+                for (var i = 0; i < this.members().length; i++) {
+                     var enemy = this.members()[i];
+                     exp += enemy.exp();
+                }
+                // if enemy user & enemy target
+                if (activeBattler[0] === 'enemy' && targetBattler[0] === 'enemy') {
+                    var enemyExp = activeBattler[1].nextRequiredExp();
+                    return Math.floor(enemyExp * _srpgBattleExpRateForActors);
+                }
+                // else => alive actor vs alive enemy, no matter who is the user/target
+                var actBatllerReqExp = activeBattler[1].nextRequiredExp();
+                var activeLevel = activeBattler[1]._level;
+                var targetLevel = targetBattler[1]._level;
+                var levelDiff = Number(0.1 + (targetLevel - activeLevel) * 10);
+                var finalExp = Number((actBatllerReqExp - 1) * (levelDiff + 100) / 100);
+                if (_srpgBattleExpRate === 1) finalExp = actBatllerReqExp;
+                return Math.floor(finalExp * _srpgBattleExpRate);
+            }
+        } else {
+            // if actor user & actor target
+            var actor = $gameParty.battleMembers()[0];
+            var exp = actor.nextRequiredExp();
+            return Math.floor(exp * _srpgBattleExpRateForActors);
+        }
+    } else {
+        return _SRPG_Game_Troop_expTotal.call(this);
+    }
 };
 
 Scene_Map.prototype.processSrpgVictory = function() {
@@ -2606,16 +2651,12 @@ Scene_Map.prototype.processSrpgVictory = function() {
      var targetBattler = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
      if (activeBattler[1] && !activeBattler[1].isDead()) {
 	 this.makeRewards();
-         // if enemy fight each other,cos of teams or "charm" exp would be doubled, this fix it
-         if (activeBattler[0] === 'enemy' && targetBattler[0] === 'enemy') this._rewards.exp = Number(this._rewards.exp / 2);
-         // if enemys target theirselfs, they should not get EXP by default ,ame ways it works for actors
-         if (activeBattler[0] === 'enemy' && targetBattler[1] === activeBattler[1]) this._rewards.exp = 0;
          //console.log(this._rewards.exp);console.log(this._rewards.gold);console.log(this._rewards.items.length);
          if (this._rewards.exp > 0 || this._rewards.gold > 0 || this._rewards.items.length > 0) {
 	     this._srpgBattleResultWindow.setBattler(activeBattler[1]);
 	     this._srpgBattleResultWindow.setRewards(this._rewards);
 	     var se = {};
-	     se.name = 'Item3';
+	     se.name = _rewardSe;
 	     se.pan = 0;
 	     se.pitch = 100;
 	     se.volume = 90;
@@ -2665,7 +2706,7 @@ Window_SrpgBattleResult.prototype.drawGainExp = function(x, y) {
       if (nowExp >= this._battler.expForLevel(this._level + 1)) {
           this._level += 1;
           var se = {};
-          se.name = 'Up4';
+          se.name = _expSe;
           se.pan = 0;
           se.pitch = 100;
           se.volume = 90;

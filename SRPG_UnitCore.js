@@ -2601,11 +2601,14 @@ Game_Enemy.prototype.changeExp = function(exp, show) {
 };
 
 Scene_Map.prototype.processSrpgVictory = function() {
-     var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
-     if (activeBattler && !activeBattler.isDead()) {
+     var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+     var targetBattler = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+     if (activeBattler[1] && !activeBattler[1].isDead()) {
 	 this.makeRewards();
+         if (activeBattler[0] === 'enemy' && targetBattler[1] === activeBattler[1]) this._rewards.exp = 0;
+         //console.log(this._rewards.exp);console.log(this._rewards.gold);console.log(this._rewards.items.length);
          if (this._rewards.exp > 0 || this._rewards.gold > 0 || this._rewards.items.length > 0) {
-	     this._srpgBattleResultWindow.setBattler(activeBattler);
+	     this._srpgBattleResultWindow.setBattler(activeBattler[1]);
 	     this._srpgBattleResultWindow.setRewards(this._rewards);
 	     var se = {};
 	     se.name = 'Item3';
@@ -2615,7 +2618,9 @@ Scene_Map.prototype.processSrpgVictory = function() {
 	     AudioManager.playSe(se);
 	     this._srpgBattleResultWindow.open();
 	     this._srpgBattleResultWindowCount = 60;
-	     this.gainRewards();
+             if (activeBattler[0] === 'actor') {
+                 this.gainRewards();
+	     }
 	     return true;
 	 }
      return false;

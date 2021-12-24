@@ -536,10 +536,8 @@
   var parameters = PluginManager.parameters("SRPG_UnitCore") || $plugins.filter(function (plugin) {
 	           return plugin.description.contains('<SRPG_UnitCore>')});
   var coreParam = PluginManager.parameters('SRPG_core');
-  var _srpgBattleExpRate = Number(coreParam['srpgBattleExpRate'] || 0.4);
+  var _srpgBattleExpRate = Number(coreParam['srpgBattleExpRate'] || 0.1);
   var _srpgBattleExpRateForActors = Number(coreParam['srpgBattleExpRateForActors'] || 0.1);
-  var _textSrpgDamage = coreParam['textSrpgDamage'] || 'Damage';
-  var _textSrpgHealing = coreParam['textSrpgHealing'] || 'Healing';
   var _rewardSe = coreParam['rewardSound'] || 'Item3';
   var _expSe = coreParam['expSound'] || 'Up4';
 							       

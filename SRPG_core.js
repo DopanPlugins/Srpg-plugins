@@ -65,7 +65,7 @@
  * @default 4
  *
  * @param srpgBattleExpRate
- * @desc if player can't defeat enemy, player get exp in this rate. set 0 to 1.0.
+ * @desc if User can't defeat Target, User get exp in this rate. set 0 to 1.0.
  * @type number
  * @decimals 2
  * @min 0
@@ -73,7 +73,7 @@
  * @default 0.4
  *
  * @param srpgBattleExpRateForActors
- * @desc if player act for friends,player get exp in this rate(to next level). set 0 to 1.0. 
+ * @desc if User act for friends,User get exp in this rate(to next level). set 0 to 1.0.  
  * @type number
  * @decimals 2
  * @min 0

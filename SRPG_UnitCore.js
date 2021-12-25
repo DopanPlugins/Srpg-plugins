@@ -653,13 +653,13 @@ Game_Interpreter.prototype.enableItemSlotsCommand = function(switchControll) {
 
 // this.changeBreakChance(chanceNumber); 
 Game_Interpreter.prototype.changeBreakChance = function(chanceNumber) {
-    _breakChance = Number(chanceNumber);
-    return _breakChance;
+    _scriptcallBreakChance = Number(chanceNumber);
+    return _scriptcallBreakChance;
 };	
 // this.changeStealChance(chanceNumber);
 Game_Interpreter.prototype.changeStealChance = function(chanceNumber) {
-    _stealChance = Number(chanceNumber);
-    return _stealChance;
+    _scriptcallStealChance = Number(chanceNumber);
+    return _scriptcallStealChance;
 };
 
 //Game_Temp: ScripCalls

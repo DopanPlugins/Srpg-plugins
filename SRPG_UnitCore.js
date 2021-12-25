@@ -210,6 +210,8 @@
  *----------------------------------------------
  * Scriptcall to change the Stealchance in Game:
  *----------------------------------------------
+ *
+ *
  * BreakChance:
  *--------------
  *
@@ -221,7 +223,7 @@
  *--------------
  *
  *
- *   "this.changeStealChance(chanceNumber);" // usage in Events ,commonEvents  ect
+ *  "this.changeStealChance(chanceNumber);" // usage in Events ,commonEvents  ect
  *
  *
  *
@@ -523,6 +525,11 @@
  * 
  * <targetStealChance:x>   // SkillTarget StealChance
  *
+ * if a battleUnit has 2 or more States at the same time,that affect the same kind of Chance, 
+ * the StateMeta of the State with the higher ID will be used
+ * (its recommened to avoid this, or to make sure that States with higher priority to change the Chances,
+ *  use the higher State_IDs)
+ *
  * =======================
  * about "dual wield" ect
  * =======================
@@ -588,7 +595,8 @@
   var _lastSlot = 0;
   var _slotActorId = 0;	
   var _enable_ItemSlotsCommand = true; 
-	
+  var _scriptcallBreakChance = -1;
+  var _scriptcallStealChance = -1;	
 
 //-----------------------------------------------------------------------------------------
 
@@ -622,6 +630,8 @@ Scene_Map.prototype.srpgAfterAction = function() {
      // reset break&steal-Chance to the Plugin param Setup
      _breakChance = Number(parameters['Break Chance']);
      _stealChance = Number(parameters['Steal Chance']);
+     _scriptcallBreakChance = -1;
+     _scriptcallStealChance = -1;
      //make sure the team data is properly stored if team has changed somehow
      for (var i = 1; i <= $gameMap.events().length; i++) {
           var battler = $gameSystem.EventToUnit([i]);
@@ -1336,21 +1346,16 @@ Game_Action.prototype.stealRandom = function(random, amount, type) {
     var activeBattler = $gameSystem.EventToUnit(this._userEventID);
     var targetBattler = $gameSystem.EventToUnit(this._targetEventID);
     this._stealChance = Number(parameters['Steal Chance']);
-    if (activeBattler[0] === 'actor') var userMeta = activeBattler[1].meta;
-    if (targetBattler[0] === 'actor') var targetMeta = targetBattler[1].meta; 
-    if (activeBattler[0] === 'enemy') var userMeta = activeBattler[1].enemy().meta; 
-    if (targetBattler[0] === 'enemy') var targetMeta = targetBattler[1].enemy().meta; 
+    if (this.item().meta.srpgSkillStealChance) this._stealChance = this.item().meta.srpgSkillStealChance;
+    for (var i = 1;i < $dataStates.length;i++) {
+         var stateMeta = $dataStates[i].meta;
+         if (stateMeta.userStealChance) var stateUserSteal = Number(i); 
+         if (stateMeta.targetStealChance) var stateTargetSteal = Number(i); 
+         if (activeBattler[1].isStateAffected(stateUserSteal)) this._stealChance = $dataStates[stateUserSteal].meta;
+         if (targetBattler[1].isStateAffected(stateTargetSteal)) this._stealChance = $dataStates[stateTargetSteal].meta;
+    }
     // check stealchance before anything else,..
-    if (this.item().meta.srpgSkillStealChance) {
-        this._stealChance = this.item().meta.srpgSkillStealChance;
-    }
-    if (userMeta.userStealChance) {
-        this._stealChance = userMeta.userStealChance;
-    }  
-    if (targetMeta.targetStealChance) {
-        this._stealChance = targetMeta.targetStealChance;
-    }
-    if (_stealChance !== Number(parameters['Steal Chance'])) this._stealChance = _stealChance;  
+    if (_scriptcallStealChance !== -1) this._stealChance = _scriptcallStealChance;  
     // stealChanceRoll var that represents the chance you rolled.
     var stealChanceRoll = Math.floor(Math.random() * 100) + 1; 
     //_stealChance is the PluginVar that stores % chance 
@@ -1524,22 +1529,22 @@ Game_Action.prototype.checkChance = function(skillType, metaType, iName, typeID,
     var targetBattler = $gameSystem.EventToUnit(this._targetEventID);
     this._breakChance = Number(parameters['Break Chance']);
     this._stealChance = Number(parameters['Steal Chance']);
-    if (activeBattler[0] === 'actor') var userMeta = activeBattler[1].meta;
-    if (targetBattler[0] === 'actor') var targetMeta = targetBattler[1].meta; 
-    if (activeBattler[0] === 'enemy') var userMeta = activeBattler[1].enemy().meta; 
-    if (targetBattler[0] === 'enemy') var targetMeta = targetBattler[1].enemy().meta;  
+    if (this.item().meta.srpgSkillBreakChance) this._breakChance = this.item().meta.srpgSkillBreakChance;
+    if (this.item().meta.srpgSkillStealChance) this._stealChance = this.item().meta.srpgSkillStealChance;
+    for (var i = 1;i < $dataStates.length;i++) {
+         var stateMeta = $dataStates[i].meta;
+         if (stateMeta.userBreakChance) var stateUserBreak = Number(i); 
+         if (stateMeta.targetBreakChance) var stateTargetBreak = Number(i); 
+         if (stateMeta.userStealChance) var stateUserSteal = Number(i); 
+         if (stateMeta.targetStealChance) var stateTargetSteal = Number(i); 
+         if (activeBattler[1].isStateAffected(stateUserBreak)) this._breakChance = $dataStates[stateUserBreak].meta;
+         if (activeBattler[1].isStateAffected(stateUserSteal)) this._stealChance = $dataStates[stateUserSteal].meta;
+         if (targetBattler[1].isStateAffected(stateTargetBreak)) this._breakChance = $dataStates[stateTargetBreak].meta;
+         if (targetBattler[1].isStateAffected(stateTargetSteal)) this._stealChance = $dataStates[stateTargetSteal].meta;
+    }
     if (skillType === "break") {
         var broken = false;
-        if (this.item().meta.srpgSkillBreakChance) {
-            this._breakChance = this.item().meta.srpgSkillBreakChance;
-        }
-        if (userMeta.userBreakChance) {
-            this._breakChance = userMeta.userBreakChance;
-        }  
-	if (targetMeta.targetBreakChance) {
-            this._breakChance = targetMeta.targetBreakChance;
-        }
-        if (_breakChance !== Number(parameters['Break Chance'])) this._breakChance = _breakChance;
+        if (_scriptcallBreakChance !== -1) this._breakChance = _scriptcallBreakChance;
         // breakChanceRoll var that represents the chance you rolled.
         var breakChanceRoll = Math.floor(Math.random() * 100) + 1; 
         //_breakChance is the PluginVar that stores % chance 
@@ -1554,16 +1559,7 @@ Game_Action.prototype.checkChance = function(skillType, metaType, iName, typeID,
     }
     if (skillType === "steal") {
         var stolen = false;
-        if (this.item().meta.srpgSkillStealChance) {
-            this._stealChance = this.item().meta.srpgSkillStealChance;
-        }
-        if (userMeta.userStealChance) {
-            this._stealChance = userMeta.userStealChance;
-        }  
-	if (targetMeta.targetStealChance) {
-            this._stealChance = targetMeta.targetStealChance;
-        }
-        if (_stealChance !== Number(parameters['Steal Chance'])) this._stealChance = _stealChance; 
+        if (_scriptcallStealChance !== -1) this._stealChance = _scriptcallStealChance; 
         // stealChanceRoll var that represents the chance you rolled.
         var stealChanceRoll = Math.floor(Math.random() * 100) + 1; 
         //_stealChance is the PluginVar that stores % chance 

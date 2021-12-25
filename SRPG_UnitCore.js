@@ -1355,8 +1355,11 @@ Game_Action.prototype.stealRandom = function(random, amount, type) {
     for (var i = 1;i < $dataStates.length;i++) {
          var stateMeta = $dataStates[i].meta;
          if (stateMeta.userStealChance) var stateUserSteal = Number(i); 
-         if (stateMeta.targetStealChance) var stateTargetSteal = Number(i); 
          if (activeBattler[1].isStateAffected(stateUserSteal)) this._stealChance = $dataStates[stateUserSteal].meta;
+    }
+    for (var i = 1;i < $dataStates.length;i++) {
+         var stateMeta = $dataStates[i].meta;
+         if (stateMeta.targetStealChance) var stateTargetSteal = Number(i); 
          if (targetBattler[1].isStateAffected(stateTargetSteal)) this._stealChance = $dataStates[stateTargetSteal].meta;
     }
     // check stealchance before anything else,..
@@ -1538,12 +1541,15 @@ Game_Action.prototype.checkChance = function(skillType, metaType, iName, typeID,
     if (this.item().meta.srpgSkillStealChance) this._stealChance = this.item().meta.srpgSkillStealChance;
     for (var i = 1;i < $dataStates.length;i++) {
          var stateMeta = $dataStates[i].meta;
-         if (stateMeta.userBreakChance) var stateUserBreak = Number(i); 
-         if (stateMeta.targetBreakChance) var stateTargetBreak = Number(i); 
-         if (stateMeta.userStealChance) var stateUserSteal = Number(i); 
-         if (stateMeta.targetStealChance) var stateTargetSteal = Number(i); 
+         if (stateMeta.userBreakChance) var stateUserBreak = Number(i);  
+         if (stateMeta.userStealChance) var stateUserSteal = Number(i);  
          if (activeBattler[1].isStateAffected(stateUserBreak)) this._breakChance = $dataStates[stateUserBreak].meta;
          if (activeBattler[1].isStateAffected(stateUserSteal)) this._stealChance = $dataStates[stateUserSteal].meta;
+    }
+    for (var i = 1;i < $dataStates.length;i++) {
+         var stateMeta = $dataStates[i].meta;
+         if (stateMeta.targetBreakChance) var stateTargetBreak = Number(i); 
+         if (stateMeta.targetStealChance) var stateTargetSteal = Number(i); 
          if (targetBattler[1].isStateAffected(stateTargetBreak)) this._breakChance = $dataStates[stateTargetBreak].meta;
          if (targetBattler[1].isStateAffected(stateTargetSteal)) this._stealChance = $dataStates[stateTargetSteal].meta;
     }

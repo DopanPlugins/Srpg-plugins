@@ -627,11 +627,10 @@ Scene_Map.prototype.srpgAfterAction = function() {
      //reset ActorEquip Setup after Action,its needed incase actorUnit_Equip was stolen..
      //..and actorUnit equips something else during battle.
      $gameTemp.resetActorEquip();
-     // reset break&steal-Chance to the Plugin param Setup
-     _breakChance = Number(parameters['Break Chance']);
-     _stealChance = Number(parameters['Steal Chance']);
+     // reset Chances
      _scriptcallBreakChance = -1;
      _scriptcallStealChance = -1;
+     Game_Action.prototype.srpgResetChances.call(this);
      //make sure the team data is properly stored if team has changed somehow
      for (var i = 1; i <= $gameMap.events().length; i++) {
           var battler = $gameSystem.EventToUnit([i]);
@@ -1277,6 +1276,12 @@ Window_SrpgStatus.prototype.drawBasicInfoActor = function(x, y) {
 // Setup for Skills:
 //-----------------------
 
+
+Game_Action.prototype.srpgResetChances = function() {
+    if (this._stealChance !== _stealChance) this._stealChance = _stealChance;
+    if (this._breakChance !== _breakChance) this._breakChance = _breakChance;
+};
+
 //this.srpgStealExpText(finalAmount);
 Game_Action.prototype.srpgStealExpText = function(finalAmount) {
     $gameMessage.setBackground(1);$gameMessage.setPositionType(2);
@@ -1345,7 +1350,7 @@ Game_Action.prototype.setTargetEventId = function() {
 Game_Action.prototype.stealRandom = function(random, amount, type) {
     var activeBattler = $gameSystem.EventToUnit(this._userEventID);
     var targetBattler = $gameSystem.EventToUnit(this._targetEventID);
-    this._stealChance = Number(parameters['Steal Chance']);
+    this._stealChance = Number(_stealChance);
     if (this.item().meta.srpgSkillStealChance) this._stealChance = this.item().meta.srpgSkillStealChance;
     for (var i = 1;i < $dataStates.length;i++) {
          var stateMeta = $dataStates[i].meta;
@@ -1527,8 +1532,8 @@ Game_Action.prototype.apply = function(target) {
 Game_Action.prototype.checkChance = function(skillType, metaType, iName, typeID, slotID) {
     var activeBattler = $gameSystem.EventToUnit(this._userEventID);
     var targetBattler = $gameSystem.EventToUnit(this._targetEventID);
-    this._breakChance = Number(parameters['Break Chance']);
-    this._stealChance = Number(parameters['Steal Chance']);
+    this._breakChance = Number(_breakChance);
+    this._stealChance = Number(_stealChance);
     if (this.item().meta.srpgSkillBreakChance) this._breakChance = this.item().meta.srpgSkillBreakChance;
     if (this.item().meta.srpgSkillStealChance) this._stealChance = this.item().meta.srpgSkillStealChance;
     for (var i = 1;i < $dataStates.length;i++) {

@@ -101,12 +101,13 @@
   var _duoSkill = -1;
   var _extraSkill = -1;
   var _resetTurn = false;	  
-  var _callMapForceAction = false; // default Disabled
-  var _callMapForceExtraAction = false; // default Disabled
-  var _callMapForceDuoAction = false; // default Disabled
+  var _callMapForceAction = false;
+  var _callMapForceExtraAction = false;
+  var _callMapForceDuoAction = false;
 
 //-----------------------------------------------------------------------------------------
-//Plugin Scene_Map_update Function:
+//Plugin Scene_Map Functions:
+
  var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
 Scene_Map.prototype.srpgAfterAction = function() {
      _srpgAfterActionScene.call(this);
@@ -115,118 +116,118 @@ Scene_Map.prototype.srpgAfterAction = function() {
 	$gameSystem.EventToUnit(_duoLeader)[1]._srpgTurnEnd = true;
 	_resetTurn = false;
      };
-$gameSwitches.setValue(_mfaIsAktiveSwitch, false);
-//_srpgAfterActionScene.call(this);	
+$gameSwitches.setValue(_mfaIsAktiveSwitch, false);	
 };	
-	// update Scene_Map .. this adds Actions to the MapBattles
-	var _SRPG_SceneMap_update = Scene_Map.prototype.update;
-	Scene_Map.prototype.update = function() {
-		_SRPG_SceneMap_update.call(this);
-		// there are definitely no map skills in play
-		if (!$gameSystem.isSRPGMode() || $gameSystem.isSubBattlePhase() !== 'invoke_action' || !$gameSystem.useMapBattle()) {
-		    return;
-		}
-		// process extra Actions 
-		while (_callMapForceExtraAction == true || _callMapForceDuoAction == true || _callMapForceAction == true) {
-                      // queue up extra MapBattleActionNote //
-        	      if (_callMapForceExtraAction == true) {
-                          var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
-                          var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
-                          if ((!user[1].isDead()) && (!target[1].isDead())) { 
-                               user[1].forceAction(_extraSkill, target[1]);
-                               this.srpgBattleStart(user, target);
-                               _callMapForceExtraAction = false;
-            	               return;
-                          }
-        	      };                     
-                      // queue up extra MapDoubleAction //
-        	      if (_callMapForceDuoAction == true) {
-                          var user = $gameSystem.EventToUnit(_mfaDuoUser);
-                          var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
-                          if ((!user[1].isDead()) && (!target[1].isDead())) { 
-                               user[1].forceAction(_duoSkill, target[1]);
-                               this.srpgBattleStart(user, target);
-                               _callMapForceDuoAction = false;	  
-            	               return;
-                          }
-        	      }; 
-                      // queue up extra MapForceAction 
-        	      if (_callMapForceAction == true) {
-                          var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
-                          var target = $gameSystem.EventToUnit(_mfaTarget);
-                          if ((!user[1].isDead()) && (!target[1].isDead())) { 
-                               user[1].forceAction(_mfaSkill, target[1]);
-                               this.srpgBattleStart(user, target);
-                               _callMapForceAction = false;
-            	               return;
-                          }
-        	      }; 
-		}
-        };
+
+// update Scene_Map .. this adds Actions to the MapBattles
+var _SRPG_SceneMap_update = Scene_Map.prototype.update;
+Scene_Map.prototype.update = function() {
+     _SRPG_SceneMap_update.call(this);
+     // there are definitely no map skills in play
+     if (!$gameSystem.isSRPGMode() || $gameSystem.isSubBattlePhase() !== 'invoke_action' || !$gameSystem.useMapBattle()) {
+	 return;
+     };
+     // process extra Actions 
+     while (_callMapForceExtraAction == true || _callMapForceDuoAction == true || _callMapForceAction == true) {
+            // queue up extra MapBattleActionNote 
+            if (_callMapForceExtraAction == true) {
+                var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+                var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+                if ((!user[1].isDead()) && (!target[1].isDead())) { 
+                     user[1].forceAction(_extraSkill, target[1]);
+                     this.srpgBattleStart(user, target);
+                     _callMapForceExtraAction = false;
+                     return;
+                }
+            };                     
+            // queue up extra MapDoubleAction //
+            if (_callMapForceDuoAction == true) {
+                var user = $gameSystem.EventToUnit(_mfaDuoUser);
+                var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+                if ((!user[1].isDead()) && (!target[1].isDead())) { 
+                     user[1].forceAction(_duoSkill, target[1]);
+                     this.srpgBattleStart(user, target);
+                     _callMapForceDuoAction = false;	  
+                     return;
+                }
+            }; 
+            // queue up extra MapForceAction 
+            if (_callMapForceAction == true) {
+                var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+                var target = $gameSystem.EventToUnit(_mfaTarget);
+                if ((!user[1].isDead()) && (!target[1].isDead())) { 
+                     user[1].forceAction(_mfaSkill, target[1]);
+                     this.srpgBattleStart(user, target);
+                     _callMapForceAction = false;
+                     return;
+                }
+            }; 
+     }
+};
 
 //====================================================================
 //Game_Battler
 //====================================================================
 
-        //ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceExtraAction(extraSkillID);"
-        Game_Battler.prototype.useMapForceExtraAction = function(extraSkillID) {
-            // get skill data
-            _extraSkill = extraSkillID;
-            // clean up "waiting" status
-            if (this._actionState == ("waiting")) {
-                this.setActionState("");
-            };
-            // make sure that Mapbattle is used
-            $gameSystem.forceSRPGBattleMode('map');
-            // Enable the "MapForceActionNote" Trigger ,this will happen with "update Scene_Map"
-            _callMapForceExtraAction = true;
-            // MFA is Aktive Switch 
-            $gameSwitches.setValue(_mfaIsAktiveSwitch, true);  
-        };
+//ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceExtraAction(extraSkillID);"
+Game_Battler.prototype.useMapForceExtraAction = function(extraSkillID) {
+    // get skill data
+    _extraSkill = extraSkillID;
+    // clean up "waiting" status
+    if (this._actionState == ("waiting")) {
+         this.setActionState("");
+    };
+    // make sure that Mapbattle is used
+    $gameSystem.forceSRPGBattleMode('map');
+    // Enable the "MapForceActionNote" Trigger ,this will happen with "update Scene_Map"
+    _callMapForceExtraAction = true;
+    // MFA is Aktive Switch 
+    $gameSwitches.setValue(_mfaIsAktiveSwitch, true);  
+};
 
-        //ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceDuoAction(duoSkillID, duoUserID);"
-        Game_Battler.prototype.useMapDuoAction = function(duoSkillID, duoUserID) {
-            // get the data (event&skill id)
-            _mfaDuoUser = duoUserID;
-	    _duoLeader = this.event().eventId();
-            _duoSkill = duoSkillID;
-            // insert event id 
-            var user = $gameSystem.EventToUnit(_mfaDuoUser);
-            // clean up "waiting" status
-            if (user[1]._actionState == ("waiting")) {
-                user[1].setActionState("");
-            };
-            // make sure that active event is set properly before "ForceAction" is used
-            $gameTemp.setActiveEvent($gameMap.event(_mfaDuoUser));
-            // make sure that Mapbattle is used
-            $gameSystem.forceSRPGBattleMode('map');
-            // Enable the "MapDoubleAction" Trigger ,this will happen with "update Scene_Map"
-            _callMapForceDuoAction = true;
-            // MFA is Aktive Switch  
-            $gameSwitches.setValue(_mfaIsAktiveSwitch, true);
-        };
+//ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceDuoAction(duoSkillID, duoUserID);"
+Game_Battler.prototype.useMapDuoAction = function(duoSkillID, duoUserID) {
+    // get the data (event&skill id)
+    _mfaDuoUser = duoUserID;
+    _duoLeader = this.event().eventId();
+    _duoSkill = duoSkillID;
+    // insert event id 
+    var user = $gameSystem.EventToUnit(_mfaDuoUser);
+    // clean up "waiting" status
+    if (user[1]._actionState == ("waiting")) {
+        user[1].setActionState("");
+    };
+    // make sure that active event is set properly before "ForceAction" is used
+    $gameTemp.setActiveEvent($gameMap.event(_mfaDuoUser));
+    // make sure that Mapbattle is used
+    $gameSystem.forceSRPGBattleMode('map');
+    // Enable the "MapDoubleAction" Trigger ,this will happen with "update Scene_Map"
+    _callMapForceDuoAction = true;
+    // MFA is Aktive Switch  
+    $gameSwitches.setValue(_mfaIsAktiveSwitch, true);
+};
 	
-        //ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceAction(skillID, targetID);" 
-        Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
-            // get the data (event&skill id)
-            _mfaTarget = targetID;
-            _mfaSkill = skillID;
-            //insert event id 
-            var target = $gameSystem.EventToUnit(targetID);
-            // clean up "waiting" status
-            if (this._actionState == ("waiting")) {
-                this.setActionState("");
-            };
-            // make sure that active & target event are set properly before "ForceAction" is used
-            $gameTemp.setActiveEvent($gameMap.event(this.event().eventId()));
-            $gameTemp.setTargetEvent($gameMap.event(_mfaTarget));
-            // make sure that Mapbattle is used
-            $gameSystem.forceSRPGBattleMode('map');
-            // Enable the "MapForceAction" Trigger ,this will happen with "update Scene_Map"
-            _callMapForceAction = true; 
-            // MFA is Aktive Switch 
-            $gameSwitches.setValue(_mfaIsAktiveSwitch, true);  
-        };
+//ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceAction(skillID, targetID);" 
+Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
+    // get the data (event&skill id)
+    _mfaTarget = targetID;
+    _mfaSkill = skillID;
+    //insert event id 
+    var target = $gameSystem.EventToUnit(targetID);
+    // clean up "waiting" status
+    if (this._actionState == ("waiting")) {
+        this.setActionState("");
+    };
+    // make sure that active & target event are set properly before "ForceAction" is used
+    $gameTemp.setActiveEvent($gameMap.event(this.event().eventId()));
+    $gameTemp.setTargetEvent($gameMap.event(_mfaTarget));
+    // make sure that Mapbattle is used
+    $gameSystem.forceSRPGBattleMode('map');
+    // Enable the "MapForceAction" Trigger ,this will happen with "update Scene_Map"
+    _callMapForceAction = true; 
+    // MFA is Aktive Switch 
+    $gameSwitches.setValue(_mfaIsAktiveSwitch, true);  
+};
 
 //--End:
 

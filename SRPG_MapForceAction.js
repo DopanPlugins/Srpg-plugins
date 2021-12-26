@@ -106,14 +106,14 @@
 //Plugin Scene_Map_update Function:
  var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
 Scene_Map.prototype.srpgAfterAction = function() {
-     //_srpgAfterActionScene.call(this);
+     _srpgAfterActionScene.call(this);
      if (_resetTurn === true) {
 	$gameSystem.EventToUnit(_mfaDuoUser)[1]._srpgTurnEnd = false;
 	$gameSystem.EventToUnit(_duoLeader)[1]._srpgTurnEnd = true;
 	_resetTurn = false;
      };
 $gameSwitches.setValue(_mfaIsAktiveSwitch, false);
-_srpgAfterActionScene.call(this);	
+//_srpgAfterActionScene.call(this);	
 };	
 	// update Scene_Map .. this adds Actions to the MapBattles
 	var _SRPG_SceneMap_update = Scene_Map.prototype.update;
@@ -224,7 +224,6 @@ _srpgAfterActionScene.call(this);
             // MFA is Aktive Switch 
             $gameSwitches.setValue(_mfaIsAktiveSwitch, true);  
         };
-
 
 //--End:
 

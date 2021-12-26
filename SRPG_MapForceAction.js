@@ -3,13 +3,18 @@
 //=============================================================================
 /*:
  * @plugindesc v1.3 Adds <SRPG_MapForceAction> ScriptCalls to SRPG 
- * @author dopan (UNDER CONSTRUCTION! DO NOT DoanLoad!)
+ * @author dopan (UNDER CONSTRUCTION! DO NOT DownLoad!)
  *
  * @param MFAisAktive_SwitchID 
- * @desc SwitchID of MFAisAktive_Switch,used to disable mapAktionText & preActionPhase
+ * @desc SwitchID of MFAisAktive_Switch,used to disable mapAktionText & mapPreActionPhase
  * @type switch
  * @default 0
- *´
+ * 
+ * @param Controll Global MultiWield
+ * @desc (true) is using MultiWield on All BattleUnits depemding on the Equiped Weapons. 
+ * @type boolean
+ * @default false
+ * 
  * @help  
  *
  * This Plugin helps to replicate the "force Action" Function for skills in: MapBattle"True" BattleMode.
@@ -93,6 +98,7 @@
 
   var parameters = PluginManager.parameters("SRPG_MapForceAction") || $plugins.filter(function (plugin) { return plugin.description.contains('<SRPG_MapForceAction>'); });
 
+  var _srpg_Controll_MultiWield = (parameters['Controll Global MultiWield'] || 'false');
   var _mfaIsAktiveSwitch = Number(parameters['MFAisAktive_SwitchID'] || 0); 
   var _mfaDuoUser = -1;
   var _duoLeader = -1;
@@ -231,6 +237,62 @@ Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
     // MFA is Aktive Switch 
     $gameSwitches.setValue(_mfaIsAktiveSwitch, true);  
 };
+
+
+//if (_srpg_Controll_MultiWield ===  'false');
+//-----------------------------------------------------------------------------------------  
+// $gameSystem._wieldSlot = 1;
+
+
+var _srpg_apply = Game_Action.prototype.apply;
+Game_Action.prototype.apply = function(target) {
+    _srpg_apply.call(this ,target);
+    if ($gameSystem.isSRPGMode() == true) this.srpgWieldSetup();
+};
+
+Game_Action.prototype.srpgWieldSetup = function() { 
+    if ($gameSystem.isSRPGMode() == true) {
+        var user = $gameSystem.EventToUnit(this._userEventID);
+        var target = $gameSystem.EventToUnit(this._targetEventID);
+        var attSkill = user[1].attackSkillId();
+        var userSkill = this._item._itemId;
+        var skillType = this._item._dataClass;
+        if ($gameSystem._wieldSlot === undefined) $gameSystem._wieldSlot = 1;
+        var wSlot = $gameSystem._wieldSlot - 1;
+        console.log($gameSystem._wieldSlot, "srpgWireldSetup start", user[1]);
+        if (user[1].weapons()[wSlot] && user[1].weapons()[wSlot].meta.srpgWeaponSkill) {
+            var userWeaponSkill = user[1].weapons()[wSlot].meta.srpgWeaponSkill; 
+        } else {var userWeaponSkill = -3};
+        if (user[1].weapons()[wSlot] && skillType === "skill" && ((attSkill || userWeaponSkill) === userSkill)) {
+            this.srpgWield();
+        } else {$gameSystem._wieldSlot = 1};
+        console.log($gameSystem._wieldSlot, "srpgWireldSetup end", user[1]);
+    };
+};
+
+Game_Action.prototype.srpgWield = function() { 
+    if (!$gameSystem.isSRPGMode() == true) return;
+    var user = $gameSystem.EventToUnit(this._userEventID);
+    var target = $gameSystem.EventToUnit(this._targetEventID);
+    var userWeapons = user[1].weapons();
+    var forceSkill = user[1].attackSkillId();
+    var wSlot = $gameSystem._wieldSlot;
+    console.log(wSlot, "srpgWireld start", user[1]);
+    if (wSlot < userWeapons.length) {
+         if (userWeapons[wSlot] && userWeapons[wSlot].meta.srpgWeaponSkill) {
+             forceSkill = userWeapons[wSlot].meta.srpgWeaponSkill;
+         }
+         if (userWeapons[wSlot] && !target[1].isDead()) {
+             if (!$gameSystem.useMapBattle()) user[1].forceAction(forceSkill, -2);
+             if ($gameSystem.useMapBattle()) user[1].useMapForceAction(forceSkill, this._targetEventID);
+             $gameSystem._wieldSlot = Number(wSlot + 1);
+             console.log($gameSystem._wieldSlot, "srpgWireld center", user[1]);
+         }; 
+    } else {$gameSystem._wieldSlot = 1};
+console.log($gameSystem._wieldSlot, "srpgWireld end", user[1]);
+};
+
+//-----------------------------------------------------------------------------------------  
 
 //--End:
 

@@ -106,8 +106,11 @@
   var _callMapForceDuoAction = false;
 
 //-----------------------------------------------------------------------------------------
-//Plugin Scene_Map Functions:
-
+	
+//====================================================================
+// Scene_Map 
+//====================================================================
+	
  var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
 Scene_Map.prototype.srpgAfterAction = function() {
      _srpgAfterActionScene.call(this);
@@ -166,7 +169,7 @@ Scene_Map.prototype.update = function() {
 };
 
 //====================================================================
-//Game_Battler
+// Game_Battler
 //====================================================================
 
 //ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceExtraAction(extraSkillID);"

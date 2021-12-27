@@ -637,7 +637,7 @@ Scene_Map.prototype.srpgAfterAction = function() {
      for (var i = 1; i <= $gameMap.events().length; i++) {
           var battler = $gameSystem.EventToUnit([i]);
           var eventUnit = $gameMap.event([i]);
-          if (battler && eventUnit && !battler[1].isDead()) {
+          if (battler && eventUnit && (battler[1] && !battler[1].isDead())) {
               if (battler[1]._team !== battler[1].srpgTeam()) battler[1]._team = battler[1].srpgTeam();
           }
      } 

@@ -2,7 +2,7 @@
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
- * @plugindesc v2.5 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
+ * @plugindesc v2.6 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
  *               And it replaces the "SRPG_EnemyEquip"-Plugin.                     
  *
  * @author dopan ("SRPG_Teams" is made by doctorQ)
@@ -547,13 +547,14 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 2.5:
+ * Version 2.6:
  * - first Release 18.12.2021 for SRPG (rpg mv)!
  * -> this REPLACES the old "enemyEquip"-Plugin
  * -> add Enemy class and enemy Level and "steal"Gold/Exp -Skills
  * -> added Bugfixes
  * -> added Chance StateNoteTags & GameActionVar => "this._breakChance"&"this_stealChance" 
  * -> reworked how chances are stored.. thats needed for a planed extansion plugin
+ * -> added change class for enemys, and fixed a bug about menu char img not updating on "page Up/Down"
  */
  
 (function() {
@@ -1764,7 +1765,7 @@ Window_MenuChar.prototype.initialize = function(x, y, width, height) {
       this._characterIndex = this._actor.characterIndex;
       Window_Base.prototype.initialize.call(this, x, y, width, height);
       if (_srpg_Controll_MenuChar_Img == 'true') {
-          this.drawAnimatedActor(this._actor,x - 70,y - 54,'walk');
+          this.drawAnimatedActor(this._actor,this._x - 70,this._y - 54,'walk');
       } else {this.drawActorCharacter(this._actor, this._x - 112, this._y - 140)};
 };
 
@@ -1781,6 +1782,7 @@ Window_MenuChar.prototype.initialize = function(x, y, width, height) {
       };
       Window_MenuChar.prototype.refresh = function() {
             if (this.contents) {
+                this._actor = $gameParty.menuActor();
                 this.contents.clear();
                 this.drawActorCharacter(this._actor, this._x - 112, this._y - 140);
             }
@@ -1829,6 +1831,7 @@ Window_ActorItemSlotCommand.prototype.initialize = function(x, y) {
       var height = this.windowHeight();
       var x = 0;
       var y = 195;
+      this._actor = $gameParty.menuActor();
       Window_Command.prototype.initialize.call(this, x, y);
 };
 
@@ -1843,11 +1846,11 @@ Window_ActorItemSlotCommand.prototype.windowHeight = function() {
 };
 
 Window_ActorItemSlotCommand.prototype.maxCols = function() {
-    return 1;
+      return 1;
 };
 
 Window_ActorItemSlotCommand.prototype.itemTextAlign = function() {
-    return 'center';
+      return 'center';
 };
 
 Window_ActorItemSlotCommand.prototype.makeCommandList = function() {
@@ -2211,8 +2214,8 @@ Scene_ActorItemSlots.prototype.create = function() {
 };
 
 Scene_ActorItemSlots.prototype.createMenuCharWindow = function() {
-     var wx = 145;
-     var wy = 145;
+     var wx = 150;
+     var wy = 195;
      var ww = 150;
      var wh = 155;
      this._menuCharWindow = new Window_MenuChar(wx, wy, ww, wh);
@@ -2453,10 +2456,15 @@ if (_srpg_Controll_MenuChar_Img == 'true') {
 	
     })();
 
-    (function($){
+    (function($srpgMenuChar){
 		
-	$.prototype.drawAnimatedActor = function(actor, x, y, motion){
+	$srpgMenuChar.prototype.drawAnimatedActor = function(actor, x, y, motion){
 		if(x <= this.width && y <= this.height){
+                        // store actor to check actor changes 
+                        this._actor = $gameParty.menuActor();//dopan edit
+                        this._srpgX = x;//dopan edit
+                        this._srpgY = y;//dopan edit
+                        var actor = this._actor;//dopan edit end
 			COLD.animatedWindow.modifyActorSprite('new');
 			this._actorSprite = new Sprite_Actor();
                         this._actorSprite.scale.x = 2;
@@ -2468,22 +2476,28 @@ if (_srpg_Controll_MenuChar_Img == 'true') {
 			COLD.animatedWindow.modifyActorSprite('original');
 		};
 	};
-	
-	$.prototype.update = function(){
+
+	$srpgMenuChar.prototype.update = function(){
 		COLD.animatedWindow.windowBaseUpdate.call(this);
 		if(this._actorSprites.children.length > 0){
-			this.updateActors();
+                   // update char change if $gameParty.menuActor() has changed;
+                   if (this._actor !== $gameParty.menuActor()) { //dopan edit
+                       this._actor = $gameParty.menuActor();     //dopan edit
+                       this._actorSprite.setBattler(this._actor);//dopan edit
+		       this._actorSprite.setHome(this._srpgX, this._srpgY);//dopan edit
+		   };//dopan edit end
+		   this.updateActors();
 		};
 	};
 	
-	$.prototype.initialize = function(x, y, width, height){
+	$srpgMenuChar.prototype.initialize = function(x, y, width, height){
 		COLD.animatedWindow.windowBaseInitialize.call(this,x,y,width,height);
 		this._actorSprites = new Sprite();
 		this.addChild(this._actorSprites);
 		this.actorMotions = [];
 	};
 
-	$.prototype.updateActors = function(){
+	$srpgMenuChar.prototype.updateActors = function(){
 		var childs = this._actorSprites.children;
 		for (var i = 0; i < childs.length; i++){
 			if(childs[i]._motionCount == 0){
@@ -2822,6 +2836,15 @@ Game_Enemy.prototype.expRate = function() {
         var rate = (this.currentExp() - this.currentLevelExp()) / (this.nextLevelExp() - this.currentLevelExp());
     }
 return rate;
+};
+
+Game_Enemy.prototype.changeClass = function(classId, keepExp) {
+    if (keepExp) {
+        this._exp[classId] = this.currentExp();
+    }
+    this._classId = classId;
+    this.changeExp(this._exp[this._classId] || 0, false);
+    this.refresh();
 };
 
 //-----------------------------------------------------------------------------------------   

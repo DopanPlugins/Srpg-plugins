@@ -212,15 +212,8 @@
     Game_Action.prototype.apply = function(target) {
         SRPG_Game_Action_apply.call(this, target);
         if ($gameSystem.isSRPGMode() == true) {
-            // add stuff to Game action if Break/Steal Meta & Hit
-             var result = target.result();
-             if ((this.item().meta.srpgSteal && result.isHit()) ||
-                 (this.item().meta.srpgBreak && result.isHit())) {
-	         _debugSwitch = false;
-             }
-             if (this.item().meta.actorStealItem && result.isHit()) {
-                 _debugSwitch = false;
-             }
+            // add debug switch when action apply
+            _debugSwitch = false;
         }
     };
 
@@ -229,7 +222,6 @@
     var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
     Scene_Map.prototype.srpgAfterAction = function() {
 	 _srpgAfterActionScene.call(this);
-
          // switch is used to prevent conflict with state icon updates of other plugins
          if (_debugSwitch === false) {this.setSkillWait(30);_debugSwitch = true};
     };

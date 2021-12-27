@@ -1,6 +1,6 @@
 // =============================================================================
 // SRPG_UnitMapInfo.js
-// Version: 1.04(dopan patch)
+// Version: 1.05(dopan patch)
 // -----------------------------------------------------------------------------
 // Copyright (c) 2021
 // Released under the MIT license
@@ -12,7 +12,7 @@
 
 
 /*:
- * @plugindesc v1.03a SRPG UnitMapInfo
+ * @plugindesc v1.05 SRPG UnitMapInfo
  * @author xabileug
  *
  * @param Show HP Gauge
@@ -167,6 +167,8 @@
  *
  * 1.04 debug compatiblety patch and addedweapon icon. by dopan
  *
+ * 1.05 debug issue when Gameparty is smaller than used unitEvents
+ *
  * reference : ebinote SRPG_DispHPOnMap
  *             TM_SRPG updatehpGauge updatestateicon
  *             Fire Emblem Heroes
@@ -256,7 +258,7 @@
 	  var battler = $gameSystem.EventToUnit(this._character.eventId());
 	  var iconID = 0; // <-this is used to check if an weapon and related icon is not there
 	  // check if a weapon is equiped
-	  if (!battler[1].hasNoWeapons()) {
+	  if (battler[1] && !battler[1].hasNoWeapons()) {
 	      if (battler[0] === 'actor') { 
                   iconID = battler[1].weapons()[0].iconIndex;  // actor
 
@@ -408,7 +410,7 @@
 
     Sprite_hpGaugeSprite.prototype.update = function() {
         Sprite.prototype.update.call(this);
-        if (this._hp !== this._battler.hp || this._mhp !== this._battler.mhp) {
+        if (this._battler && (this._hp !== this._battler.hp || this._mhp !== this._battler.mhp)) {
             this._hp = this._battler.hp;
             this._mhp = this._battler.mhp;
             this.refresh();
@@ -471,7 +473,7 @@
 
     Sprite_hpNumberSprite.prototype.update = function() {
         Sprite.prototype.update.call(this);
-        if (this._newNumber !== this._battler.hp) {
+        if (this._battler && this._newNumber !== this._battler.hp) {
             this._newNumber = this._battler.hp;
             this.refresh();
         }

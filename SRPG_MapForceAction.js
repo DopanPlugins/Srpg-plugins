@@ -142,12 +142,12 @@ Scene_Map.prototype.srpgAfterAction = function() {
      if (_callSVForceDuoAction === true) {
          $gameTemp.setShouldPayCost(true);
          this.svForceAction(_duoSkill, _faDuoUser, _faDuoTarget);
-         _callSVForceDuoAction = false;
+         _callSVForceDuoAction = false;return;
      };
      if (_callSVForceAction === true) {
          $gameTemp.setShouldPayCost(false);
          this.svForceAction(_faSkill, _faUser, _faTarget);
-         _callSVForceAction = false;
+         _callSVForceAction = false;return;
      };	
 };
 
@@ -155,32 +155,33 @@ Scene_Map.prototype.svForceAction = function(skill, user, target) {
      if (!$gameSystem.isSRPGMode()) return;
      // make sure that SV_battle is used
      $gameSystem.forceSRPGBattleMode('normal');
-         // queue up svForceAction
-             var user = $gameSystem.EventToUnit(user);
-             var target = $gameSystem.EventToUnit(target);
-             $gameTemp.setActiveEvent($gameMap.event(user));
-             $gameTemp.setTargetEvent($gameMap.event(target));
-             user[1].forceAction(skill, target[1]);
-             $gameSystem.setSubBattlePhase('invoke_action');
-             this.srpgBattleStart(user, target);
-             return;
-
+     // queue up svForceAction
+     var userUnit = $gameSystem.EventToUnit(user);
+     var targetUnit = $gameSystem.EventToUnit(target);
+     if ((!userUnit[1].isDead()) && (!targetUnit[1].isDead())) {
+          // make sure that active & target event are set properly before "ForceAction" is used
+          $gameTemp.setActiveEvent($gameMap.event(user));
+          $gameTemp.setTargetEvent($gameMap.event(target));
+          userUnit[1].forceAction(skill, targetUnit[1]);
+          $gameSystem.setSubBattlePhase('invoke_action');
+          this.srpgBattleStart(userUnit, targetUnit);
+     }
 };	
 
 Scene_Map.prototype.mapForceAction = function(skill, user, target) {	
      if (!$gameSystem.isSRPGMode()) return;
      // make sure that Mapbattle is used
      $gameSystem.forceSRPGBattleMode('map');
-         var userUnit = $gameSystem.EventToUnit(user);
-         var targetUnit = $gameSystem.EventToUnit(target);
-         if ((!user[1].isDead()) && (!target[1].isDead())) { 
-              // make sure that active & target event are set properly before "ForceAction" is used
-              $gameTemp.setActiveEvent($gameMap.event(user));
-              $gameTemp.setTargetEvent($gameMap.event(target));
-              user[1].forceAction(skill, target[1]);
-              $gameSystem.setSubBattlePhase('invoke_action');
-              this.srpgBattleStart(userUnit, targetUnit);
-         }
+     var userUnit = $gameSystem.EventToUnit(user);
+     var targetUnit = $gameSystem.EventToUnit(target);
+     if ((!userUnit[1].isDead()) && (!targetUnit[1].isDead())) { 
+          // make sure that active & target event are set properly before "ForceAction" is used
+          $gameTemp.setActiveEvent($gameMap.event(user));
+          $gameTemp.setTargetEvent($gameMap.event(target));
+          userUnit[1].forceAction(skill, targetUnit[1]);
+          $gameSystem.setSubBattlePhase('invoke_action');
+          this.srpgBattleStart(userUnit, targetUnit);
+     }
 };
 
 // update Scene_Map .. this adds Actions to the MapBattles

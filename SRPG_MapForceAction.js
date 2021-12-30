@@ -302,7 +302,8 @@ Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
 // importent data info below: 
 //----------------------------------------------------------------- 
 // $gameSystem._wieldSlot = 1; $gameSystem._srpgForceAction = true;
-// <srpgWield> (ClassNotetag) , <srpgForceAction> (SkillNoteTag) 
+// <srpgWield> (ClassNotetag) , <srpgForceAction:skillID, UserID, TargetID> (SkillNoteTag) 
+//
 
 var _srpg_apply = Game_Action.prototype.apply;
 Game_Action.prototype.apply = function(target) {
@@ -323,28 +324,58 @@ Game_Action.prototype.apply = function(target) {
     };
 };
 
-// process forceActionNote 
-Game_Action.prototype.svForceExtraAction = function() { 
-    var result = target.result();
-    var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
-    var targetID = $gameTemp.targetEvent().eventId();	    
+// process forceActionNote Setup
+Game_Action.prototype.srpgForceActionSetup = function() { 
+    var result = target.result();    
     if (this.item().meta.srpgForceAction && result.isHit()) { 
-        var forceSkill = Number(this.item().meta.srpgForceAction);
-        this.srpgForceAction(forceSkill, user, targetID);
+        // read skill meta data
+        var metaSplit = this.item().meta.srpgForceAction.split(", ");
+        var forceSkill = Number(metaSplit[0]);	
+        var forceUser = metaSplit[1]; 
+        var forceTarget = metaSplit[2];
+        var skillID = 0;
+        var userID = 0;
+        var targetID = 0;
+        // gameTemp active/target eventID
+        if (forceUser === 0) userID = $gameTemp.activeEvent().eventId();
+        if (forceTarget === 0) targetID = $gameTemp.targetEvent().eventId();
+        //if enemy get eventID
+        if (forceUser > 0) userID = $gameSystem.EnemyUnit(forceUser);
+        if (forceTarget > 0) targetID = $gameSystem.EnemyUnit(forceTarget); 
+        //if actor get eventID
+        if (forceUser < 0) {
+            forceUser = Number(forceUser * -1);
+            userID = $gameSystem.ActorToEvent(forceUser);
+        };
+        if (forceTarget < 0) {
+            forceTarget = Number(forceTarget * -1);
+            targetID  = $gameSystem.ActorToEvent(forceTarget);
+        };
+        // get skillID
+        if (forceSkill > 0) skillID = Number(forceSkill);
+        if (forceSkill === 0) {  
+            var user = $gameSystem.EventToUnit(userID);
+            if (user[1].weapons()[0] && user[1].weapons()[0].meta.srpgWeaponSkill) {
+                skillID = Number(user[1].weapons()[0].meta.srpgWeaponSkill);
+            } else {skillID = Number(user[1].attackSkillId())};
+        };
+        // process srpgForceAction
+        this.srpgForceAction(skillID, userID, targetID);
         return true;
     };
 return false;
 };
-
+ 
 // use force action no matter if sv or map -mode, can be used as scriptcall aswell..
 // ..,but the timing is importent in order to work correctly (added to skillCommonEvent might work)
-Game_Action.prototype.srpgForceAction = function(skill, user, targetID) { 
+Game_Action.prototype.srpgForceAction = function(skill, userID, targetID) { 
     if (!$gameSystem.isSRPGMode() == true) return false;	    
     var forceSkill = Number(skill);
     var target = $gameSystem.EventToUnit(targetID);
+    var user = $gameSystem.EventToUnit(userID);
     $gameSystem._srpgForceAction = false;
     if (!$gameSystem.useMapBattle()) user[1].forceAction(forceSkill, target[1]);return true;
-    if ($gameSystem.useMapBattle()) user[1].useMapForceAction(forceSkill, target);return true;
+    if ($gameSystem.useMapBattle()) user[1].useMapForceAction(forceSkill, targetID);return true;
 return false;
 };
 
@@ -357,7 +388,7 @@ Game_Action.prototype.srpgWieldSetup = function(target) {
         var skillType = this._item._dataClass;
         // if forceActionNote is active go to forceAction setup instead finishing this function
         if ($gameSystem._srpgForceAction === true && this.item().meta.srpgForceAction) {
-            this.svForceExtraAction();return;
+            this.srpgForceActionSetup();return;
         };
         // enable the ControllVar that makes sure this wont be a neverending action chain
         if ($gameSystem._wieldSlot === undefined) $gameSystem._wieldSlot = 1;
@@ -406,6 +437,25 @@ Game_Action.prototype.srpgWield = function(target) {
     // else reset ControllVar 
     } else {$gameSystem._wieldSlot = 1};
 };
+
+    // function from "SRPG_UnitGraves" to convert unit id into event id
+    // this is just incase "SRPG_UnitGraves" isnt used.. 
+    Game_System.prototype.EnemyUnit = function(unitID) {
+        var eventId = 0;
+        $gameMap.events().forEach(function(event) {
+            if (event.isType() === 'enemy') {
+		eventID = event.eventId();    
+                var enemyUnit = $gameMap.event(eventID)._eventEnemyUnitId;
+		if (enemyUnit) { 
+                    if (enemyUnit === unitID) {
+                        eventId = eventID;
+		    }
+                }
+            }
+        });
+        return eventId;
+    };
+
 
 //--End:
 

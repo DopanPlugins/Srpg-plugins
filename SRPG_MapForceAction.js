@@ -138,7 +138,7 @@ Scene_Map.prototype.srpgAfterAction = function() {
 	$gameSystem.EventToUnit(_faDuoUser)[1]._srpgTurnEnd = false;
 	$gameSystem.EventToUnit(_duoLeader)[1]._srpgTurnEnd = true;
 	_resetTurn = false;
-     };´
+     };
      if (_callSVForceDuoAction === true) {
          $gameTemp.setShouldPayCost(true);
          this.svForceAction(_duoSkill, _faDuoUser, _faDuoTarget);
@@ -189,7 +189,7 @@ var _SRPG_SceneMap_update = Scene_Map.prototype.update;
 Scene_Map.prototype.update = function() {
      _SRPG_SceneMap_update.call(this);
      // there are definitely no map skills in play
-     if (!$gameSystem.isSRPGMode() || !$gameSystem.useMapBattle()) {
+     if (!$gameSystem.isSRPGMode()) {
 	 return;
      };
      // process extra MapActions
@@ -325,7 +325,7 @@ Game_Action.prototype.apply = function(target) {
 };
 
 // process forceActionNote Setup
-Game_Action.prototype.srpgForceActionSetup = function() { 
+Game_Action.prototype.srpgForceActionSetup = function(target) { 
     var result = target.result();    
     if (this.item().meta.srpgForceAction && result.isHit()) { 
         // read skill meta data
@@ -373,9 +373,15 @@ Game_Action.prototype.srpgForceAction = function(skill, userID, targetID) {
     var forceSkill = Number(skill);
     var target = $gameSystem.EventToUnit(targetID);
     var user = $gameSystem.EventToUnit(userID);
+    var mapTag = $dataSkills[skill].meta.mapbattle;
     $gameSystem._srpgForceAction = false;
-    if (!$gameSystem.useMapBattle()) user[1].forceAction(forceSkill, target[1]);return true;
-    if ($gameSystem.useMapBattle()) user[1].useMapForceAction(forceSkill, targetID);return true;
+    var useMap = false; 
+    if ($gameSystem.useMapBattle()) useMap = true; 
+    if (mapTag == 'true') useMap = true; 
+    if (mapTag == 'false') useMap = false;  
+    if (useMap === true) { 
+        user[1].useMapForceAction(forceSkill, targetID);return true;
+    } else {user[1].forceAction(forceSkill, target[1]);return true};
 return false;
 };
 
@@ -388,7 +394,7 @@ Game_Action.prototype.srpgWieldSetup = function(target) {
         var skillType = this._item._dataClass;
         // if forceActionNote is active go to forceAction setup instead finishing this function
         if ($gameSystem._srpgForceAction === true && this.item().meta.srpgForceAction) {
-            this.srpgForceActionSetup();return;
+            this.srpgForceActionSetup(target);return;
         };
         // enable the ControllVar that makes sure this wont be a neverending action chain
         if ($gameSystem._wieldSlot === undefined) $gameSystem._wieldSlot = 1;

@@ -2,7 +2,7 @@
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
- * @plugindesc v2.6 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
+ * @plugindesc v2.7 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
  *               And it replaces the "SRPG_EnemyEquip"-Plugin.                     
  *
  * @author dopan ("SRPG_Teams" is made by doctorQ)
@@ -547,7 +547,7 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 2.6:
+ * Version 2.7:
  * - first Release 18.12.2021 for SRPG (rpg mv)!
  * -> this REPLACES the old "enemyEquip"-Plugin
  * -> add Enemy class and enemy Level and "steal"Gold/Exp -Skills
@@ -555,6 +555,7 @@
  * -> added Chance StateNoteTags & GameActionVar => "this._breakChance"&"this_stealChance" 
  * -> reworked how chances are stored.. thats needed for a planed extansion plugin
  * -> added change class for enemys, and fixed a bug about menu char img not updating on "page Up/Down"
+ * -> fixed Issue where exp in mapBattleActions wasnt added
  */
  
 (function() {
@@ -2650,6 +2651,7 @@ Game_Enemy.prototype.benchMembersExpRate = function() {
     return $dataSystem.optExtraExp ? 1 : 0;
 };
 
+var _srpg_BattleManager_gainExp = BattleManager.gainExp;
 BattleManager.gainExp = function() {
     if ($gameSystem.isSRPGMode() == true) {
         var exp = this._rewards.exp;
@@ -2657,7 +2659,7 @@ BattleManager.gainExp = function() {
         //console.log(activeBattler);console.log(exp);
         if (activeBattler) activeBattler.gainExp(exp);
     } else {
-        _SRPG_BattleManager_gainExp.call(this);
+        _srpg_BattleManager_gainExp.call(this);
     }
 };
 
@@ -2721,7 +2723,7 @@ Scene_Map.prototype.processSrpgVictory = function() {
      var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
      var targetBattler = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
      if (activeBattler[1] && !activeBattler[1].isDead()) {
-	 this.makeRewards();
+	 this.makeRewards();test = true;
          //console.log(this._rewards.exp);console.log(this._rewards.gold);console.log(this._rewards.items.length);
          if (this._rewards.exp > 0 || this._rewards.gold > 0 || this._rewards.items.length > 0) {
 	     this._srpgBattleResultWindow.setBattler(activeBattler[1]);
@@ -2735,9 +2737,9 @@ Scene_Map.prototype.processSrpgVictory = function() {
 	     this._srpgBattleResultWindow.open();
 	     this._srpgBattleResultWindowCount = 60;
              // gain rewards works only on actors and is not required for enemys or enemyTeam_actors 
-             if (activeBattler[0] === 'actor' && !activeBattler[1].srpgTeam() === _enemyTeam) {
+             if (activeBattler[0] === 'actor') {
                  this.gainRewards();
-	     }
+	     } else { if (activeBattler[0] === 'enemy') activeBattler[1].gainExp(this._rewards.exp)};
 	     return true;
 	 }
      return false;

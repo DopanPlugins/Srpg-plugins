@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_ForceAction.js
 //=============================================================================
 /*:
@@ -95,9 +95,9 @@
  *
  * example : <srpgForceAction:0, 0, 0>
  * 
- * in this example the same "skill","user" & "target" are used.. thats what "0" does in this NoteTag
- * ..i used "0" to tell the plugin "same as activeID"..
- * (because this is triggered while the skill with that NoteTag is proccesing/applied)
+ * in this example the same "user" & "target" are used.. thats what "0" does in this NoteTag
+ * ..on "skill", "0" means use "attackSkill" or "weaponSkill" of "user"
+ * (this is triggered while the skill with that notetag applys)
  *
  *
  * example : <srpgForceAction:10, -10, 10>

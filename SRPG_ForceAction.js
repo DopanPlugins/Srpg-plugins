@@ -2,8 +2,8 @@
 // SRPG_ForceAction.js
 //=============================================================================
 /*:
- * @plugindesc v2.0 Adds <SRPG_MapForceAction> ScriptCalls to SRPG 
- * @author dopan (UNDER CONSTRUCTION! DO NOT DownLoad!)
+ * @plugindesc v2.0 Adds <SRPG_ForceAction> for MultiWield & ForceAction usage in srpg
+ * @author dopan (done but not fully bugtested!)
  *
  * @param MFAisAktive_SwitchID 
  * @desc SwitchID of MFAisAktive_Switch,used to disable mapAktionText & mapPreActionPhase

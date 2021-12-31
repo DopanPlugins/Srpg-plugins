@@ -17,68 +17,108 @@
  * 
  * @help  
  *
- * This Plugin helps to replicate the "force Action" Function for skills in: MapBattle"True" BattleMode.
- * the Plugin ScriptCall will activate a "force Action" on Map without using "SV battleMode"
- * Note: the Plugin is still experimental pls report any Bugs or Issues u might find.
+ * This Plugin uses "forceAction" and handles SV & Map "ForceActions" to add an Action to another
+ *
+ * => Note: This Plugin uses "enemyUnitID" which is used in "EventUnitGraves"&"UnitCore" aswell
  *
  * => Note, added skills will still be affected by "Skillrange" ect.. 
  * 
- * => AOEs Skills cant be used for the Skill_IDs of these Scriptcalls..
+ * => AOEs Skills cant be used for the Skill_IDs of ForcedAction 
+ *   (not tested yet, but the last plugin Version wasnt compatible)
  *
- * => this is only for usage in "Custom Execution" triggered CommonEvent,
- *     in order to add a Skill to another..
+ * => this Plugin provides a SkillNote to "force Actions"
+ *   
+ * => this Plugin adds "MultiWield", that means all weapons that are equiped by actors or enemys,  
+ *    will be used.Even Weaposkills will be used if existing. 
+ * ..other plugins will still use the data of main weapon to controll enemyAI and other stuff..
+ * (i simply cant add data to all other plugins and other plugins assume 1 weapon usage^^)   
  *
- * Plugin Scriptcalls:
+ * => you can enable/disable "MultiWield" in the plugin param Globaly for all Units
+ * if "disabled" you can use a ClasNotetag to enable it for that Class only. 
+ *(recommended but not required,to use "SRPG_UnitCore", for more EquipmentStuff and enemyClass usage)   
+ *   
+ *   PLS make sure to add a Switch ID in the PluginParam to avoid Bugs even if that switch isnt used!
+ *   
+ *   The "MFAisAktive Switch" can be used for timming controll and add "wait" on mapBattlePreActionPhase
+ *   (this plugin enables and disables this switch on its own..its for eventing purposes)
+ *   
+ * This plugin is not fully tested and more Complex Setups with Scriptcalls,might be difficult,
+ * but i plan to show more complex eventing_setups in an ShowCase demo in the future..
  *
- *-------------------------------------------------------------------------------------------------------
- *-------------------------------------------------------------------------------------------------------
- * - "$gameSystem.EventToUnit(eventiD)[1].useMapExtraAction(extraSkillID);"
- *-------------------------------------------------------------------------------------------------------
- * Example : "$gameSystem.EventToUnit(eventiD)[1].useMapExtraAction(10);"
- *                                                               //skillId = 10
+ * This plugin will know if mapBattle OR SVbattle is used^^
  *
- * => this will add a second attack to the user if used in a Custom Ex SkillNoteTag triggered CommonEvent ,..
- *   ..using "Skill 10" 
- * => user & target are "active event" and "target event" by default
- *-------------------------------------------------------------------------------------------------------
- *-------------------------------------------------------------------------------------------------------
- * - "$gameSystem.EventToUnit(eventiD)[1].useMapForceDuoAction(duoSkillID, duoUserID);"
- *-------------------------------------------------------------------------------------------------------
- * Example : "$gameSystem.EventToUnit(eventiD)[1].useMapForceDuoAction(2, 10);" 
- *                        //skillId = 2 // user eventID = 10
- *
- * => this attack will be used from another Unit(user) on the same target(target event).
- * => by default the normal Skill user wont consume his turn this way, but the"helper" Unit will..
- * => this can be corrected with common events ect.. (by changing turn end status of units)
- * => this can be used for "friend-Combo"attacks" for example..
- *
- *-------------------------------------------------------------------------------------------------------
+ *===========================================================================================
+ * Plugin Scriptcalls: (these are only required for more complex Setups)
+ *===========================================================================================
  *-------------------------------------------------------------------------------------------------------
  * - "$gameSystem.EventToUnit(eventiD)[1].useMapForceAction(skillID, targetID);;"
  *-------------------------------------------------------------------------------------------------------
+ * plugin script to use forceAction on mapBattle Skills:
+ *
  * Example : "$gameSystem.EventToUnit(9)[1].useMapForceAction(1, 28);" 
  *                  // user eventID = 9           //skillID = 1 // target eventID = 28 
  *
  * => this will forceAction, with "user"(event id 9 ),"target"(event id 28 ),using "Skill 1" 
- *
- *-------------------------------------------------------------------------------------------------------
- *-------------------------------------------------------------------------------------------------------
- *-------------------------------------------------------------------------------------------------------
- * And dont forget:
- * this is only for usage in "Custom Execution" triggered CommonEvent in order to add a Skill to another..
- * That means the BattleAction must be triggered by any Unit that uses a Skill
- * (this skill should trigger a Common Event and these Scriptcalls should be in that Common Event)
  * 
- * the MFAisAktive Switch must be used to disable the PreActionPhase & MapActionText of the added skills
- * (by using "if conditions" that only use MapActionText&PreActionPhase when the Switch is OFF)
- * this switch will be activated from this Plugin & should be deactivated
- * in the "event after action"..
+ * this can be used in common event that are added to skills,
+ * but you cant use several forced actions add the same time!
+ * (there must be made an action chain, if its wanted to force several actions)
+ *
+ *
+ *-------------------------------------------------------------------------------------------------------
+ * - "$gameSystem.EventToUnit(eventiD)[1].forceAction(skillID, $gameSystem.EventToUnit(eventiD)[1]);"
+ *-------------------------------------------------------------------------------------------------------
+ * this is the default forceAction script which only triggers SVbattles
+ *
+ * same as above this can be added in a Skill Common Event
+ *
+ *
+ *-------------------------------------------------------------------------------------------------------
+ * (imported from "eventUnitGraves"-plugin) => "$gameSystem.EnemyUnit(unitID)"
+ *-------------------------------------------------------------------------------------------------------
  * 
+ *  this returns the event ID based on enemy Unit ID!
+ *  that way you can use the enemy UnitID instead of EventID..
  *
- * Sry but this stuff is required! 
+ *-------------------------------------------------------------------------------------------------------
+ * Plugin NoteTags (recommended!)
+ *-------------------------------------------------------------------------------------------------------
+ *--------------
+ * ClassNotetag:
+ *--------------
+ *  <srpgWield> (ClassNotetag) // enables multiWield for that Class,
+ *                                only required if PluginParam is disabled Globaly ..
+ *--------------
+ * SkillNoteTag:(recommended!)
+ *--------------
+ *  <srpgForceAction:SkillID, UserID, TargetID> (SkillNoteTag) // adds action to a Skill
  *
- *  <srpgWield> (ClassNotetag) , <srpgForceAction> (SkillNoteTag)
+ * example : <srpgForceAction:0, 0, 0>
+ * 
+ * in this example the same "skill","user" & "target" are used.. thats what "0" does in this NoteTag
+ * ..i used "0" to tell the plugin "same as activeID"..
+ * (because this is triggered while the skill with that NoteTag is proccesing/applied)
  *
+ *
+ * example : <srpgForceAction:10, -10, 10>
+ *
+ * "skillID = 10"              // skill ID of forcedSkill which is added
+ * "UsedID = actorID_10"       // negative Number "-10" => means Actor ID "10" 
+ * "targetID = enemyUnitID_10" // positive Number "10" => means EnemyUnitID "10"
+ *
+ * i used negative and positive numbers to tell the plugin if we use "actorID" or "enemyUnitID"
+ * => for this the usage of enemyUnitID is required, which is used in "EventUnitGraves"&"UnitCore"
+ *
+ *
+ * ===========================================================================================
+ * about more complex forced action chains:
+ * ===========================================================================================
+ * this is not tested yet, but it should be possible to make a longer chain of forced Actions,
+ * by forcingActions where the forced Skills have the "srpgForceAction" SkillNotetag aswell.
+ *
+ * Or you can try to do that by eventing, but its not easy to trigger the right timing,
+ * to not overwrite one scriptcall with another.
+ * 
  * ===========================================================================================
  * Terms of Use
  * ===========================================================================================
@@ -103,6 +143,7 @@
 
   var _srpg_Controll_MultiWield = (parameters['Controll Global MultiWield'] || 'false');
   var _mfaIsAktiveSwitch = Number(parameters['MFAisAktive_SwitchID'] || 0); 
+  var _lastUserID = -1;
   var _faUser = -1;
   var _faTarget = -1;
   var _faSkill = -1;
@@ -110,8 +151,9 @@
   var _extraTarget = -1;
   var _extraSkill = -1;  
   var _callMapForceAction = false;
+  var _callMapNextAction = false;
   var _callSVForceAction = false;
-  var _callSVForceWieldAction = false;
+  var _callSVNextAction = false;
 
 // console.log();
 //-----------------------------------------------------------------------------------------
@@ -126,27 +168,32 @@ Scene_Map.prototype.srpgAfterAction = function() {
      // reset Global var
      $gameSystem._srpgForceAction = true;
      $gameSwitches.setValue(_mfaIsAktiveSwitch, false);
-     //reset freeCost
+     // reset freeCost
      for (var i = 1; i <= $gameMap.events().length; i++) {
           var battler = $gameSystem.EventToUnit([i]);
           var eventUnit = $gameMap.event([i]);                
           if (battler && eventUnit && (battler[1]._freeCost === true)) {                     
               battler[1]._freeCost = false;
           };
-      };
-      // queue up svForceAction 
-      if (_callSVForceAction === true) {
-          //var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId()); 
-          // if "_faUser" is another new User & handle freeCost/TurnEnd
-          //if (user[1] !== $gameSystem.EventToUnit(_faUser)[1]) { 
-          //    user[1]._srpgTurnEnd = true;
-          //    $gameSystem.EventToUnit(_faUser)[1].SRPGActionTimesAdd(1);
-          //    $gameSystem.EventToUnit(_faUser)[1]._freeCost = true;
-          //} else {user[1]._freeCost = true}; 
-              this.svForceAction(_faSkill, _faUser, _faTarget);
-              _callSVForceAction = false;
-              return;
-      };	
+     };
+     // queue up svNextAction 
+     if (_callSVNextAction === true) {
+         _callSVNextAction = false;
+         // if new user ,disable turnEnd trigger by adding "actionTimeAdd + 1"
+         if (_lastUserID !== _faUser) $gameSystem.EventToUnit(_faUser)[1].SRPGActionTimesAdd(1);
+         $gameSystem.EventToUnit(_faUser)[1]._freeCost = true;
+         this.svForceAction(_faSkill, _faUser, _faTarget);
+         return;
+     };	
+     // queue up mapNextAction 
+     if (_callMapNextAction === true) {
+         _callMapNextAction = false; 
+         // if new user ,disable turnEnd trigger by adding "actionTimeAdd + 1"
+         if (_lastUserID !== _faUser) $gameSystem.EventToUnit(_faUser)[1].SRPGActionTimesAdd(1);
+         $gameSystem.EventToUnit(_faUser)[1]._freeCost = true;
+         this.mapForceAction(_faSkill, _faUser, _faTarget);
+         return;
+     };
 };
 
 Scene_Map.prototype.svForceAction = function(skill, user, target) {
@@ -160,8 +207,8 @@ Scene_Map.prototype.svForceAction = function(skill, user, target) {
           // make sure that active & target event are set properly before "ForceAction" is used
           $gameTemp.setActiveEvent($gameMap.event(user));
           $gameTemp.setTargetEvent($gameMap.event(target));
-	 $gameTemp.setAutoMoveDestinationValid(true);
-	 $gameTemp.setAutoMoveDestination($gameTemp.targetEvent().posX(), $gameTemp.targetEvent().posY());
+	  $gameTemp.setAutoMoveDestinationValid(true);
+	  $gameTemp.setAutoMoveDestination($gameTemp.targetEvent().posX(), $gameTemp.targetEvent().posY());
           userUnit[1].forceAction(skill, targetUnit[1]);
           $gameSystem.setSubBattlePhase('invoke_action');
           this.srpgBattleStart(userUnit, targetUnit);
@@ -169,7 +216,6 @@ Scene_Map.prototype.svForceAction = function(skill, user, target) {
 };	
 
 Scene_Map.prototype.mapForceAction = function(skill, user, target) {	
-   console.log(user, "sceneMapMFA");
      if (!$gameSystem.isSRPGMode()) return;
      // make sure that Mapbattle is used
      $gameSystem.forceSRPGBattleMode('map');
@@ -179,6 +225,8 @@ Scene_Map.prototype.mapForceAction = function(skill, user, target) {
           // make sure that active & target event are set properly before "ForceAction" is used
           $gameTemp.setActiveEvent($gameMap.event(user));
           $gameTemp.setTargetEvent($gameMap.event(target));
+	  $gameTemp.setAutoMoveDestinationValid(true);
+	  $gameTemp.setAutoMoveDestination($gameTemp.targetEvent().posX(), $gameTemp.targetEvent().posY());
           userUnit[1].forceAction(skill, targetUnit[1]);
           $gameSystem.setSubBattlePhase('invoke_action');
           this.srpgBattleStart(userUnit, targetUnit);
@@ -190,51 +238,42 @@ var _SRPG_SceneMap_update = Scene_Map.prototype.update;
 Scene_Map.prototype.update = function() {
      _SRPG_SceneMap_update.call(this);
      // there are definitely no map skills in play
-     if (!$gameSystem.isSRPGMode()) {
-	 return;
-     };
-     // process extra MapActions _callSVForceAction === true || 
-     while (_callMapForceAction == true) {
-            // queue up svForceAction 
-            //if (_callSVForceAction === true) {
-            //   var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId()); 
-               // if "_faUser" is another new User & handle freeCost/TurnEnd
-            //   if (user[1] !== $gameSystem.EventToUnit(_faUser)[1]) { 
-            //       user[1]._srpgTurnEnd = true;
-            //       $gameSystem.EventToUnit(_faUser)[1].SRPGActionTimesAdd(1);
-            //       $gameSystem.EventToUnit(_faUser)[1]._freeCost = true;
-            //   } else {user[1]._freeCost = true}; 
-            //   this.svForceAction(_faSkill, _faUser, _faTarget);
-            //   _callSVForceAction = false;
-            //   return;
-            //};	
+     if (!$gameSystem.isSRPGMode()) return;
+     // process extra MapActions
+     while (_callMapForceAction == true) {	
             // queue up mapForceAction 
             if (_callMapForceAction == true) {
-                var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId()); 
-                // if "_faUser" is another new User & handle freeCost/TurnEnd
-                if (user[1] !== $gameSystem.EventToUnit(_faUser)[1]) { 
-                    user[1]._srpgTurnEnd = true;
-                    $gameSystem.EventToUnit(_faUser)[1].SRPGActionTimesAdd(1);
-                    $gameSystem.EventToUnit(_faUser)[1]._freeCost = true;
-                } else {user[1]._freeCost = true}; 
-                this.mapForceAction(_faSkill, _faUser, _faTarget);
                 _callMapForceAction = false;
+                var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId()); 
+                var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId()); 
+                var userForce = $gameSystem.EventToUnit(_faUser); 
+                var targetForce = $gameSystem.EventToUnit(_faTarget);
+                // check if user&target have changed
+                if (user[1] === userForce[1] && target[1] === targetForce[1]) { 
+                    userForce[1]._freeCost = true;
+                    this.mapForceAction(_faSkill, _faUser, _faTarget);
+                } else {
+                    // call action with "after action scene"
+                    _lastUserID = Number($gameTemp.activeEvent().eventId());
+                    _callMapNextAction = true;
+                };
                 return;
             }; 
      }
 };
 
 //====================================================================
-// Game_Battler
+// Game_Battler & Game_BattlerBase
 //====================================================================
 
+// disable tp/mp cost for forced actions
 Game_BattlerBase.prototype.paySkillCost = function(skill) {
     if (this._freeCost && this._freeCost === true) return;
     this._mp -= this.skillMpCost(skill);
     this._tp -= this.skillTpCost(skill);
 };
 
-// get the right timing to add SV"extraAction".. happens when battler hp has changed
+// get the right timing to add SV"extraAction".. happens when battler hp has changed while SVbattle
 var _srpgBattlerRefresh = Game_Battler.prototype.refresh;
 Game_Battler.prototype.refresh = function() {
     _srpgBattlerRefresh.call(this);
@@ -243,12 +282,12 @@ Game_Battler.prototype.refresh = function() {
 	return;
     };
     // check if any SV forceExtraAction is active & if target = battler
-    if (_callSVForceWieldAction === true && this.event().eventId() === $gameTemp.targetEvent().eventId()) {
+    if (_callSVForceAction === true && this.event().eventId() === $gameTemp.targetEvent().eventId()) {
         var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
         var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
         user[1]._freeCost = true;
         user[1].forceAction(_extraSkill, target[1]); 
-        _callSVForceWieldAction = false;
+        _callSVForceAction = false;
     };
 };
 	
@@ -258,8 +297,6 @@ Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
     _faUser = this.event().eventId();
     _faTarget = targetID;
     _faSkill = skillID;
-    //insert event id 
-    var target = $gameSystem.EventToUnit(targetID);
     // clean up "waiting" status
     if (this._actionState == ("waiting")) {
         this.setActionState("");
@@ -272,12 +309,13 @@ Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
     $gameSwitches.setValue(_mfaIsAktiveSwitch, true);  
 };
 
-
+//====================================================================
+// Game_Action
+//====================================================================
 // importent data info below: 
 //----------------------------------------------------------------- 
 // $gameSystem._wieldSlot = 1; $gameSystem._srpgForceAction = true;
 // <srpgWield> (ClassNotetag) , <srpgForceAction:skillID, UserID, TargetID> (SkillNoteTag) 
-//
 
 var _srpg_apply = Game_Action.prototype.apply;
 Game_Action.prototype.apply = function(target) {
@@ -333,8 +371,6 @@ Game_Action.prototype.srpgForceActionSetup = function(target) {
                 skillID = Number(user[1].weapons()[0].meta.srpgWeaponSkill);
             } else {skillID = Number(user[1].attackSkillId())};
         };
-        console.log(forceUser, "setup forceUser");
-        console.log(userID, "setup userID");
         // process srpgForceAction
         this.srpgForceAction(skillID, userID, targetID);
         return true;
@@ -351,7 +387,6 @@ Game_Action.prototype.srpgForceAction = function(skill, userID, targetID) {
     var user = $gameSystem.EventToUnit(userID);
     var mapTag = $dataSkills[skill].meta.mapbattle;
     var useMap = false;
-    var activeUser = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
     $gameSystem._srpgForceAction = false;
     if ($gameSystem.useMapBattle()) useMap = true; 
     if (mapTag == 'true') useMap = true; 
@@ -361,17 +396,17 @@ Game_Action.prototype.srpgForceAction = function(skill, userID, targetID) {
         return true;
     } else {
         // if extra action (same user and same target)
-        if (activeUser === user && targetID === $gameTemp.targetEvent().eventId()) { 
+        if ($gameTemp.activeEvent().eventId() === userID && targetID === $gameTemp.targetEvent().eventId()) { 
             _extraSkill = forceSkill;
-            _callSVForceWieldAction = true;
-        // if user or target is diefferent than the activeAction used user/target
+            _callSVForceAction = true;
+        // if user/target is diefferent than the activeAction's used user/target
         } else {
+            _lastUserID = Number($gameTemp.activeEvent().eventId());
             _faUser = userID;
             _faTarget = targetID;
             _faSkill = forceSkill;
-            _callSVForceAction = true;
+            _callSVNextAction = true;
         };
-        //user[1].forceAction(forceSkill, target[1]);
         return true;
     }
 return false;
@@ -429,7 +464,7 @@ Game_Action.prototype.srpgWield = function(target) {
              //else if not Hit => transfer data & process forceAction (sv action) 
              } else {
                  _extraSkill = forceSkill;
-                 if (!$gameSystem.useMapBattle()) _callSVForceWieldAction = true;
+                 if (!$gameSystem.useMapBattle()) _callSVForceAction = true;
              }; 
              // process map action & process wieldSlot controll Var
              if ($gameSystem.useMapBattle()) user[1].useMapForceAction(forceSkill, targetID);
@@ -439,23 +474,27 @@ Game_Action.prototype.srpgWield = function(target) {
     } else {$gameSystem._wieldSlot = 1};
 };
 
-    // function from "SRPG_UnitGraves" to convert unit id into event id
-    // this is just incase "SRPG_UnitGraves" isnt used.. 
-    Game_System.prototype.EnemyUnit = function(unitID) {
-        var eventId = 0;
-        $gameMap.events().forEach(function(event) {
-            if (event.isType() === 'enemy') {
-		eventID = event.eventId();    
-                var enemyUnit = $gameMap.event(eventID)._eventEnemyUnitId;
-		if (enemyUnit) { 
-                    if (enemyUnit === unitID) {
-                        eventId = eventID;
-		    }
-                }
-            }
-        });
-        return eventId;
-    };
+//====================================================================
+// Game_System
+//====================================================================
+// function from "SRPG_UnitGraves" to convert unit id into event id
+// this is just incase "SRPG_UnitGraves" isnt used.. 
+
+Game_System.prototype.EnemyUnit = function(unitID) {
+    var eventId = 0;
+    $gameMap.events().forEach(function(event) {
+         if (event.isType() === 'enemy') {
+	     eventID = event.eventId();    
+             var enemyUnit = $gameMap.event(eventID)._eventEnemyUnitId;
+	     if (enemyUnit) { 
+                 if (enemyUnit === unitID) {
+                     eventId = eventID;
+	         }
+             }
+         }
+    });
+return eventId;
+};
 
 
 //--End:

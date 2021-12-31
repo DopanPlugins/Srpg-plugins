@@ -134,18 +134,26 @@ Scene_Map.prototype.srpgAfterAction = function() {
      _srpgAfterActionScene.call(this);
      $gameSystem._srpgForceAction = true;
      $gameSwitches.setValue(_mfaIsAktiveSwitch, false);
+     //reset freeCost
+     for (var i = 1; i <= $gameMap.events().length; i++) {
+          var battler = $gameSystem.EventToUnit([i]);
+          var eventUnit = $gameMap.event([i]);                
+          if (battler && eventUnit && (battler[1]._freeCost === true)) {                     
+              battler[1]._freeCost = false;
+          };
+     };
      if (_resetTurn === true) {
 	$gameSystem.EventToUnit(_faDuoUser)[1]._srpgTurnEnd = false;
 	$gameSystem.EventToUnit(_duoLeader)[1]._srpgTurnEnd = true;
 	_resetTurn = false;
      };
      if (_callSVForceDuoAction === true) {
-         $gameTemp.setShouldPayCost(true);
+         //$gameTemp.setShouldPayCost(true);
          this.svForceAction(_duoSkill, _faDuoUser, _faDuoTarget);
          _callSVForceDuoAction = false;return;
      };
      if (_callSVForceAction === true) {
-         $gameTemp.setShouldPayCost(false);
+         //$gameTemp.setShouldPayCost(false);
          this.svForceAction(_faSkill, _faUser, _faTarget);
          _callSVForceAction = false;return;
      };	
@@ -169,6 +177,7 @@ Scene_Map.prototype.svForceAction = function(skill, user, target) {
 };	
 
 Scene_Map.prototype.mapForceAction = function(skill, user, target) {	
+   console.log(user, "sceneMapMFA");
      if (!$gameSystem.isSRPGMode()) return;
      // make sure that Mapbattle is used
      $gameSystem.forceSRPGBattleMode('map');
@@ -196,21 +205,28 @@ Scene_Map.prototype.update = function() {
      while (_callMapForceExtraAction == true || _callMapForceDuoAction == true || _callMapForceAction == true) {
             // queue up extraMapAction
             if (_callMapForceExtraAction == true) {
-	        $gameTemp.setShouldPayCost(false);
+	        //$gameTemp.setShouldPayCost(false);
                 this.mapForceAction(_extraSkill, _extraUser, _extraTarget);
                 _callMapForceExtraAction = false;
                 return;
             };                     
             // queue up mapDuoAction 
             if (_callMapForceDuoAction == true) {
-                $gameTemp.setShouldPayCost(true);
+                //$gameTemp.setShouldPayCost(true);
                 this.mapForceAction(_duoSkill, _faDuoUser, _faDuoTarget);
                 _callMapForceDuoAction = false;	  
                 return;
             }; 
             // queue up mapForceAction 
             if (_callMapForceAction == true) {
-	        $gameTemp.setShouldPayCost(false);
+                var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId()); 
+                // if "_faUser" is another new User & handle freeCost/TurnEnd
+                if (user[1] !== $gameSystem.EventToUnit(_faUser)[1]) { 
+                    user[1]._srpgTurnEnd = true;
+                    $gameSystem.EventToUnit(_faUser)[1].SRPGActionTimesAdd(1);
+                    $gameSystem.EventToUnit(_faUser)[1]._freeCost = true;
+                } else {user[1]._freeCost = true}; 
+	        //$gameTemp.setShouldPayCost(true);   console.log(_faUser, "_faUser");
                 this.mapForceAction(_faSkill, _faUser, _faTarget);
                 _callMapForceAction = false;
                 return;
@@ -221,6 +237,12 @@ Scene_Map.prototype.update = function() {
 //====================================================================
 // Game_Battler
 //====================================================================
+
+Game_BattlerBase.prototype.paySkillCost = function(skill) {
+    if (this._freeCost && this._freeCost === true) return;
+    this._mp -= this.skillMpCost(skill);
+    this._tp -= this.skillTpCost(skill);
+};
 
 // get the right timing to add SV"extraAction".. happens when battler hp has changed
 var _srpgBattlerRefresh = Game_Battler.prototype.refresh;
@@ -337,8 +359,8 @@ Game_Action.prototype.srpgForceActionSetup = function(target) {
         var userID = 0;
         var targetID = 0;
         // gameTemp active/target eventID
-        if (forceUser === 0) userID = $gameTemp.activeEvent().eventId();
-        if (forceTarget === 0) targetID = $gameTemp.targetEvent().eventId();
+        if (forceUser == 0) userID = $gameTemp.activeEvent().eventId();
+        if (forceTarget == 0) targetID = $gameTemp.targetEvent().eventId();
         //if enemy get eventID
         if (forceUser > 0) userID = $gameSystem.EnemyUnit(forceUser);
         if (forceTarget > 0) targetID = $gameSystem.EnemyUnit(forceTarget); 
@@ -359,6 +381,8 @@ Game_Action.prototype.srpgForceActionSetup = function(target) {
                 skillID = Number(user[1].weapons()[0].meta.srpgWeaponSkill);
             } else {skillID = Number(user[1].attackSkillId())};
         };
+        console.log(forceUser, "setup forceUser");
+        console.log(userID, "setup userID");
         // process srpgForceAction
         this.srpgForceAction(skillID, userID, targetID);
         return true;
@@ -375,7 +399,7 @@ Game_Action.prototype.srpgForceAction = function(skill, userID, targetID) {
     var user = $gameSystem.EventToUnit(userID);
     var mapTag = $dataSkills[skill].meta.mapbattle;
     $gameSystem._srpgForceAction = false;
-    var useMap = false; 
+    var useMap = false;
     if ($gameSystem.useMapBattle()) useMap = true; 
     if (mapTag == 'true') useMap = true; 
     if (mapTag == 'false') useMap = false;  

@@ -17,6 +17,8 @@
  * 
  * @help  
  *
+ * This Plugin requires the "SRPG_core" & ("SRPG_UnitCore" OR "SRPG_EventUnitGraves" for the "UnitId" usage in this plugin)
+ *
  * This Plugin uses "forceAction" and handles SV & Map "ForceActions" to add an Action to another
  *
  * => Note: This Plugin uses "enemyUnitID" which is used in "EventUnitGraves"&"UnitCore" aswell
@@ -40,7 +42,7 @@
  *   PLS make sure to add a Switch ID in the PluginParam to avoid Bugs even if that switch isnt used!
  *   
  *   The "MFAisAktive Switch" can be used for timming controll and add "wait" on mapBattlePreActionPhase
- *   (this plugin enables and disables this switch on its own..its for eventing purposes)
+ *   (this plugin enables and disables this switch on its own..its for eventing purposes on mapBattle Actions)
  *   
  * This plugin is not fully tested and more Complex Setups with Scriptcalls,might be difficult,
  * but i plan to show more complex eventing_setups in an ShowCase demo in the future..
@@ -68,18 +70,21 @@
  *-------------------------------------------------------------------------------------------------------
  * - "$gameSystem.EventToUnit(eventiD)[1].forceAction(skillID, $gameSystem.EventToUnit(eventiD)[1]);"
  *-------------------------------------------------------------------------------------------------------
- * this is the default forceAction script which only triggers SVbattles
+ * this is the default forceAction script,but it needs a "battleAction" or "battleStart"
  *
- * same as above this can be added in a Skill Common Event
+ * same as above this can be added in a Skill Common Event, to be chained into the battleAction
  *
- *
+ * ( i might build another scriptcall to manually add "battleStart" in the future )
  *-------------------------------------------------------------------------------------------------------
- * (imported from "eventUnitGraves"-plugin) => "$gameSystem.EnemyUnit(unitID)"
+ * (copy/pasted Function from "eventUnitGraves"-plugin) => "$gameSystem.EnemyUnit(unitID)"
  *-------------------------------------------------------------------------------------------------------
- * 
+ * example $gameSystem.EnemyUnit("2")
+ *
+ * (by default enemyUnitId has "" added..this plugin doesnt change that)
+ *
  *  this returns the event ID based on enemy Unit ID!
  *  that way you can use the enemy UnitID instead of EventID..
- *
+ * (this requires usage of "unitCore" or "eventUnitGraves" because of unit ID.. both plugins will add the needed data)
  *-------------------------------------------------------------------------------------------------------
  * Plugin NoteTags (recommended!)
  *-------------------------------------------------------------------------------------------------------
@@ -93,14 +98,16 @@
  *--------------
  *  <srpgForceAction:SkillID, UserID, TargetID> (SkillNoteTag) // adds action to a Skill
  *
- * example : <srpgForceAction:0, 0, 0>
+ * example1 : <srpgForceAction:0, 0, 0>
  * 
- * in this example the same "user" & "target" are used.. thats what "0" does in this NoteTag
- * ..on "skill", "0" means use "attackSkill" or "weaponSkill" of "user"
+ * userID = "0" => $gameTemp.activeEvent.eventId() 
+ * targetID = "0" => $gameTemp.targetEvent().eventId()
+ * SkillID = "0" => use "attackSkill" or "weaponSkill" of "user"(which is added by userID)
+ * 
  * (this is triggered while the skill with that notetag applys)
  *
  *
- * example : <srpgForceAction:10, -10, 10>
+ * example2 : <srpgForceAction:10, -10, 10>
  *
  * "skillID = 10"              // skill ID of forcedSkill which is added
  * "UsedID = actorID_10"       // negative Number "-10" => means Actor ID "10" 
@@ -108,7 +115,7 @@
  *
  * i used negative and positive numbers to tell the plugin if we use "actorID" or "enemyUnitID"
  * => for this the usage of enemyUnitID is required, which is used in "EventUnitGraves"&"UnitCore"
- *
+ * (i used actorID&unitID ,because without other scripts its hard to know the event ID of actors or enemys)
  *
  * ===========================================================================================
  * about more complex forced action chains:
@@ -117,8 +124,11 @@
  * by forcingActions where the forced Skills have the "srpgForceAction" SkillNotetag aswell.
  *
  * Or you can try to do that by eventing, but its not easy to trigger the right timing,
- * to not overwrite one scriptcall with another.
+ * to not overwrite one scriptcall with another.Thats why its recommened,
+ * to use the common events that are triggered by skills.In order to get into the battleAction
  * 
+ * (i plan to build another scriptcall to manually trigger scene-"battleStart" for more complex usage)
+ *
  * ===========================================================================================
  * Terms of Use
  * ===========================================================================================

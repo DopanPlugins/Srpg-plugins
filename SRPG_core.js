@@ -7211,8 +7211,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
 
 		switch (data.phase) {
 			// skill cost and casting animations
-			case 'start':
-				if (!user.canMove() || !user.canUse(action.item()) || !target.isAlive()) {
+			case 'start': //dopan edit added  => " && !action._forcing"
+				if (!user.canMove() || !target.isAlive() || (!user.canUse(action.item()) && !action._forcing)) {
 					data.phase = 'cancel';
 					this._srpgSkillList.unshift(data);
 					break;

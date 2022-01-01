@@ -7425,10 +7425,12 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var user = data.user;
 		var target = data.target;
 
-//dopan edit -> makes sure that user is always displayed above target in mapbattle
-     user.event()._priorityType = 4;
-     target.event()._priorityType = 3;
-//dopan edit end
+        //dopan edit -> makes sure that user is always displayed above target in mapbattle
+                var oldUserPtype = user.event()._priorityType;
+                var oldTargetPtype = target.event()._priorityType;	
+                user.event()._priorityType = 4;
+                target.event()._priorityType = 3;
+        //dopan edit end
 
 		switch (data.phase) {
 			// skill cost and casting animations
@@ -7565,6 +7567,10 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		// Show the results
 		user.srpgShowResults();
 		target.srpgShowResults();
+                 //reset P-type
+                user.event()._priorityType = oldUserPtype;
+                target.event()._priorityType = oldTargetPtype;
+                 //reset P-type		
 		return true;
 	};
 

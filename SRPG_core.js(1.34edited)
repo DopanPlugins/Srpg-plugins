@@ -155,7 +155,7 @@
  *
  * @param srpgBattleExpRate
  * @parent BattleBasicParam
- * @desc if User can't defeat Target, User get exp in this rate. set 0 to 1.0.
+ * @desc if player can't defeat enemy, player get exp in this rate. set 0 to 1.0.
  * @type number
  * @decimals 2
  * @min 0
@@ -164,7 +164,7 @@
  *
  * @param srpgBattleExpRateForActors
  * @parent BattleBasicParam
- * @desc if User act for friends,User get exp in this rate(to next level). set 0 to 1.0. 
+ * @desc if player act for friends,player get exp in this rate(to next level). set 0 to 1.0. 
  * @type number
  * @decimals 2
  * @min 0
@@ -6645,7 +6645,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
         if (addActionNum && addActionNum > 0) {
             actionArray[1].SRPGActionTimesAdd(addActionNum);
         }
-        this._callSrpgBattle = true;
+        this._callSrpgBattle = true;console.log("sv here");
         this.eventBeforeBattle();
     };
 
@@ -7432,8 +7432,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
 
 		switch (data.phase) {
 			// skill cost and casting animations
-			case 'start':
-				if (!user.canMove() || !user.canUse(action.item()) || !target.isAlive()) {
+			case 'start': //dopan edit added  => " && !action._forcing"
+				if (!user.canMove() || !target.isAlive() || (!user.canUse(action.item()) && !action._forcing)) {
 					data.phase = 'cancel';
 					this._srpgSkillList.unshift(data);
 					break;
@@ -7446,7 +7446,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                                     action.applyGlobal(); // dopan Edit (set Skill CE before Action)
 				}
 				//
-				user.useItem(action.item());
+				user.useItem(action.item());console.log("map here", action.item());
 				if (!$gameTemp.isFirstAction || $gameTemp.isFirstAction()) {
 					var castAnim = false;
 					// cast animation, is a skill, isn't an attack or guard

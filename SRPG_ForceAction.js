@@ -306,8 +306,6 @@ Scene_Map.prototype.update = function() {
 // Game_Battler & Game_BattlerBase
 //====================================================================
 
-
-
 // disable tp/mp cost for forced actions
 Game_BattlerBase.prototype.paySkillCost = function(skill) {
     if (this._freeCost && this._freeCost === true) return;

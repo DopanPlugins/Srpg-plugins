@@ -7205,6 +7205,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var target = data.target;
 
                 //dopan edit -> makes sure that user is always displayed above target in mapbattle
+                var oldUserPtype = user.event()._priorityType;
+                var oldTargetPtype = target.event()._priorityType;		
                 user.event()._priorityType = 4;
                 target.event()._priorityType = 3;
                 //dopan edit end
@@ -7345,6 +7347,10 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		// Show the results
 		user.srpgShowResults();
 		target.srpgShowResults();
+                 //reset P-type
+                user.event()._priorityType = oldUserPtype;
+                target.event()._priorityType = oldTargetPtype;
+                 //reset P-type		
 		return true;
 	};
 

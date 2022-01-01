@@ -52,8 +52,15 @@
  *===========================================================================================
  * Plugin Scriptcalls: (these are only required for more complex Setups)
  *===========================================================================================
+ * - "this.triggerBattleStart();"         (Game_Interpreter function for eventing purposes)
+ *
+ * this can trigger the battleStart scene ,use this right after the default "forceAction" script,
+ * incase your script isnt attached to any battleaction..
+ *
+ * but make sure that "$gameTemp.activeEvent" and "$gameTemp.targetEvent" are set properly,
+ * aswell as the wanted mapbattleMode..before "battleStart" is triggered!
  *-------------------------------------------------------------------------------------------------------
- * - "$gameSystem.EventToUnit(eventiD)[1].useMapForceAction(skillID, targetID);;"
+ * - "$gameSystem.EventToUnit(eventiD)[1].useMapForceAction(skillID, targetID);"
  *-------------------------------------------------------------------------------------------------------
  * plugin script to use forceAction on mapBattle Skills:
  *
@@ -74,7 +81,7 @@
  *
  * same as above this can be added in a Skill Common Event, to be chained into the battleAction
  *
- * ( i might build another scriptcall to manually add "battleStart" in the future )
+ * 
  *-------------------------------------------------------------------------------------------------------
  * (copy/pasted Function from "eventUnitGraves"-plugin) => "$gameSystem.EnemyUnit(unitID)"
  *-------------------------------------------------------------------------------------------------------
@@ -124,11 +131,17 @@
  * by forcingActions where the forced Skills have the "srpgForceAction" SkillNotetag aswell.
  *
  * Or you can try to do that by eventing, but its not easy to trigger the right timing,
- * to not overwrite one scriptcall with another.Thats why its recommened,
- * to use the common events that are triggered by skills.In order to get into the battleAction
- * 
- * (i plan to build another scriptcall to manually trigger scene-"battleStart" for more complex usage)
+ * to not overwrite one scriptcall with another.
  *
+ * Thats why its recommened,to use the common events that are triggered by skills.
+ * In order to get into the "battleAction"..
+ * Or you can try to use the "this.triggerBattleStart();"-scriptcall..
+ * which will triggered in the sceneMap update, as soon "no $gameMapEvent is running"
+ * Thats why its recommened to use commonEvents for such more complex setups and not
+ * "$gameMap events" even if that commonEvent is not added to a skill..
+ *
+ * ("$gameMap events" are handling the pre/post action phases, UnitMovement ect ,
+ *  and for timming purposes,we wait for them to end before any action happens)
  * ===========================================================================================
  * Terms of Use
  * ===========================================================================================
@@ -165,6 +178,8 @@
   var _callMapNextAction = false;
   var _callSVForceAction = false;
   var _callSVNextAction = false;
+  var _finalCallMFA = false;
+  var _triggerBattleStart = false;
 
 // console.log();
 //-----------------------------------------------------------------------------------------
@@ -202,7 +217,7 @@ Scene_Map.prototype.srpgAfterAction = function() {
          // if new user ,disable turnEnd trigger by adding "actionTimeAdd + 1"
          if (_lastUserID !== _faUser) $gameSystem.EventToUnit(_faUser)[1].SRPGActionTimesAdd(1);
          $gameSystem.EventToUnit(_faUser)[1]._freeCost = true;
-         this.mapForceAction(_faSkill, _faUser, _faTarget);
+         _finalCallMFA = true;
          return;
      };
 };
@@ -251,7 +266,13 @@ Scene_Map.prototype.update = function() {
      // there are definitely no map skills in play
      if (!$gameSystem.isSRPGMode()) return;
      // process extra MapActions
-     while (_callMapForceAction == true) {	
+     while ((_callMapForceAction == true || _finalCallMFA == true) && $gameMap.isEventRunning() !== true) {	
+            // queue up _finalCallMFA 
+            if (_finalCallMFA == true) {
+                _finalCallMFA = false;
+                this.mapForceAction(_faSkill, _faUser, _faTarget);
+                return;
+            }; 
             // queue up mapForceAction 
             if (_callMapForceAction == true) {
                 _callMapForceAction = false;
@@ -271,11 +292,21 @@ Scene_Map.prototype.update = function() {
                 return;
             }; 
      }
+     if (_triggerBattleStart === true && $gameMap.isEventRunning() !== true) { 
+         _triggerBattleStart = false;
+         var userUnit = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+         var targetUnit = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+         $gameSystem.setSubBattlePhase('invoke_action');
+         this.srpgBattleStart(userUnit, targetUnit);         
+         return;
+     };
 };
 
 //====================================================================
 // Game_Battler & Game_BattlerBase
 //====================================================================
+
+
 
 // disable tp/mp cost for forced actions
 Game_BattlerBase.prototype.paySkillCost = function(skill) {
@@ -507,6 +538,14 @@ Game_System.prototype.EnemyUnit = function(unitID) {
 return eventId;
 };
 
+//====================================================================
+// Game_Interpreter
+//====================================================================
+// scriptcall "this.triggerBattleStart();"
+ Game_Interpreter.prototype.triggerBattleStart = function() {
+     _triggerBattleStart = true;
+ };
+//====================================================================
 
 //--End:
 

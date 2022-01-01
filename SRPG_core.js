@@ -6671,16 +6671,11 @@ Window_WinLoseCondition.prototype.refresh = function() {
             this._logWindow.push('pushBaseLine');
             if (Math.random() < this._action.itemCnt(target)) {
                 var attackSkill = $dataSkills[target.attackSkillId()];
-		// boomys edit Start // fix counter if not using SRPG mode
-                if ($gameSystem.isSRPGMode() == true) {
-		    if (target.canUse(attackSkill) == true) {
-                        this.invokeCounterAttack(subject, target);
-                    } else {
-                        this.invokeNormalAction(subject, target);
-                    }
-		} else {
-		    this.invokeCounterAttack(subject, target);	
-		} // boomys edit end // fix counter if not using SRPG mode
+                if (target.canUse(attackSkill) == true) {
+                    this.invokeCounterAttack(subject, target);
+                } else {
+                    this.invokeNormalAction(subject, target);
+                }
             } else if (Math.random() < this._action.itemMrf(target)) {
                 this.invokeMagicReflection(subject, target);
             } else {

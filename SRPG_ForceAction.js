@@ -17,7 +17,7 @@
  * 
  * @help  
  *
- * This Plugin requires the "SRPG_core" & ("SRPG_UnitCore" OR "SRPG_EventUnitGraves" for the "UnitId" usage in this plugin)
+ * This Plugin requires the my "edited-SRPG_core" & ("SRPG_UnitCore" OR "SRPG_EventUnitGraves" for the "UnitId" usage in this plugin)
  *
  * This Plugin uses "forceAction" and handles SV & Map "ForceActions" to add an Action to another
  *

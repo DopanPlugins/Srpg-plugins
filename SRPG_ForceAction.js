@@ -326,7 +326,7 @@ Game_Action.prototype.apply = function(target) {
         // enable the forceAction controll switch
         if ($gameSystem._srpgForceAction === undefined) $gameSystem._srpgForceAction = true;
         // Check plugin param and userClassNote
-        var user = $gameSystem.EventToUnit(this._userEventID);
+        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
         if (_srpg_Controll_MultiWield === 'true' || user[1].currentClass().meta.srpgWield) {
             this.srpgWieldSetup(target);return;
         };

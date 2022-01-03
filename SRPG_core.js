@@ -11,10 +11,11 @@
 // copyright 2017 - 2019 Lemon slice all rights reserved.
 // Released under the MIT license.
 // http://opensource.org/licenses/mit-license.php
+// edited Version: dopan 2022
 //=============================================================================
 
 /*:
- * @plugindesc SRPG battle system (tactical battle system) on map (edited Version 1.32).
+ * @plugindesc <SRPG_core> SRPG battle system (tactical battle system) on map (edited Version 1.32).
  * @author Gakuto Mikagami, Dr. Q (extraEdits by boomy & dopan)
  *
  * @param srpgTroopID
@@ -219,13 +220,6 @@
  *
  * //-dopan edit start- for MapBattle
  *
- *
- * @param BeforeMapBattleCE_ID
- * @desc "Scene_Map.prototype.eventBeforeBattle.call(this);" Use only this Script in that CE.(better preActionPhase timing)
- * 
- * @type common_event
- * @default 1
- * 
  *
  * @param Skill_CE_Timing_SwitchID
  * @desc Switch ID:0 or Switch "false"->Default__Switch "true"->change timing (betwen PreActionPhase&CustomEx)
@@ -743,13 +737,6 @@
  * //-dopan edit start--dopan編集開始-
  *
  *
- * @param BeforeMapBattleCE_ID
- * @desc "Scene Map.prototype.event Before Battle.call（this）;"その一般的なイベントでは、このスクリプトのみを使用してください（プレアクティブフェーズのタイミングの改善）
- * 
- * @type common_event
- * @default 1
- * 
- *
  * @param Skill_CE_Timing_SwitchID
  * @desc スイッチID：0またはスイッチ「false」-> Default__Switch「true」->タイミングの変更（アクション前フェーズとCustomExの間）
  * @type switch
@@ -1041,7 +1028,9 @@
 
 (function() {
 
-    var parameters = PluginManager.parameters('SRPG_core');
+    var parameters = PluginManager.parameters("SRPG_core") ||
+    $plugins.filter(function (plugin) { return plugin.description.contains('<SRPG_core>')});
+    
     var _srpgTroopID = Number(parameters['srpgTroopID'] || 1);
     var _srpgBattleSwitchID = Number(parameters['srpgBattleSwitchID'] || 1);
     var _existActorVarID = Number(parameters['existActorVarID'] || 1);
@@ -6946,7 +6935,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var reaction = null;
                 //get data for activeSkil
                 var activeSkill = user._actions[0]._item._itemId;
-		
 		// check if we're using map battle on this skill
 		if (action && action.item()) {
 			var mapBattleTag = action.item().meta.mapBattle;
@@ -6965,20 +6953,36 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		// pre-skill setup
 		$gameSystem.clearSrpgStatusWindowNeedRefresh();
 		$gameSystem.clearSrpgBattleWindowNeedRefresh();
+		this._srpgBattleResultWindowCount = 0;
 
-		//make free actions work
+		// make free actions work
 		var addActionTimes = Number(action.item().meta.addActionTimes || 0);
 		if (addActionTimes > 0) {
 			user.SRPGActionTimesAdd(addActionTimes);
 		}
 
 		this.preBattleSetDirection();
-		
                 // EDIT dopan (for better PreActionPhase Timing)
-		$gameTemp.reserveCommonEvent(_BeforeMapBattleCE); //defaut was ->// this.eventBeforeBattle();
-                // EDIT dopan (this CE = "_BeforeMapBattleCE" ,needs only Script..
-		//..=> "Scene_Map.prototype.eventBeforeBattle.call(this);" ,in it and nothing else!)
+		this.eventBeforeBattle();
+                this.srpgMapActionText(userArray);
+                this.srpgMapTroopSetup(userArray, targetArray);
+                this.srpgMapCounter(userArray, targetArray);
+                this.srpgMapAgiAtt(userArray, targetArray);
+	};
 
+        Scene_Map.prototype.srpgMapActionText = function(userArray) {
+             var skill = userArray[1]._actions[0].item(); 
+             var skillName = skill.name;
+             var skillIcon = skill.iconIndex;
+             $gameMessage.setBackground(1);$gameMessage.setPositionType(0);
+             $gameMessage.add("\\> \\TA[1] \\i["+ skillIcon +"]"+ skillName +"!\\|\\^");
+        }; 
+
+        Scene_Map.prototype.srpgMapTroopSetup = function(userArray, targetArray) {
+		// get the data
+		var user = userArray[1];
+		var target = targetArray[1];
+		var action = user.action(0);
 		// set up the troop and the battle party
 		$gameTroop.clearSrpgBattleEnemys();
 		$gameTroop.clear();
@@ -6989,22 +6993,37 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		else $gameParty.pushSrpgBattleActors(target);
 		BattleManager.setup(_srpgTroopID, false, true);
 		action.setSubject(user);
-
 		// queue the action
 		this.srpgAddMapSkill(action, user, target);
+        };
 
+        Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
+		// get the data
+		var user = userArray[1];
+		var target = targetArray[1];
+		var action = user.action(0);
+		var reaction = null;
+                //get data for activeSkil
+                var activeSkill = user._actions[0]._item._itemId;
 		// queue up counterattack
 		if (userArray[0] !== targetArray[0] && target.canMove() && !action.item().meta.srpgUncounterable) {
-			target.srpgMakeNewActions();
-			reaction = target.action(0);
-			reaction.setSubject(target);
-			reaction.setAttack();
-			var actFirst = (reaction.speed() > action.speed());
-                        // dopan edit added "check- meta.AgiExtra"
-			if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
-			this.srpgAddMapSkill(reaction, target, user, actFirst);
+		    target.srpgMakeNewActions();
+		    reaction = target.action(0);
+		    reaction.setSubject(target);
+		    reaction.setAttack();
+		    var actFirst = (reaction.speed() > action.speed());
+		    // dopan edit added "check- meta.AgiExtra"
+	            if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
+		    this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
+        };
 
+        Scene_Map.prototype.srpgMapAgiAtt = function(userArray, targetArray) {
+		// get the data
+		var user = userArray[1];
+		var target = targetArray[1];
+                //get data for activeSkil
+                var activeSkill = user._actions[0]._item._itemId;
                 // agi attack plus 
                 // dopan edit added "check- meta.AgiExtra"
                 if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
@@ -7032,8 +7051,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
                             this.srpgAddMapSkill(agiAction, firstBattler, secondBattler)
                         }
                     }
-                }		
-	};
+                }
+        };
 
 	// work through the queue of attacks
 	var _SRPG_MB_SceneMap_update = Scene_Map.prototype.update;

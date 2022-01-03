@@ -1076,7 +1076,6 @@
     var _useMapBattle = Number(parameters['Use Map Battle'] || 3);
     var _mapBattleSwitch = Number(parameters['Map Battle Switch'] || 0);
     var _animDelay = Number(parameters['Animation Delay'] || -1);
-    var _BeforeMapBattleCE = Number(parameters['BeforeMapBattleCE_ID'] || 1);  //dopans edit 
     var _changeAnimationDelaySwitchID = Number(parameters['ChangeAniDelaySwitch_ID'] || 0); //dopans edit
     var _changeAniDelayVarID = Number(parameters['ChangeAniDelayVarID'] || 0);  //dopans edit
     var _changed_Skill_CE_Timing = Number(parameters['Skill_CE_Timing_SwitchID'] || 0);  //dopans edit

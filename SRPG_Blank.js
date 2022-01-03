@@ -84,9 +84,9 @@
 
   // Plugin param Variables:
 
-  var parameters = PluginManager.parameters("SRPG_Blank") || $plugins.filter(function (plugin) { return plugin.description.contains('<SRPG_Blank>'); });
-
-  
+  var parameters = PluginManager.parameters("SRPG_Blank") ||
+  $plugins.filter(function (plugin) {return plugin.description.contains('<SRPG_Blank>')});
+ 
   var _varDefaultID = Number(parameters['DefaultVarID'] || 0);
   var _switchDefaultID = Number(parameters['DefaultSwitchID'] || 0);
 

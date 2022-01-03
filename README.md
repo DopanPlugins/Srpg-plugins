@@ -34,17 +34,17 @@ while beeing still compatible with other srpg Plugins that assume the usage of t
 by now i made all extra features that way, that you can use this edited core plug and play!
 
 (i rewrote the mapbattle setup and splited it into a few more functions,
-to eaiser allow other plugins to manipulate mapbattle stuff)
+to easier allow other plugins to manipulate mapbattle stuff)
 
 pls look into the core param and add or change data if required!
 
-- this plugin has a correctly working map pre battle phase (timing) & adds a plug&play mapActionText function
+- this plugin has a correctly working plug&play "map pre battle phase"(timing) & adds a plug&play mapActionText function
 (mapactionText is displaying the skillname of active skills in mapbattle mode)
 
 - this plugin allows more char frame usage if core param setup is correctly and "exa" imgs are in your project
 
 - this plugin allows enabling/disbling actorbattleCommands with gameSwitches
 
-- this plugin has a few edits in the mapBattleSetup for better forceAction compatilety & it changes eventPriority to alwaays display the acting unit above the target unit.
+- this plugin has a few edits in the mapBattleSetup for better forceAction compatilety & it changes eventPriority to always display the acting unit above the target unit.This will be reseted automactly.
 
 - and this plugin has a few other features which you can setup in the core param

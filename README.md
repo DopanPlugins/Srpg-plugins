@@ -21,9 +21,8 @@ ScriptCallList_SRPG.js:
 https://github.com/DopanPlugins/Srpg-plugins/blob/main/ScriptCallList_SRPG.js
 
 
-Ok lets start with the readme infos:
-# edited Srpg Core-plugins 
-& other infos about some srpg plugins (rpg mv)
+
+# edited Srpg Core-plugin
 
 Info about the newest edited core Version:
 

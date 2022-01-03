@@ -32,7 +32,9 @@ older core versions are stored here -> https://github.com/DopanPlugins/Storage-o
 -> this edited Version is required for most of my plugins and it adds several features,
 while beeing still compatible with other srpg Plugins that assume the usage of the default "srpg core 1.34"
 by now i made all extra features that way, that you can use this edited core plug and play!
-(i rewrote the mapbattle setup and splited it into a few more functions, to eaiser allow other plugins to manipulate mapbattle stuff)
+
+(i rewrote the mapbattle setup and splited it into a few more functions,
+to eaiser allow other plugins to manipulate mapbattle stuff)
 
 pls look into the core param and add or change data if required!
 

@@ -2,7 +2,7 @@
 // SRPG_ForceAction.js
 //=============================================================================
 /*:
- * @plugindesc v2.0 Adds <SRPG_ForceAction> for MultiWield & ForceAction usage in srpg
+ * @plugindesc v2.1 Adds <SRPG_ForceAction> for MultiWield & ForceAction usage in srpg
  * @author dopan (done but not fully bugtested!)
  *
  * @param MFAisAktive_SwitchID 
@@ -150,12 +150,17 @@
  * ===========================================================================================
  * Changelog 
  * ===========================================================================================
- * Version 2.0:
+ * Version 2.1:
  * - updated Release 02.10.2020 for SRPG (rpg mv)! 
  * => better compatiblety and reworked Functions
  * upgrade into new plugin named "SRPG_forceAction"
  * CREDITS: 
  * - DrQ & his plugin SRPG_MapBattle.js
+ *
+ * changelog:
+ *            - 2.1 => on actor sv wield attacks ,display the used wieldWeapon 
+ *           
+ *
  */
  
 (function() {
@@ -539,10 +544,35 @@ return eventId;
 //====================================================================
 // Game_Interpreter
 //====================================================================
+
 // scriptcall "this.triggerBattleStart();"
- Game_Interpreter.prototype.triggerBattleStart = function() {
-     _triggerBattleStart = true;
- };
+Game_Interpreter.prototype.triggerBattleStart = function() {
+    _triggerBattleStart = true;
+};
+
+//====================================================================
+// Game_Actor
+//====================================================================
+
+// overwrite default function to make sure that "actor_sv_wield_attacks" display the used wieldWeapon
+Game_Actor.prototype.performAttack = function() {
+    var slot = 0; // added
+    if ($gameSystem._wieldSlot) slot = $gameSystem._wieldSlot - 1; // added
+    var weapons = this.weapons();
+    var wtypeId = weapons[slot] ? weapons[slot].wtypeId : 0; //edited "slot" instead of "0"
+    var attackMotion = $dataSystem.attackMotions[wtypeId];
+    if (attackMotion) {
+        if (attackMotion.type === 0) {
+            this.requestMotion('thrust');
+        } else if (attackMotion.type === 1) {
+            this.requestMotion('swing');
+        } else if (attackMotion.type === 2) {
+            this.requestMotion('missile');
+        }
+        this.startWeaponAnimation(attackMotion.weaponImageId);
+    }
+};
+
 //====================================================================
 
 //--End:

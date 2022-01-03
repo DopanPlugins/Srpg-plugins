@@ -11,10 +11,11 @@
 // copyright 2017 - 2019 Lemon slice all rights reserved.
 // Released under the MIT license.
 // http://opensource.org/licenses/mit-license.php
+// edited Version: dopan 2022
 //=============================================================================
 
 /*:
- * @plugindesc SRPG battle system (tactical battle system) on map.
+ * @plugindesc <SRPG_core> SRPG battle system (tactical battle system) on map.
  * @author Gakuto Mikagami (adjustments by Dr. Q) (extraEdits by boomy & dopan)
  *
  * @param srpgTroopID
@@ -722,8 +723,10 @@
  */
 
 (function() {
-
-    var parameters = PluginManager.parameters('SRPG_core');
+	
+    var parameters = PluginManager.parameters("SRPG_core") ||
+    $plugins.filter(function (plugin) { return plugin.description.contains('<SRPG_core>')});
+    
     var _srpgTroopID = Number(parameters['srpgTroopID'] || 1);
     var _srpgBattleSwitchID = Number(parameters['srpgBattleSwitchID'] || 1);
     var _existActorVarID = Number(parameters['existActorVarID'] || 1);

@@ -25,9 +25,7 @@ Ok lets start with the readme infos:
 # edited Srpg Core-plugins 
 & other infos about some srpg plugins (rpg mv)
 
-IMPORTANT Info about the newest edited core Version:
-
-older core versions are stored here -> https://github.com/DopanPlugins/Storage-old-plugins-
+Info about the newest edited core Version:
 
 -> this edited Version is required for most of my plugins and it adds several features,
 while beeing still compatible with other srpg Plugins that assume the usage of the default "srpg core 1.34"

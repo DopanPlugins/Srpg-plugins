@@ -272,46 +272,8 @@
 		    reaction.setSubject(target);
 		    reaction.setAttack();
 		    var actFirst = (reaction.speed() > action.speed());
-		    // dopan edit added "check- meta.AgiExtra"
-	            if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
 		    this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
-        };
-
-        Scene_Map.prototype.srpgMapAgiAtt = function(userArray, targetArray) {
-		// get the data
-		var user = userArray[1];
-		var target = targetArray[1];
-                //get data for activeSkil
-                var activeSkill = user._actions[0]._item._itemId;
-                // agi attack plus 
-                // dopan edit added "check- meta.AgiExtra"
-                if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
-                    if (user.agi >= target.agi) {
-                        var firstBattler = user;
-                        var secondBattler = target;
-                    } else {
-                        var firstBattler = target;
-                        var secondBattler = user;
-                    }
-                    if (!firstBattler.currentAction() || !firstBattler.currentAction().item()) {
-                        return;
-                    }
-                    if (firstBattler.currentAction().isForOpponent() &&
-                        !firstBattler.currentAction().item().meta.doubleAction) {
-                        var dif = firstBattler.agi - secondBattler.agi;
-                        var difMax = secondBattler.agi * _srpgAgilityAffectsRatio - secondBattler.agi;
-                        if (difMax == 0) {
-                            agilityRate = 100;
-                        } else {
-                            agilityRate = dif / difMax * 100;
-                        }
-                        if (agilityRate > Math.randomInt(100)) {
-                            var agiAction = firstBattler.action(0);
-                            this.srpgAddMapSkill(agiAction, firstBattler, secondBattler)
-                        }
-                    }
-                }
         };
 
 	// work through the queue of attacks
@@ -347,8 +309,6 @@
 			// time-based waiting
 			this.updateSkillWait();
 		}
-
-
 	};
 
 	// reset battle mode between skills

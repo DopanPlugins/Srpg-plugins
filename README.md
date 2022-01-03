@@ -40,7 +40,7 @@ pls look into the core param and add or change data if required!
 
 - this plugin allows more char frame usage if core param setup is correctly and "exa" imgs are in your project
 
-- this plugin allows enabling/disbling actorbattleCommands with gameSwitches
+- this plugin allows enabling/disabling actorbattleCommands with gameSwitches
 
 - this plugin has a few edits in the mapBattleSetup for better forceAction compatilety & it changes eventPriority to always display the acting unit above the target unit.This will be reseted automactly.
 

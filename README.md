@@ -27,41 +27,22 @@ Ok lets start with the readme infos:
 
 IMPORTANT Info about the newest edited core Version:
 
--has EXA change, for more char frame usage
-needed IMGs are attached at this github
+older core versions are stored here -> https://github.com/DopanPlugins/Storage-old-plugins-
 
--has eventpriority change ,that requires the plugin "EventResetAfterAction",
-in order to reset priority after each action..
-/(that help to always display the acting Unit over the target unit,required for weapon usage on map)
+-> this edited Version is required for most of my plugins and it adds several features,
+while beeing still compatible with other srpg Plugins that assume the usage of the default "srpg core 1.34"
+by now i made all extra features that way, that you can use this edited core plug and play!
+(i rewrote the mapbattle setup and splited it into a few more functions, to eaiser allow other plugins to manipulate mapbattle stuff)
 
--has an correctly working MapBattle PreAction Phase, that requires an Common Event
-which need to be inserted in the plugin param
-(this Common Event should trigger the pre-action phase)
--> ill attach some info screenshoots for this aswell
+pls look into the core param and add or change data if required!
 
-![Screenshot_1](https://user-images.githubusercontent.com/72324675/138602017-a6f604f2-3d87-4b1e-ba14-eb8bf9e5c768.png)
--
-![Screenshot_3](https://user-images.githubusercontent.com/72324675/138602027-f8777cc6-1d9c-4c33-ab4b-0287284d9b2d.png)
+- this plugin has a correctly working map pre battle phase (timing) & adds a plug&play mapActionText function
+(mapactionText is displaying the skillname of active skills in mapbattle mode)
 
-=> it has also other upgrades but none of them have importent requirements like those above
-..if you need help with the setup pls ask in rpg mv forum
+- this plugin allows more char frame usage if core param setup is correctly and "exa" imgs are in your project
 
-The MapActionText can easyly made with 1 Common event triggered from pre-action Phase 
-..with if condition(if mapbattle is ON )
+- this plugin allows enabling/disbling actorbattleCommands with gameSwitches
 
-![Screenshot_4](https://user-images.githubusercontent.com/72324675/138602102-d713cbe1-ecbf-4e00-9a73-56025c96147f.png)
--
-![11](https://user-images.githubusercontent.com/72324675/141405131-791fcc21-bbda-4ae2-b265-f4bdaba50092.png)
-The "MFA switch" is a Switch that is aktivated by the newest update of MapForceAction (not fully tested but uploaded)
-this Switch makes sure that extra actions dont trigger a "MapActionText" or "MapBattle_pre-action phase"
- (to avoid bugs)
- The switch should be deactivated in the "event after action":
- ![Screenshot_1](https://user-images.githubusercontent.com/72324675/138607516-b1b584ac-5884-422b-93c0-fa582547a2b6.png)
+- this plugin has a few edits in the mapBattleSetup for better forceAction compatilety & it changes eventPriority to alwaays display the acting unit above the target unit.
 
- 
- 
- The MapForceAction Plugin allows us to make "duo combo skill", "double skills" or ,
- skills that trigger other units to use other skills on other targets..
- 
- ===> currently i will mostly work on rework&test some of my plugins and to test other new srpg-plugins,..
- cheers
+- and this plugin has a few other features which you can setup in the core param

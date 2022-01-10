@@ -19,8 +19,10 @@
  *
  * New state, weapon, armor, class, actor, and enemy notetag:
  * <srpgCounterSkill:X>   counter attacks use skill X instead of your attack
- * ->this is global and should work for: default counter , agiatt+ counter , drQs statbased counter
+ * -> this is global and should work for: default counter , agiatt+ counter , drQs statbased counter
  * => depending on which counterSetup your project uses
+ *
+ *===========================================================================================
  *
  * => Note: This Plugin uses "enemyUnitID" which is used in "EventUnitGraves"&"UnitCore" aswell
  *

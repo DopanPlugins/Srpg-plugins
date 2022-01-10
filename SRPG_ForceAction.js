@@ -3,7 +3,7 @@
 //=============================================================================
 /*:
  * @plugindesc v2.2 Adds <SRPG_ForceAction> for MultiWield & ForceAction usage in srpg
- * @author dopan (done but not fully bugtested!) test version3
+ * @author dopan (done but not fully bugtested!) test version4
  *
  * 
  * @param Controll Global MultiWield
@@ -161,6 +161,8 @@
  * changelog:
  *            - 2.1 => on actor sv wield attacks ,display the used wieldWeapon 
  *            - 2.2 => reworked wield counters,added global counterskillNote
+ *            - 2.3 => upgraded CounterSkill NoteTag for enemys incase "SRPG_UnitCore" is used
+ *
  *
  */
  
@@ -777,7 +779,7 @@ Game_Actor.prototype.performAttack = function() {
 };
 
 //========================================================================================
-// add global CounterSkill Note => copy pasted from drQs "statbasedCounter-plugin"
+// add global CounterSkill Note => edited code from drQs "statbasedCounter-plugin"
 //========================================================================================
 	// check state
 	Game_BattlerBase.prototype.counterSkillId = function() {
@@ -814,21 +816,35 @@ Game_Actor.prototype.performAttack = function() {
 
 		return skill;
 	};
-	// check state > weapon > enemy
+	// check state > equip/weapon > class > enemy
 	Game_Enemy.prototype.counterSkillId = function() {
 		var skill = Game_BattlerBase.prototype.counterSkillId.call(this);
 		if (skill > 0) return skill;
-
-		if (!this.hasNoWeapons()) {
+                // if UnitCore plugin adds "this.equips" to enemy, check all equip
+                if (this.equips()) {
+ 		    this.equips().some(function(item) {
+			 if (item && item.meta.srpgCounterSkill) {
+			     skill = Number(item.meta.srpgCounterSkill);
+			     return true;
+			 }
+			 return false;
+		    });
+                } else { 
+		    if (!this.hasNoWeapons()) {
 			var weapon = $dataWeapons[this.enemy().meta.srpgWeapon];
-			if (weapon && weapon.meta.srpgCounterSkill) return Number(weapon.meta.srpgCounterSkill);
+			if (weapon && weapon.meta.srpgCounterSkill) skill = Number(weapon.meta.srpgCounterSkill);
+		    }
+                };
+                //  if UnitCore plugin adds "Class" to enemy, check currentClass
+		if (this.currentClass() && this.currentClass().meta.srpgCounterSkill) {
+			return Number(this.currentClass().meta.srpgCounterSkill);
 		}
 
 		if (this.enemy().meta.srpgCounterSkill) {
 			return Number(this.enemy().meta.srpgCounterSkill);
 		}
 
-		return 0;
+		return skill;
 	};
 
 //====================================================================

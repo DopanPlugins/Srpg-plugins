@@ -2,8 +2,8 @@
 // SRPG_ForceAction.js
 //=============================================================================
 /*:
- * @plugindesc v2.1 Adds <SRPG_ForceAction> for MultiWield & ForceAction usage in srpg
- * @author dopan (done but not fully bugtested!) test version2
+ * @plugindesc v2.2 Adds <SRPG_ForceAction> for MultiWield & ForceAction usage in srpg
+ * @author dopan (done but not fully bugtested!) test version3
  *
  * 
  * @param Controll Global MultiWield
@@ -19,10 +19,8 @@
  *
  * New state, weapon, armor, class, actor, and enemy notetag:
  * <srpgCounterSkill:X>   counter attacks use skill X instead of your attack
- * -> this is global and should work for: default counter , agiatt+ counter , drQs statbased counter
+ * ->this is global and should work for: default counter , agiatt+ counter , drQs statbased counter
  * => depending on which counterSetup your project uses
- *
- *===========================================================================================
  *
  * => Note: This Plugin uses "enemyUnitID" which is used in "EventUnitGraves"&"UnitCore" aswell
  *
@@ -162,7 +160,7 @@
  *
  * changelog:
  *            - 2.1 => on actor sv wield attacks ,display the used wieldWeapon 
- *           
+ *            - 2.2 => reworked wield counters,added global counterskillNote
  *
  */
  
@@ -197,7 +195,8 @@
 //====================================================================
 // BattleManager
 //====================================================================
-// add counter skill note check to default counters
+
+//replace function to add counterSkill note check
 BattleManager.invokeCounterAttack = function(subject, target) {
     var action = new Game_Action(target);
     action.setAttack();
@@ -243,6 +242,49 @@ Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
      if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added
      this.srpgAddMapSkill(target.action(0), target, user, true);
      this._srpgSkillList[0].counter = true;
+};
+
+// update Scene_Map .. this adds Actions to the MapBattles
+ var _SRPG_SceneMap_update = Scene_Map.prototype.update;
+Scene_Map.prototype.update = function() {
+     _SRPG_SceneMap_update.call(this);
+     // there are definitely no map skills in play
+     if (!$gameSystem.isSRPGMode()) return;
+     // process extra MapActions
+     while ((_triggerBattleStart === true || _finalCallMFA == true) && $gameMap.isEventRunning() !== true) {	
+            // queue up _finalCallMFA 
+            if (_finalCallMFA == true) {
+                _finalCallMFA = false;
+                this.mapForceAction(_faSkill, _faUser, _faTarget);
+                return;
+            }; 
+            if (_triggerBattleStart === true) { 
+                _triggerBattleStart = false;
+                var userUnit = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+                var targetUnit = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+                $gameSystem.setSubBattlePhase('invoke_action');
+                this.srpgBattleStart(userUnit, targetUnit);         
+                return;
+            };
+     }
+
+};
+
+ var _srpgPreAction = Scene_Map.prototype.eventBeforeBattle;
+Scene_Map.prototype.eventBeforeBattle = function() {
+     _srpgPreAction.call(this);
+     // if srpg mapbattle
+     if ($gameSystem.isSRPGMode() == true && $gameSystem.useMapBattle()) {
+         //get data
+         var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+         var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+         var action = user[1]._actions[0];
+         var dataSkill = action._item._dataClass === "skill";
+         // if skill & (wield or frorceAction) trigger wield setup
+         if (dataSkill && (_srpg_Controll_MultiWield === 'true' || user[1].currentClass().meta.srpgWield || action.item().meta.srpgForceAction)) {
+             this.mapWieldAttack(user, target);
+         };
+     };
 };
 
  var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
@@ -319,32 +361,6 @@ Scene_Map.prototype.mapForceAction = function(skill, user, target) {
      }
 };
 
-// update Scene_Map .. this adds Actions to the MapBattles
- var _SRPG_SceneMap_update = Scene_Map.prototype.update;
-Scene_Map.prototype.update = function() {
-     _SRPG_SceneMap_update.call(this);
-     // there are definitely no map skills in play
-     if (!$gameSystem.isSRPGMode()) return;
-     // process extra MapActions
-     while ((_triggerBattleStart === true || _finalCallMFA == true) && $gameMap.isEventRunning() !== true) {	
-            // queue up _finalCallMFA 
-            if (_finalCallMFA == true) {
-                _finalCallMFA = false;
-                this.mapForceAction(_faSkill, _faUser, _faTarget);
-                return;
-            }; 
-            if (_triggerBattleStart === true) { 
-                _triggerBattleStart = false;
-                var userUnit = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
-                var targetUnit = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
-                $gameSystem.setSubBattlePhase('invoke_action');
-                this.srpgBattleStart(userUnit, targetUnit);         
-                return;
-            };
-     }
-
-};
-
  var _mapCounterScene = Scene_Map.prototype.srpgMapCounter;
 Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
      if (targetArray[1].weapons().length < 1) _mapCounterScene.call(this, userArray, targetArray);
@@ -364,6 +380,7 @@ Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
                   skill = target.attackSkillId();
                   var weaponMeta = target.weapons()[i].meta;
                   if (weaponMeta.srpgWeaponSkill) skill = weaponMeta.srpgWeaponSkill;
+                  if (target.counterSkillId() !== 0) skill = target.counterSkillId(); //added counterskill check
                   // add action
                   target.forceAction(skill, user);
                   var reaction = target.currentAction();
@@ -389,6 +406,7 @@ Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
          target.srpgMakeNewActions();
          target.action(0).setSubject(target);
          target.action(0).setAttack();
+         if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added counterskill check
          this.srpgAddMapSkill(target.action(0), target, user, true);
          this._srpgSkillList[0].counter = true;
          // trigger forceAction if skill has forceAction note
@@ -396,23 +414,6 @@ Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
              // trigger forceSetup
              this.mapforceSetup(user, target);
              this._srpgSkillList[0].counter = true;
-         };
-     };
-};
-
- var _srpgPreAction = Scene_Map.prototype.eventBeforeBattle;
-Scene_Map.prototype.eventBeforeBattle = function() {
-     _srpgPreAction.call(this);
-     // if srpg mapbattle
-     if ($gameSystem.isSRPGMode() == true && $gameSystem.useMapBattle()) {
-         //get data
-         var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
-         var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
-         var action = user[1]._actions[0];
-         var dataSkill = action._item._dataClass === "skill";
-         // if skill & (wield or frorceAction) trigger wield setup
-         if (dataSkill && (_srpg_Controll_MultiWield === 'true' || user[1].currentClass().meta.srpgWield || action.item().meta.srpgForceAction)) {
-             this.mapWieldAttack(user, target);
          };
      };
 };
@@ -776,7 +777,7 @@ Game_Actor.prototype.performAttack = function() {
 };
 
 //========================================================================================
-// add global CounterSkill Note // copy pasted from drQs "statbasedCounter-plugin"
+// add global CounterSkill Note => copy pasted from drQs "statbasedCounter-plugin"
 //========================================================================================
 	// check state
 	Game_BattlerBase.prototype.counterSkillId = function() {

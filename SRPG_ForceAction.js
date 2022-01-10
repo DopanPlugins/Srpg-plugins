@@ -184,12 +184,11 @@
   var _extraUser = -1
   var _extraTarget = -1;
   var _extraSkill = -1;  
-  var _callMapNextAction = false;
   var _callSVForceAction = false;
   var _callSVNextAction = false;
+  var _callMapNextAction = false;
   var _finalCallMFA = false;
   var _triggerBattleStart = false;
-
 
 // console.log();
 //-----------------------------------------------------------------------------------------
@@ -207,7 +206,6 @@ BattleManager.invokeCounterAttack = function(subject, target) {
     this._logWindow.displayCounter(target);
     this._logWindow.displayActionResults(target, subject);
 };
-
 
 //====================================================================
 // Scene_Map 
@@ -294,7 +292,6 @@ Scene_Map.prototype.srpgAfterAction = function() {
      _srpgAfterActionScene.call(this);
      // reset Global var
      $gameSystem._srpgForceAction = true;
-     $gameSystem._forceCounter = false;
      $gameSystem._mfaIsActive = false;
      // reset freeCost
      for (var i = 1; i <= $gameMap.events().length; i++) {
@@ -693,8 +690,8 @@ Game_Action.prototype.srpgWield = function(target) {
     if (!$gameSystem.isSRPGMode() == true || $gameSystem.useMapBattle()) return;
     var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
     var gtTarget = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
-    //check if this is an counter action & change user if so & tell plugin its a counter
-    if (user[1] === target) user = gtTarget;$gameSystem._forceCounter = true;
+    //check if this is an counter action & change user if so
+    if (user[1] === target) user = gtTarget;
     var userWeapons = user[1].weapons();
     var forceSkill = user[1].attackSkillId();
     var wSlot = $gameSystem._wieldSlot;
@@ -717,7 +714,7 @@ Game_Action.prototype.srpgWield = function(target) {
                 _extraSkill = forceSkill;
                 _callSVForceAction = true;
             }; 
-            // process map action & process wieldSlot controll Var
+            //process wieldSlot controll Var
             $gameSystem._wieldSlot = Number(wSlot + 1);
         }; 
     // else reset ControllVar 
@@ -781,71 +778,68 @@ Game_Actor.prototype.performAttack = function() {
 //========================================================================================
 // add global CounterSkill Note => edited code from drQs "statbasedCounter-plugin"
 //========================================================================================
-	// check state
-	Game_BattlerBase.prototype.counterSkillId = function() {
-		var skill = 0;
-		this.states().some(function(state) {
-			if (state.meta.srpgCounterSkill) {
-				skill = Number(state.meta.srpgCounterSkill);
-				return true;
-			}
-			return false;
-		});
-		return skill;
-	};
-	// check state > equipment > class > actor
-	Game_Actor.prototype.counterSkillId = function() {
-		var skill = Game_BattlerBase.prototype.counterSkillId.call(this);
-		if (skill > 0) return skill;
 
-		this.equips().some(function(item) {
-			if (item && item.meta.srpgCounterSkill) {
-				skill = Number(item.meta.srpgCounterSkill);
-				return true;
-			}
-			return false;
-		});
+// check state
+Game_BattlerBase.prototype.counterSkillId = function() {
+    var skill = 0;
+    this.states().some(function(state) {
+         if (state.meta.srpgCounterSkill) {
+	     skill = Number(state.meta.srpgCounterSkill);
+	     return true;
+	 }
+	 return false;
+    });
+    return skill;
+};
 
-		if (this.currentClass().meta.srpgCounterSkill) {
-			return Number(this.currentClass().meta.srpgCounterSkill);
-		}
+// check state > equipment > class > actor
+Game_Actor.prototype.counterSkillId = function() {
+    var skill = Game_BattlerBase.prototype.counterSkillId.call(this);
+    if (skill > 0) return skill;
+    this.equips().some(function(item) {
+	 if (item && item.meta.srpgCounterSkill) {
+	     skill = Number(item.meta.srpgCounterSkill);
+	     return true;
+	 }
+	 return false;
+    });
+    if (this.currentClass().meta.srpgCounterSkill) {
+	return Number(this.currentClass().meta.srpgCounterSkill);
+    }
+    if (this.actor().meta.srpgCounterSkill) {
+	return Number(this.actor().meta.srpgCounterSkill);
+    }
+    return skill;
+};
 
-		if (this.actor().meta.srpgCounterSkill) {
-			return Number(this.actor().meta.srpgCounterSkill);
-		}
-
-		return skill;
-	};
-	// check state > equip/weapon > class > enemy
-	Game_Enemy.prototype.counterSkillId = function() {
-		var skill = Game_BattlerBase.prototype.counterSkillId.call(this);
-		if (skill > 0) return skill;
-                // if UnitCore plugin adds "this.equips" to enemy, check all equip
-                if (this.equips()) {
- 		    this.equips().some(function(item) {
-			 if (item && item.meta.srpgCounterSkill) {
-			     skill = Number(item.meta.srpgCounterSkill);
-			     return true;
-			 }
-			 return false;
-		    });
-                } else { 
-		    if (!this.hasNoWeapons()) {
-			var weapon = $dataWeapons[this.enemy().meta.srpgWeapon];
-			if (weapon && weapon.meta.srpgCounterSkill) skill = Number(weapon.meta.srpgCounterSkill);
-		    }
-                };
-                //  if UnitCore plugin adds "Class" to enemy, check currentClass
-		if (this.currentClass() && this.currentClass().meta.srpgCounterSkill) {
-			return Number(this.currentClass().meta.srpgCounterSkill);
-		}
-
-		if (this.enemy().meta.srpgCounterSkill) {
-			return Number(this.enemy().meta.srpgCounterSkill);
-		}
-
-		return skill;
-	};
+// check state > equip/weapon > class > enemy
+Game_Enemy.prototype.counterSkillId = function() {
+    var skill = Game_BattlerBase.prototype.counterSkillId.call(this);
+    if (skill > 0) return skill;
+    // if UnitCore plugin adds "this.equips" to enemy, check all equip
+    if (this.equips()) {
+ 	this.equips().some(function(item) {
+	     if (item && item.meta.srpgCounterSkill) {
+		 skill = Number(item.meta.srpgCounterSkill);
+		 return true;
+	     }
+	     return false;
+        });
+    } else { 
+	if (!this.hasNoWeapons()) {
+	    var weapon = $dataWeapons[this.enemy().meta.srpgWeapon];
+	    if (weapon && weapon.meta.srpgCounterSkill) skill = Number(weapon.meta.srpgCounterSkill);
+	}
+    };
+    //  if UnitCore plugin adds "Class" to enemy, check currentClass
+    if (this.currentClass() && this.currentClass().meta.srpgCounterSkill) {
+	return Number(this.currentClass().meta.srpgCounterSkill);
+    }
+    if (this.enemy().meta.srpgCounterSkill) {
+	return Number(this.enemy().meta.srpgCounterSkill);
+    }
+    return skill;
+};
 
 //====================================================================
 

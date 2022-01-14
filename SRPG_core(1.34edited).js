@@ -2351,15 +2351,16 @@
 
     // 対象のイベントが射程範囲内にいるかの判定
     Game_BattlerBase.prototype.isTargetInRange = function(item) {
-        var rangeList = $gameTemp.rangeList();
-        var target = $gameTemp.targetEvent();
-        if (item.scope === 11) return true;
-        if (!target) return false;
-        for (var i = 0; i < rangeList.length; i++) {
-            var pos =  rangeList[i];
-            if (target.posX() == pos[0] && target.posY() == pos[1]) return true;
-        }
-        return false;
+        //var rangeList = $gameTemp.rangeList();
+        //var target = $gameTemp.targetEvent();
+        //if (item.scope === 11) return true;
+        //if (!target) return false;
+        //for (var i = 0; i < rangeList.length; i++) {
+        //    var pos =  rangeList[i];
+        //    if (target.posX() == pos[0] && target.posY() == pos[1]) return true;
+        //}
+        //return false;
+        return true // disable this function till there is a better solution availleble! dopan edit
     };
 
     // ステートのターン経過処理（ＳＲＰＧ用）

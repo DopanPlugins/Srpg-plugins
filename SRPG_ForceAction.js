@@ -459,7 +459,7 @@ Scene_Map.prototype.mapforceSetup = function(user, target) {
             this.srpgAddMapSkill(user[1].action(0), target[1], user[1]);
         } else {
             // call action with "after action scene" because user&target have changed
-            userID[1].useMapForceAction(skillID, targetID);
+            user[1].useMapForceAction(skillID, targetID);
         };
         return true;
     };

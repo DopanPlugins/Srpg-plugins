@@ -453,9 +453,9 @@ Scene_Map.prototype.mapforceSetup = function(user, target) {
             } else {skillID = Number(user[1].attackSkillId())};
         };
         // check if user&target have changed or if its a counter action
-        if (user[1] === userForce[1] && target[1] === targetForce[1]) { 
+        if (user[1] === forceUser[1] && target[1] === forceTarget[1]) { 
             this.srpgForceAction(skillID, userID, targetID);
-            userForce[1]._freeCost = true;
+            forceUser[1]._freeCost = true;
             this.srpgAddMapSkill(user[1].action(0), target[1], user[1]);
         } else {
             // call action with "after action scene" because user&target have changed

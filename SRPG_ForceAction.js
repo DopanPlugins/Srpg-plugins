@@ -430,8 +430,8 @@ Game_Temp.prototype.mapforceSetup = function(user, target) {
         // read skill meta data
         var metaSplit = user[1]._actions[0].item().meta.srpgForceAction.split(", ");
         var forceSkill = Number(metaSplit[0]);
-        var forceUser = metaSplit[1]; 
-        var forceTarget = metaSplit[2];
+        var forceUser = Number(metaSplit[1]); 
+        var forceTarget = Number(metaSplit[2]);
         var skillID = 0;
         var userID = 0;
         var targetID = 0;
@@ -477,11 +477,15 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
      var userWeapons = user[1].weapons();
      var attSkill = user[1].attackSkillId();
      var skill = 0;
+
      // if forceAction meta skill
      if (user[1]._actions[0].item().meta.srpgForceAction) {
         // trigger forceSetup
         $gameTemp.mapforceSetup(user, target);
      }; 
+//check if this is an default attack
+     if (user[1].currentAction()._item._itemId !== attSkill) return;
+//
      for (var i = 1; i <= (userWeapons.length - 1); i++) {
           var weaponMeta = userWeapons[i].meta;
           // get skill 
@@ -562,6 +566,17 @@ Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
 //----------------------------------------------------------------- 
 // $gameSystem._wieldSlot = 1; $gameSystem._srpgForceAction = true;
 // <srpgWield> (ClassNotetag) , <srpgForceAction:skillID, UserID, TargetID> (SkillNoteTag) 
+
+
+
+Game_Action.prototype.subject = function() {
+    if (this._subjectActorId > 0) {
+        return $gameActors.actor(this._subjectActorId);
+    } else {
+        //if ($gameSystem.useMapBattle() === false) return $gameTroop.members()[this._subjectEnemyIndex];
+        return ($gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]);
+    }
+}; 
 
 var _srpg_apply = Game_Action.prototype.apply;
 Game_Action.prototype.apply = function(target) {

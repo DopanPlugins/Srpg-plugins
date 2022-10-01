@@ -250,6 +250,7 @@ Scene_Map.prototype.update = function() {
      _SRPG_SceneMap_update.call(this);
      // there are definitely no map skills in play
      if (!$gameSystem.isSRPGMode()) return;
+
      // process extra MapActions
      while ((_triggerBattleStart === true || _finalCallMFA == true) && $gameMap.isEventRunning() !== true) {	
             // queue up _finalCallMFA 
@@ -267,7 +268,7 @@ Scene_Map.prototype.update = function() {
                 return;
             };
      }
-
+     if (_callMapNextAction === true || _callSVNextAction === true) this.mfaCheck();
 };
 
  var _srpgPreAction = Scene_Map.prototype.eventBeforeBattle;
@@ -301,6 +302,11 @@ Scene_Map.prototype.srpgAfterAction = function() {
               battler[1]._freeCost = false;
           };
      };
+
+
+};
+
+Scene_Map.prototype.mfaCheck = function() {
      // queue up svNextAction 
      if (_callSVNextAction === true) {
          _callSVNextAction = false;
@@ -390,7 +396,7 @@ Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
                   // trigger forceAction if skill has forceAction note
                   if (reaction.item().meta.srpgForceAction) {
                      // trigger forceSetup
-                     this.mapforceSetup(user, target);
+                     $gameTemp.mapforceSetup(user, target);
                   };
 
              };
@@ -411,19 +417,19 @@ Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
          // trigger forceAction if skill has forceAction note
          if (target.action(0).item().meta.srpgForceAction) {
              // trigger forceSetup
-             this.mapforceSetup(user, target);
+             $gameTemp.mapforceSetup(user, target);
              this._srpgSkillList[0].counter = true;
          };
      };
 };
 
-Scene_Map.prototype.mapforceSetup = function(user, target) {
+Game_Temp.prototype.mapforceSetup = function(user, target) {
      if (!$gameSystem.isSRPGMode() == true || !$gameSystem.useMapBattle()) return;
      //var result = target.result();    
      if (user[1]._actions[0].item().meta.srpgForceAction) { // && result.isHit()
         // read skill meta data
         var metaSplit = user[1]._actions[0].item().meta.srpgForceAction.split(", ");
-        var forceSkill = Number(metaSplit[0]);	
+        var forceSkill = Number(metaSplit[0]);
         var forceUser = metaSplit[1]; 
         var forceTarget = metaSplit[2];
         var skillID = 0;
@@ -474,7 +480,7 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
      // if forceAction meta skill
      if (user[1]._actions[0].item().meta.srpgForceAction) {
         // trigger forceSetup
-        this.mapforceSetup(user, target);
+        $gameTemp.mapforceSetup(user, target);
      }; 
      for (var i = 1; i <= (userWeapons.length - 1); i++) {
           var weaponMeta = userWeapons[i].meta;
@@ -488,7 +494,7 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
               // trigger forceAction if skill has forceAction note
               if (action.item().meta.srpgForceAction) {
                   // trigger forceSetup
-                  this.mapforceSetup(user, target);
+                  $gameTemp.mapforceSetup(user, target);
               };
           };
      }; 
@@ -847,3 +853,4 @@ Game_Enemy.prototype.counterSkillId = function() {
 //--End:
 
 })();
+

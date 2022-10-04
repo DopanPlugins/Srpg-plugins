@@ -606,8 +606,8 @@ Game_Action.prototype.srpgForceActionSetup = function(target) {
         // read skill meta data
         var metaSplit = this.item().meta.srpgForceAction.split(", ");
         var forceSkill = Number(metaSplit[0]);	
-        var forceUser = metaSplit[1]; 
-        var forceTarget = metaSplit[2];
+        var forceUser = Number(metaSplit[1]); 
+        var forceTarget = Number(metaSplit[2]);
         var skillID = 0;
         var userID = 0;
         var targetID = 0;

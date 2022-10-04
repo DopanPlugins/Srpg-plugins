@@ -1181,7 +1181,7 @@ Window_SrpgStatus.prototype.drawContentsActor = function() {
       // only 5 slots are used by default
       // slot 0 check if weapon or shield assume weapon
       if (equips[0] && (equips[0]._itemId === 0)) {
-          if (this._battler.enemy().meta.srpgSlot0Type === "armor") {
+          if (this._battler.actor().meta.srpgDualShield) { // weird solution
               if (_drawText === 'true' && this._battler._equipIsGone[0] === false) {
                   this.drawText(_textNoShield, 240, lineHeight * 5);
               } else {
@@ -1203,7 +1203,7 @@ Window_SrpgStatus.prototype.drawContentsActor = function() {
       };
       //slot 1 check if weapon or shield,assume shield
       if (equips[1] && (equips[1]._itemId === 0)) {
-          if (this._battler.enemy().meta.srpgSlot1Type === "weapon") {
+          if (this._battler.isDualWield()) { // weird solution
               if (_drawText === 'true' && this._battler._equipIsGone[1] === false) {
                   this.drawText(_textNoWeapon, 240, lineHeight * 6);
               } else {
@@ -2736,7 +2736,7 @@ Scene_Map.prototype.processSrpgVictory = function() {
 	     AudioManager.playSe(se);
 	     this._srpgBattleResultWindow.open();
 	     this._srpgBattleResultWindowCount = 60;
-             // gain rewards works only on actors and is not required for enemys or enemyTeam_actors 
+             // gain rewards works only on actors and is not required for enemys
              if (activeBattler[0] === 'actor') {
                  this.gainRewards();
 	     } else { if (activeBattler[0] === 'enemy') activeBattler[1].gainExp(this._rewards.exp)};

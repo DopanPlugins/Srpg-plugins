@@ -573,7 +573,7 @@ Game_Action.prototype.subject = function() {
     if (this._subjectActorId > 0) {
         return $gameActors.actor(this._subjectActorId);
     } else {
-        //if ($gameSystem.useMapBattle() === false) return $gameTroop.members()[this._subjectEnemyIndex];
+        if ($gameSystem.useMapBattle() === false) return $gameTroop.members()[this._subjectEnemyIndex];
         return ($gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]);
     }
 }; 

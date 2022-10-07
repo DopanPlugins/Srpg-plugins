@@ -2,7 +2,7 @@
 // SRPG_MapStateOverlay.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
+ * @plugindesc v1.1 Adds <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
  * @author dopan
  *
  *
@@ -39,12 +39,12 @@
  *
  * @help  
  *
- * adds the default StateOverlay to SRPG MapBattleMode 
- * Anchors can be changed ,related to SV & MapBattleMode in the Plugin Param
+ *
+ *
  *
  * -> plug & play !
  *
- * Credits : Caethyril for helping me to understand how to do that^^
+ *
  *
  * ============================================================================
  * Terms of Use
@@ -92,37 +92,59 @@
         this.anchor.y = _SOSanchorMY; //  0.8;
 
         };
-    };                                                     
-//--------------------------------- Sprite_Character:
+    };
 
-        // create Overlay
-	Sprite_Character.prototype.createOverlay = function() {
-		if (!this._stateSprite) {
-                    var battleUnit = $gameSystem.EventToUnit(this._character.eventId());
-		    this._stateSprite = new Sprite_StateOverlay();
-		    this._stateSprite.setup(battleUnit[1]);
-		    this.addChild(this._stateSprite);
-		}
-	};
+    // adds the StateOverlaySprite to MapBattles..
+    Game_Interpreter.prototype.srpgStateOverlay = function() {
+        for (var i = 1; i <= $gameMap.events().length; i++) {
+             var battleunit = $gameSystem.EventToUnit([i]);
+             var eventunit = $gameMap.event([i]);
+             var spriteset = SceneManager._scene._spriteset;
+             var eventId = [i];
+             var sprChar = spriteset._characterSprites[eventId - 1];
+             if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy') && (!battleunit[1].isDead())) {
+                 sprChar._stateSprite = new Sprite_StateOverlay();  // init
+                 sprChar.addChild(sprChar._stateSprite);            // add
+                 sprChar._stateSprite.setup(battleunit[1]);         // setup
+             }
+         
+        }return true;
+    };
 
-        // update Overlay
-	var _SRPG_Sprite_Character_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
-	Sprite_Character.prototype.updateCharacterFrame = function() {
-		_SRPG_Sprite_Character_updateCharacterFrame.call(this);
+    // updates the StateOverlaySprite Function on Scene change..
+    Scene_Base.prototype.update = function() {
+        this.updateFade();
+        this.updateChildren();
 
-		if ($gameSystem.isSRPGMode() == true && this._character.isEvent() == true) {
-		    var battleUnit = $gameSystem.EventToUnit(this._character.eventId());
-		    if (battleUnit) {
-			this.createOverlay();
-		    }
-		}
-	};
+        //Dopan INFO=> edited part starts here, stuff above is the Default Function Content
 
-//--------------------------------- can be used to check the overlay in console F8
+        if (SceneManager._scene instanceof Scene_Menu === true) {
+            _checkSOS = false;
 
-//SceneManager._scene._spriteset._characterSprites[eventID - 1]._stateSprite
-  
-//---------------------------------but the "eventID" must be added..
+        }
+        if (SceneManager._scene instanceof Scene_Battle === true) {
+            _checkSOS = false;
+
+        }
+        if (SceneManager._scene instanceof Scene_Map === true) {    
+            if (_checkSOS === false) {
+                Game_Interpreter.prototype.srpgStateOverlay.call(this);
+                _checkSOS = true;
+
+            }
+
+        }
+
+    };
+    // add data to Battlestart Event calling Function 
+    var _MSO_Game_System_runBattleStartEvent = Game_System.prototype.runBattleStartEvent;
+    Game_System.prototype.runBattleStartEvent = function() {
+        _MSO_Game_System_runBattleStartEvent.call(this);
+        // initializes StateOverlaySprite at Battlestart
+        Game_Interpreter.prototype.srpgStateOverlay.call(this);
+    };
+
+//-----------------------------------------------------------------------------------------
 
 
 

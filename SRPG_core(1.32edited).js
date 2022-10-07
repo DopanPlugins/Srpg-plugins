@@ -6962,8 +6962,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
 
 		this.preBattleSetDirection();
                 // EDIT dopan (for better PreActionPhase Timing)
+	        this.srpgMapActionText(userArray);	
 		this.eventBeforeBattle();
-                this.srpgMapActionText(userArray);
                 this.srpgMapTroopSetup(userArray, targetArray);
                 this.srpgMapCounter(userArray, targetArray);
                 this.srpgMapAgiAtt(userArray, targetArray);

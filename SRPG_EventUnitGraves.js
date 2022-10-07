@@ -2,7 +2,7 @@
 // SRPG_eventUnitGraves.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <SRPG_eventUnitGraves> for for BattleUnits in SRPG  
+ * @plugindesc v1.1 Adds <SRPG_eventUnitGraves> for for BattleUnits in SRPG  
  * @author dopan
  *
  * @param Controll Grave Spawn
@@ -536,8 +536,8 @@
 
    //this.controllGraveSpawn(true/false)
    Game_Interpreter.prototype.controllGraveSpawn = function(graveSpawn) {
-       if (graveSpawn === true) {_controllGraveSpawn = true};
-       if (graveSpawn === false) {_controllGraveSpawn = false};
+       if (graveSpawn === true) {_controllGraveSpawn = 'true'};
+       if (graveSpawn === false) {_controllGraveSpawn = 'false'};
        return _controllGraveSpawn;
    };
 
@@ -566,13 +566,13 @@
         });
         return eventId;
     };
-     
-    // use Battlestart Event 
-    var _SRPG_runBattleStartEvent = Game_System.prototype.runBattleStartEvent; 
+  
+    // add data to Battlestart Event calling Function 
+    var _EUG_Game_System_runBattleStartEvent = Game_System.prototype.runBattleStartEvent;
     Game_System.prototype.runBattleStartEvent = function() {
-	_SRPG_runBattleStartEvent.call(this);
-        //Dopan INFO=>  initializes at Battlestart
-        $gameMap.setEnemytUnitID();$gameMap.graveSetup(); 
+        _EUG_Game_System_runBattleStartEvent.call(this);
+        // important data for GraveStuff
+        $gameMap.setEnemytUnitID();$gameMap.graveSetup();
     };
 	
     // perma check if dead & if needGraveRespawn

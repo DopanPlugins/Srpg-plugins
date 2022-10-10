@@ -1,9 +1,9 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_StatusWindow.js
 //=============================================================================
 /*:
  * @plugindesc Patched Version <SRPG_StatusWindow> allows you to show multiple status pages in SRPG battle
- * @author Shoukang (dopan patch for the default resolution of 816x624)
+ * @author Shoukang (dopan patch 816x624)
  *
  * @param enable actor status command
  * @type boolean

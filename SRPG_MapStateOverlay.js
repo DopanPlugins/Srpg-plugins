@@ -2,11 +2,14 @@
 // SRPG_MapStateOverlay.js
 //=============================================================================
 /*:
- * @plugindesc v1.1 Adds <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
+ * @plugindesc v1.2 Adds <SRPG_MapStateOverlay> adds the default StateOverlay to SRPG MapBattleMode 
  * @author dopan
  *
+ * adds the default StateOverlay to SRPG MapBattleMode 
+ * Anchors can be changed ,related to SV & MapBattleMode in the Plugin Param
  *
  *
+ * Credits : Caethyril for helping me to understand how to do that^^
  * 
  *
  * @param SOSanchorMX
@@ -54,7 +57,7 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 1.0:
+ * Version 1.2:
  * - first Release 30.12.2020 for SRPG (rpg mv)!
  */
  

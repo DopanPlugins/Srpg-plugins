@@ -16,7 +16,7 @@
 
 /*:
  * @plugindesc <SRPG_core> SRPG battle system (tactical battle system) on map (edited Version 1.32).
- * @author Gakuto Mikagami, Dr. Q (extraEdits by boomy & dopan)
+ * @author Gakuto Mikagami, Dr. Q (dopan's editedCore final Version)
  *
  * @param srpgTroopID
  * @desc SRPGconverter use this troop ID.
@@ -241,19 +241,6 @@
  *
  * //-dopan edit end-
  *
- *
- * @param useAgiAttackPlus
- * @desc Use the mechanism that the one with higher agility attacks twice.
- * @type boolean
- * @default true
- *
- * @param srpgAgilityAffectsRatio
- * @parent useAgiAttackPlus
- * @desc This is the ratio at which the difference in agility affects the probability of attack twice.
- * @type number
- * @min 1
- * @default 2
- *
  * @param enemyDefaultClass
  * @desc If you don't set class in enemy note, use this name.
  * @default Enemy
@@ -352,20 +339,14 @@
  * Go to the map for battle and use the plug-in command SRPGBattle Start.
  * Also, use the plugin command SRPGBattle End before moving to other map.
  * 
- * Plugins built in from Ver.1.30Q:
- * - SRPG_AgiAttackPlus
+ * Plugins built in from Ver.1.32Q:
  * - SRPG_UncounterableAttack
  * - SRPGconverter_with_YEP_BattleEngineCore
- * 
+ * - SRPG MapBattle
+ *
  * The above plugins are already built into SRPG_core.js, so you don't need to install them again.
- * When using SRPG_AgiAttackPlus and SRPGconverter_with_YEP_BattleEngineCore, 
+ * When SRPGconverter_with_YEP_BattleEngineCore, 
  * please turn on the function from the plug-in parameter.
- *
- *
- * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
- *   (dopan edit)     => if No Skillnote is used or SkillNote is NOT "false" , AgiAtt+ will work normal on that Skill
- *
- *
  *
  * plugin command:
  *   SRPGBattle Start   # start tactical battle.
@@ -514,516 +495,6 @@
  * Animation 22 when facing right
  * Animation 23 when facing up
  *
- * == Agi Attack plus ==============================================================
- *
- * Typically, attacks are executed one by one in descending order of higher agility, 
- * but if you introduce this plug-in, you will act in the order of 
- * attacker → defender → agile high character additional attack.
- * Actions targeted on your side or yourself will not act twice.
- * Also, if you enter <doubleAction: false> in the note of skill, it will not act twice.
- * 
- * By changing srpgAgilityAffectsRatio you can change the probability of attack twice.
- * Set "Generate 100% if X times or more", while the probability changes according to the difference in agility.
- * srpgAgilityAffectsRatio: 1 → 100% if agility is more than 1 time.
- * srpgAgilityAffectsRatio: 2 → 100% if agility is more than twice.
- *  25% if 1.25 times, 50% if 1.5 times.
- * srpgAgilityAffectsRatio: 3 → 100% if agility is over 3 times.
- *  If it is 1.5 times, it is 25%, if it is doubled it is 50%.
- * 
- */
-
-/*:ja
- * @plugindesc マップ上でSRPG（タクティクス）方式の戦闘を実行します。
- * @author 神鏡学斗
- *
- * @param srpgTroopID
- * @desc SRPGコンバータが占有するトループIDです。SRPG戦闘では、このIDのトループが使用されます。
- * @type number
- * @min 1
- * @default 1
- *
- * @param srpgBattleSwitchID
- * @desc SRPG戦闘中であるかを格納するスイッチのＩＤを指定します。戦闘中はONになります。
- * @type switch
- * @default 1
- *
- * @param existActorVarID
- * @desc 存在しているアクターの人数が代入される変数のＩＤを指定します。存在している＝戦闘不能・隠れでない。
- * @type variable
- * @default 1
- *
- * @param existEnemyVarID
- * @desc 存在しているエネミーの人数が代入される変数のＩＤを指定します。存在している＝戦闘不能・隠れでない。
- * @type variable
- * @default 2
- *
- * @param turnVarID
- * @desc 経過ターン数が代入される変数のＩＤを指定します。最初のターンは『ターン１』です。
- * @type variable
- * @default 3
- *
- * @param activeEventID
- * @desc 行動中のユニットのイベントＩＤが代入される変数のＩＤを指定します。
- * @type variable
- * @default 4
- *
- * @param targetEventID
- * @desc 攻撃対象のユニットのイベントＩＤが代入される変数のＩＤを指定します。回復や補助も含みます。
- * @type variable
- * @default 5
- *
- * @param maxActorVarID
- * @desc 戦闘に参加するアクターの最大数を設定する変数のIDを指定します。０で無効。
- * @type variable
- * @default 0
- *
- * @param defaultMove
- * @desc クラスやエネミーのメモで移動力が設定されていない場合、この値が適用されます。
- * @type number
- * @min 0
- * @default 4
- *
- * @param srpgBattleExpRate
- * @desc 敵を倒さなかった時に、設定された経験値の何割を入手するか。0 ～ 1.0で設定。
- * @type number
- * @decimals 2
- * @min 0
- * @max 1
- * @default 0.4
- *
- * @param srpgBattleExpRateForActors
- * @desc 味方に対して行動した時に、レベルアップに必要な経験値の何割を入手するか。0 ～ 1.0で設定。
- * @type number
- * @decimals 2
- * @min 0
- * @max 1
- * @default 0.1
- *
- * @param srpgBattleQuickLaunch
- * @desc 戦闘開始エフェクトを高速化します。falseだと通常と同じになります。(true / false)
- * @type boolean
- * @default true
- *
- * //dopan edit start 
- * @param srpgActorCommandAttackSwitchID
- * @desc スイッチ ID：0またはスイッチ「false」-> *有効* AttackCommandスイッチ「true」-> *無効* AttackCommand。
- * @type switch
- * @default 0
- *
- * @param srpgActorCommandSkillSwitchID
- * @desc スイッチID：0またはスイッチ「false」-> *有効* SkillCommandsスイッチ「true」-> *無効* SkillCommands。
- * @type switch
- * @default 0
- *
- * @param srpgActorCommandItemSwitchID
- * @desc スイッチID：0またはスイッチ「false」-> *有効* ItemCommandスイッチ「true」-> *無効* ItemCommand。
- * @type switch
- * @default 0
- *
- * @param srpgActorCommandEquipSwitchID
- * @desc スイッチID：0またはスイッチ「false」-> *有効* EquipCommandスイッチ「true」-> *無効* EquipCommand。
- * @type switch
- * @default 0
- *
- * @param srpgActorCommandWaitSwitchID
- * @desc スイッチID：0またはスイッチ「false」-> *有効* WaitCommandスイッチ「true」-> *無効* WaitCommand。
- * @type switch
- * @default 0
- * //dopan edit end 
- *
- * @param srpgWinLoseConditionCommand
- * @desc メニューコマンドに『勝敗条件』を追加します。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgBattleEndAllHeal
- * @desc 戦闘終了後に自動的に味方全員を全回復します。falseだと自動回復しません。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgPredictionWindowMode
- * @desc 戦闘予測ウィンドウの表示を変更します。(1:フル / 2:攻撃名のみ / 3:表示なし)
- * @type select
- * @option フル
- * @value 1
- * @option 攻撃名のみ
- * @value 2
- * @option 表示なし
- * @value 3
- * @default 1
- *
- * @param srpgAutoBattleStateId
- * @desc オート戦闘が選ばれた時に付与するステートのIDです。1行動で解除・自動戦闘のステートを使います(0で無効化)。
- * @type state
- * @default 14
- *
- * @param srpgBestSearchRouteSize
- * @desc 攻撃可能な対象がいない時、最も近い敵までのルートを探索します。その索敵距離です（0で無効化）。
- * @type number
- * @min 0
- * @default 20
- *
- * @param srpgDamageDirectionChange
- * @desc 攻撃を受けた際に相手の方へ向きを補正します。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgSkipTargetForSelf
- * @desc 自分自身を対象とする行動では対象選択の処理をスキップします。(true / false)
- * @type boolean
- * @default true
- *
- * @param srpgRangeTerrainTag7
- * @desc 地形タグ７を射程が通らないタイルにします。(true / false)
- * @type boolean
- * @default true
- *
- * @param WithYEP_BattleEngineCore
- * @desc YEP_BattleEngineCoreと併用する場合はtrueに設定してください。
- * @type boolean
- * @default false
- *
- * // boomys edit start // side view battler positions
- *
- * @param ActorHomeX
- * @desc アクタースプライトの基準位置
- * YEP Default: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
- * @default Graphics.width - 216 - index * 240
- *
- * @param ActorHomeY
- * @desc アクタースプライトの基準位置
- * YEP Default: screenHeight - statusHeight - maxSize * 48 + (index+1) * 48 - 32
- * @default Graphics.height / 2 + 48 
- *
- * @param EnemyHomeX
- * @desc この式は、SRPGモードでの敵のホームX位置を決定します
- * SRPG Default: 200 + i
- * @default 216 + index * 240
- *
- * @param EnemyHomeY
- * @desc この式は、SRPGモードでの敵のホームY位置を決定します
- * SRPG Default: Graphics.height / 2 + 48
- * @default Graphics.height / 2 + 48 
- *
- * // boomys edit end // side view battler positions
- *
- * @param Use Map Battle
- * @desc マップバトルを使用するかどうか
- * @type select
- * @option Always
- * @value 3
- * @option When Config is On(default off)
- * @value 2
- * @option When Switch is On
- * @value 1
- * @option Never 
- * @value 0
- * @default 3
- *
- * @param Map Battle Switch
- * @parent Use Map Battle
- * @desc マップバトルを使用するか決定するスイッチのIDです（Use Map Battleが１の時）
- * @type switch
- * @default 0
- *
- * @param Animation Delay(Map Battle)
- * @desc アニメーション開始とスキル効果の表示までの待ち時間
- * -1に設定すると、アニメーションが完了するまで待つ
- * @type number
- * @min -1
- * @default 25
- *
- *
- * //-dopan edit start--dopan編集開始-
- *
- *
- * @param Skill_CE_Timing_SwitchID
- * @desc スイッチID：0またはスイッチ「false」-> Default__Switch「true」->タイミングの変更（アクション前フェーズとCustomExの間）
- * @type switch
- * @default 0 
- *
- * 
- * @param ChangeAniDelaySwitch_ID 
- * @desc スイッチID：0またはスイッチ「false」-> *有効* animationDelayスイッチ「true」->遅延= 30。
- * @type switch
- * @default 0 
- *
- *
- * @param ChangeAniDelayVarID
- * @desc 無効の場合のChangedDelay.Defaultの変数IDは30Framesです。無効にするには、VarIDを0に設定します。
- * @type variable
- * @default 0
- *
- *
- * //-dopan edit end--dopan編集終了-
- *
- * 
- * @param useAgiAttackPlus
- * @desc 敏捷が高い方が２回攻撃する仕組みを使用します。
- * @type boolean
- * @default false
- *
- * @param srpgAgilityAffectsRatio
- * @parent useAgiAttackPlus
- * @desc 敏捷性の差が2回攻撃の発生率に影響する比率です。
- * @type number
- * @min 1
- * @default 2
- *
- * @param enemyDefaultClass
- * @desc エネミーに職業（srpgClass）が設定されていない場合、ここの名前が表示されます。
- * @default エネミー
- *
- * @param textSrpgEquip
- * @desc 装備（武器）を表す用語です。ＳＲＰＧのステータスウィンドウで表示されます。
- * @default 装備
- *
- * @param textSrpgMove
- * @desc 移動力を表す用語です。ＳＲＰＧのステータスウィンドウで表示されます。
- * @default 移動力
- *
- * @param textSrpgRange
- * @desc 攻撃射程を表す用語です。ＳＲＰＧのステータスウィンドウで表示されます。
- * @default 射程
- *
- * @param textSrpgWait
- * @desc 待機を表す用語です。アクターコマンドウィンドウで表示されます。
- * @default 待機
- *
- * @param textSrpgWinLoseCondition
- * @desc 勝敗条件を表す用語です。メニューコマンドウィンドウで表示されます。
- * @default 勝敗条件
- *
- * @param textSrpgWinCondition
- * @desc 勝利条件を表す用語です。勝敗条件ウィンドウで表示されます。
- * @default 勝利条件
- *
- * @param textSrpgLoseCondition
- * @desc 敗北条件を表す用語です。勝敗条件ウィンドウで表示されます。
- * @default 敗北条件
- *
- * @param textSrpgTurnEnd
- * @desc ターン終了を表す用語です。メニュー画面で表示されます。
- * @default ターン終了
- *
- * @param textSrpgAutoBattle
- * @desc オート戦闘を表す用語です。メニュー画面で表示されます。
- * @default オート戦闘
- *
- * @param textSrpgDamage
- * @desc 戦闘予測ウィンドウで表示するダメージの用語
- * @default ダメージ
- *
- * @param textSrpgHealing
- * @desc 戦闘予測ウィンドウで表示する回復の用語
- * @default 回復
- *
- * @param textSrpgNone
- * @desc 装備が無い時に表示される用語
- * @default なし
- *
- * @param srpgSet
- * @desc SRPG戦闘で使うカーソルなどのキャラクター画像のファイル名
- * @type file
- * @dir img/characters/
- * @require 1
- * @default srpg_set
- *
- * @param rewardSound
- * @desc リザルトウィンドウで使用する効果音のファイル名
- * @type file
- * @dir audio/se/
- * @require 1
- * @default Item3
- *
- * @param expSound
- * @desc リザルトウィンドウでレベルアップ時に使用する効果音のファイル名
- * @type file
- * @dir audio/se/
- * @require 1
- * @default Up4
- * 
- * @noteParam characterName
- * @noteRequire 1
- * @noteDir img/characters/
- * @noteType file
- * @noteData enemies
- * 
- * @noteParam faceName
- * @noteRequire 1
- * @noteDir img/faces/
- * @noteType file
- * @noteData enemies
- *
- * @help
- *
- * 注意
- * 　SRPG戦闘中のマップ移動（イベントコマンド『場所移動』）はできません。
- * 　戦闘用のマップに移動してから、プラグインコマンド SRPGBattle Startを使用してください。
- *   また、プラグインコマンド SRPGBattle Endを使用してから、他のマップに移動してください。
- * 
- * Ver.1.30Q から組み込まれたプラグイン:
- * - SRPG_AgiAttackPlus
- * - SRPG_UncounterableAttack
- * - SRPGconverter_with_YEP_BattleEngineCore
- * 
- * 上記のプラグインは、既にSRPG_core.js本体に組み込まれているため、
- * 改めて導入する必要はありません。
- * SRPG_AgiAttackPlus、SRPGconverter_with_YEP_BattleEngineCoreを使用する際は
- * プラグインパラメータからONにしてください。
- *
- * SRPG_AgiAttackPlus -> SKILLNOTE: <AgiExtra:false> # this will disable the AgiAtt+ Function on this Skill
- *    (dopan edit)    => if No Skillnote is used or SkillNote is NOT false , AgiAtt+ will work normal on that Skill
- *
- * プラグインコマンド:
- *   SRPGBattle Start   # SRPG戦闘を開始する。
- *   SRPGBattle End     # SRPG戦闘を終了する。
- *
- * イベントのメモ欄:
- *   <type:actor>       # そのイベントはアクターになります(<id:X>を組み合わせて使います)。
- *   <type:enemy>       # そのイベントはエネミーになります(<id:X>を組み合わせて使います)。
- *   <id:X>             # そのイベントはXで指定したIDのアクター／エネミーになります(Xは半角数字）。
- *   <SearchItem:true>  # そのイベントがアクターの場合、ユニットイベントがある場合は優先してそこに移動するようになります（1度だけ）。
- *
- *   <mode:normal>      # そのユニットの行動パターンを「通常」に設定します（設定しない場合、自動で「通常」になります）。
- *   <mode:stand>       # そのユニットの行動パターンを「相手が近づくまで待機」に設定します。
- *   <mode:regionUp>    # そのユニットの行動パターンを「相手が近づくまでより大きなリージョンＩＤに向かう」に設定します。
- *   <mode:regionDown>  # そのユニットの行動パターンを「相手が近づくまでより小さなリージョンＩＤに向かう」に設定します。
- *   <mode:absRegionUp> # そのユニットの行動パターンを「常により大きなリージョンＩＤに向かう」に設定します。
- *   <mode:absRegionDown># そのユニットの行動パターンを「常により小さなリージョンＩＤに向かう」に設定します。
- *   <mode:aimingEvent> # そのユニットの行動パターンを「指定したＩＤのイベントを狙う」に設定します（<targetId:X>を組み合わせて使います）。
- *   <mode:aimingActor> # そのユニットの行動パターンを「指定したＩＤのアクターを狙う」に設定します（<targetId:X>を組み合わせて使います）。
- *   <targetId:X>       # 指定したＩＤのイベント/アクターを狙います。
- *
- *   <type:unitEvent>   # そのイベントはアクターがその上で行動・待機した時に起動するようになります。
- *   <type:playerEvent> # そのイベントはプレイヤー（カーソル）で決定キーを押したときに起動します。通過できますが待機は出来ません。
- *   <type:object>      # そのイベントはアクターもエネミーも通行できない障害物になります（画像が無い場合は通行可能）。
- *   <type:battleStart> # そのイベントは戦闘開始時に一度だけ自動で実行されます。
- *   <type:actorTurn>   # そのイベントはアクターターンの開始時に自動で実行されます。
- *   <type:enemyTurn>   # そのイベントはエネミーターンの開始時に自動で実行されます。
- *   <type:turnEnd>     # そのイベントはターン終了時に自動で実行されます。
- *   <type:afterAction> # そのイベントはアクター・エネミーの行動終了時に自動で実行されます。
- *
- * 職業のメモ欄:
- *   <srpgMove:X>       # その職業のアクターの移動力をXに設定します。
- *   <srpgThroughTag:X> # X以下の地形タグが設定されたタイルを通過できます（地形タグ 0 には無効）。
- *
- * スキル・アイテムのメモ欄:
- *   <srpgRange:X>      # そのスキルの射程をXに設定します。
- *                      # srpgRangeを 0 に設定すると自分自身を対象にするスキルになります（範囲は「使用者」にしてください）。
- *                      # srpgRangeを -1 に設定すると武器・エネミーのメモの<weaponRange>が適用されます。
- *   <srpgMinRange:X>   # そのスキルの最低射程をXに設定します。
- *   <specialRange:X>   # 射程の形状を特殊化します（例：<specialRange:queen>）。
- *                      # queen：8方向、luke：直線、bishop：斜め、knight：8方向以外、king：四角
- *   <addActionTimes: X># スキル発動時に行動回数を +X します。1 にすると行動後に再行動できるスキルになります。
- *                      # そのままだと何度も移動できてしまうため、下記の<notUseAfterMove>と組み合わせることを推奨します。
- *   <notUseAfterMove>  # 移動後は使用できないスキルになります。
- * 　<Cast Animation: 0># スキル使用時アニメを表示したくない場合、このように書いてください（YEP_BattleEngineCore.js併用時）。
- *
- * 武器のメモ欄:
- *   <weaponRange:X>    # その武器の射程をXに設定します。
- *   <weaponMinRange:X> # その武器の最低射程をXに設定します。
- *   <srpgWeaponSkill:X># 攻撃時に、通常攻撃（スキルID 1）ではなく、Xで設定したＩＤのスキルを発動する武器になります。
- *   <srpgCounter:false># 設定すると、相手からの攻撃に対して反撃しない武器になります（反撃率とは異なる）。
- *   <srpgMovePlus:X>   # Xの分だけ移動力を変化させます。マイナスの値も設定可能です。
- *   <srpgThroughTag:X> # X以下の地形タグが設定されたタイルを通過できます（地形タグ 0 には無効）。
- *
- * 防具のメモ欄:
- *   <srpgMovePlus:X>   # Xの分だけ移動力を変化させます。マイナスの値も設定可能です。
- *   <srpgWRangePlus:X> # Xの分だけ通常攻撃の攻撃射程を変化させます。マイナスの値も設定可能です。
- *   <srpgThroughTag:X> # X以下の地形タグが設定されたタイルを通過できます（地形タグ 0 には無効）。
- *
- * エネミーのメモ欄:
- *   <characterName:X>  # XにSRPG戦闘中に使用するキャラクターグラフィックのファイル名を入力します。
- *   <characterIndex:X> # XにSRPG戦闘中に使用するキャラクターグラフィックの何番を使うか入力します。
- *                      # 画像ファイルの位置で、 0 1 2 3
- *                      #                        4 5 6 7　となっています。
- *   <faceName:X>       # XにSRPG戦闘中に使用する顔グラフィックのファイル名を入力します。
- *   <faceIndex:X>      # XにSRPG戦闘中に使用する顔グラフィックの何番を使うか入力します（番号は上記と同様）。
- *   <srpgClass:X>      # XにSRPGのステータス画面で表示するクラス名を入力します（実際には影響しません）。
- *   <srpgLevel:X>      # XにSRPGのステータス画面で表示するレベルを入力します（実際には影響しません）。
- *   <srpgMove:X>       # そのエネミーの移動力をXに設定します。
- *   <weaponRange:X>    # そのエネミーの通常攻撃の射程距離をXに設定します（装備武器未設定時）。
- *   <weaponMinRange:X> # そのエネミーの通常攻撃の最低射程をXに設定します（装備武器未設定時）。
- *   <srpgWeapon:X>     # そのエネミーが装備する武器のＩＤをXに設定します（能力に影響します）。
- *   <srpgThroughTag:X> # X以下の地形タグが設定されたタイルを通過できます（地形タグ 0 には無効）。
- *
- * ステートのメモ欄:
- *   <srpgMovePlus:X>   # そのステートの間、Xの分だけ移動力を変化させます。マイナスの値も設定可能です。
- *   <srpgWRangePlus:X> # Xの分だけ通常攻撃の攻撃射程を変化させます。マイナスの値も設定可能です。
- *   <srpgThroughTag:X> # X以下の地形タグが設定されたタイルを通過できます（地形タグ 0 には無効）。
- *
- * イベントコマンド => スクリプト:
- *   this.EventDistance(VariableID, EventID, EventID); # 指定したＩＤのイベント間の距離を変数に格納します。
- *   this.ActorDistance(VariableID, ActorID, ActorID); # 指定したＩＤのアクター間の距離を変数に格納します。
- *   this.playerMoveTo(X, Y);            # カーソル（プレイヤー）を座標(X,Y)に移動させます。
- *   this.addActor(EventID, ActorID);    # 指定したＩＤのイベントをアクターにします。
- *   this.addEnemy(EventID, EnemyID);    # 指定したＩＤのイベントをエネミーにします。
- *   this.setBattleMode(EventID, 'mode');# 指定したＩＤのイベントの行動パターンを変更します。
- *   this.setTargetId(EventID, ID);      # 指定したＩＤのイベントのターゲットＩＤを変更します。
- *   this.fromActorMinimumDistance(VariableID, EventID); # 指定したイベントと全てのアクターの中で
- *                                                       # 最も近いアクターとの距離を変数に格納します。
- *   this.isUnitDead(SwitchID, EventID); # 指定したＩＤのイベントが戦闘不能かどうかをスイッチに格納します。
- *   this.isEventIdXy(VariableID, X, Y); # 指定した座標(X, Y)のイベントＩＤを変数に格納します。
- *   this.checkRegionId(switcheID, regionID); # 指定したリージョンID上にアクターがいるか判定してスイッチに格納します。
- *   this.unitRecoverAll(EventID);       # 指定したイベントＩＤのユニットを全回復します（生存している時のみ）。
- *   this.unitRevive(EventID);           # 指定したイベントＩＤのユニットを復活します（戦闘不能時のみ）。
- *   this.unitAddState(EventId, StateId);# 指定したイベントＩＤのユニットに指定したＩＤのステートを付与します。
- *   this.turnEnd();                     # プレイヤーのターンを終了します（メニューの「ターン終了」と同じ機能）
- *   this.isSubPhaseNormal(SwitchID);    # 操作するユニットを選択する状態かをスイッチに格納します（ONだとメニューが開ける状態と同じ）。
- *   $gameSystem.clearSrpgWinLoseCondition();    # 勝敗条件をリセットします。新しい条件を設定する前に実行してください。
- *   $gameSystem.setSrpgWinCondition('text');    # 勝利条件をセットします（textに文字列）。複数の条件を記述する場合は、複数回実行してください。
- *   $gameSystem.setSrpgLoseCondition('text');   # 敗北条件をセットします（textに文字列）。複数の条件を記述する場合は、複数回実行してください。
- *
- *
- * == マップバトル ======================================================================
- *
- * 『Use Map Battle』を切り替えると、マップ上で戦闘を行うようにできます。
- * 他の戦闘関係のプラグインとは互換性が無い可能性があります（SRPGコンバータ関係を含む）。
- *
- * 上級者向け：イベントに対して処理を行う場合（移動や表示、アニメーション、
- * スクリプト呼び出し、ダメージ計算、etc...）、.event() を用いることで
- * そのユニットが設定されているイベントを呼び出すことが出来ます。
- *
- * /!\ 重要 /!\
- * 一部のプラグインとメカニズムでは、特にアクションシーケンスを使用する場合、
- * マップバトルと通常のバトルで異なる動作をする可能性があります。
- * カウンターアタックなど、両方で使用できるものは、すべて徹底的にテストして
- * 同じように機能することを確認する必要があります。
- * 上級者向け：タグや計算式を用いる際、もしスキルがマップバトルとして使われている場合、
- * $gameSystem.useMapBattle()は true を返します。
- *
- * 新規のスキル・アイテムのメモ欄:
- * <mapBattle:true>     このスキルは、常にマップ上で使われるようになります。
- * <mapBattle:false>    このスキルは、マップ上で使われなくなります（通常の戦闘）。
- * <targetAnimation:X>  ターゲットのイベントにID Xのアニメーションを実行します。
- * <animationDelay:X>   アニメーション開始と効果実施の間の待ち時間です。
- *                      デフォルト設定より優先されます。
- * <animationDelay:-1>  アニメーションが終了するまで、効果実施を待ちます。
- *
- * <directionalAnimation:X> ターゲットに表示するアニメーションを使用者の向きによって変更します。
- * アニメーションIDは順番に設定されます.
- * 例, <directionalAnimation:20> と設定した場合:
- * 下向きの時　Animation 20
- * 左向きの時　Animation 21
- * 右向きの時　Animation 22
- * 上向きの時　Animation 23
- *
- * == 敏捷が高い方が２回攻撃（AgiAttackPlus） ====================================
- *
- * 通常は敏捷が高い方から順に1回ずつ攻撃を行いますが、
- * このプラグインオンにすると攻撃側→防御側→敏捷の高い方の追加攻撃という順番で
- * 行動するようになります。
- * 味方や自分自身を対象とする行動は2回行動を行いません。
- * また、スキルのメモに<doubleAction:false>と記入すると2回行動しなくなります。
- * 
- * srpgAgilityAffectsRatioを変えることで2回攻撃の発生率を変えられます。
- * 「X倍以上で100%発生する」と設定し、その間は敏捷性の差に応じて確率が変わります。
- * srpgAgilityAffectsRatio : 1 → 敏捷性が1倍以上（同値以上）なら100%発生します。
- * srpgAgilityAffectsRatio : 2 → 敏捷性が2倍以上なら100%発生します。
- *  1.25倍なら25%、1.5倍なら50%です。
- * srpgAgilityAffectsRatio : 3 → 敏捷性が3倍以上なら100%発生します。
- *  1.5倍なら25%、2倍なら50%です。
  */
 
 (function() {
@@ -1079,8 +550,6 @@
     var _changeAnimationDelaySwitchID = Number(parameters['ChangeAniDelaySwitch_ID'] || 0); //dopans edit
     var _changeAniDelayVarID = Number(parameters['ChangeAniDelayVarID'] || 0);  //dopans edit
     var _changed_Skill_CE_Timing = Number(parameters['Skill_CE_Timing_SwitchID'] || 0);  //dopans edit
-    var _srpgUseAgiAttackPlus = parameters['useAgiAttackPlus'] || 'true';
-    var _srpgAgilityAffectsRatio = Number(parameters['srpgAgilityAffectsRatio'] || 2);
     var _AAPwithYEP_BattleEngineCore = parameters['WithYEP_BattleEngineCore'] || 'false';
     var index = 0 ; // dopan info -> this is needed for boomys next edit
     var _actorHomeX = parameters['ActorHomeX'] || Graphics.width - 216 - index * 240; //boomys edit
@@ -6966,7 +6435,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		this.eventBeforeBattle();
                 this.srpgMapTroopSetup(userArray, targetArray);
                 this.srpgMapCounter(userArray, targetArray);
-                this.srpgMapAgiAtt(userArray, targetArray);
 	};
 
         Scene_Map.prototype.srpgMapActionText = function(userArray) {
@@ -7011,46 +6479,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		    reaction.setSubject(target);
 		    reaction.setAttack();
 		    var actFirst = (reaction.speed() > action.speed());
-		    // dopan edit added "check- meta.AgiExtra"
-	            if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
 		    this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
-        };
-
-        Scene_Map.prototype.srpgMapAgiAtt = function(userArray, targetArray) {
-		// get the data
-		var user = userArray[1];
-		var target = targetArray[1];
-                //get data for activeSkil
-                var activeSkill = user._actions[0]._item._itemId;
-                // agi attack plus 
-                // dopan edit added "check- meta.AgiExtra"
-                if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
-                    if (user.agi >= target.agi) {
-                        var firstBattler = user;
-                        var secondBattler = target;
-                    } else {
-                        var firstBattler = target;
-                        var secondBattler = user;
-                    }
-                    if (!firstBattler.currentAction() || !firstBattler.currentAction().item()) {
-                        return;
-                    }
-                    if (firstBattler.currentAction().isForOpponent() &&
-                        !firstBattler.currentAction().item().meta.doubleAction) {
-                        var dif = firstBattler.agi - secondBattler.agi;
-                        var difMax = secondBattler.agi * _srpgAgilityAffectsRatio - secondBattler.agi;
-                        if (difMax == 0) {
-                            agilityRate = 100;
-                        } else {
-                            agilityRate = dif / difMax * 100;
-                        }
-                        if (agilityRate > Math.randomInt(100)) {
-                            var agiAction = firstBattler.action(0);
-                            this.srpgAddMapSkill(agiAction, firstBattler, secondBattler)
-                        }
-                    }
-                }
         };
 
 	// work through the queue of attacks
@@ -7585,23 +7015,9 @@ Window_Options.prototype.addGeneralOptions = function() {
     if (_useMapBattle == 2) this.addCommand('マップバトル', 'mapBattle');
 };
 
+
 //====================================================================
-// ●SRPG_AgiAttackPlus
 //====================================================================
-//====================================================================
-// ●Game_Action
-//====================================================================
-    var _SRPG_AAP_Game_Action_speed = Game_Action.prototype.speed;
-    Game_Action.prototype.speed = function() {
-        // dopan edit added var data & "check- meta.AgiExtra"
-        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; // dopan edit
-        var activeSkill = user._actions[0]._item._itemId; // dopan edit
-        if (($gameSystem.isSRPGMode() == true) && (_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) {
-            return this.subject().agi;
-        } else {
-            return _SRPG_AAP_Game_Action_speed.call(this);
-        }
-    };
 
 //====================================================================
 // ●Game_Battler
@@ -7612,79 +7028,36 @@ Window_Options.prototype.addGeneralOptions = function() {
         this._reserveAction = null;
     };
 
-    Game_Battler.prototype.reserveSameAction = function() {
-        this._reserveAction = this._actions[0];
+    Game_Battler.prototype.reserveAction = function() {
+        if (!this._actions[0]._forcing) {
+            this._reserveAction = this._actions[0];
+        }
+        
     };
 
-    Game_Battler.prototype.addSameAction = function(agilityRate) {
-        if (!this.currentAction() && this._reserveAction) {
-            if (agilityRate > Math.randomInt(100)) {
-                this._actions = this._actions.concat(this._reserveAction);
-                var targets = this._actions[0].makeTargets();
-                if (targets.length == 0) {
-                    this._actions = [];
-                }
-            }
-            this._reserveAction = null;
-        }
-    };
+
 
 //====================================================================
 // ●BattleManager
 //====================================================================
-    var _SRPG_AAP_BattleManager_initMembers = BattleManager.initMembers;
-    BattleManager.initMembers = function() {
-        _SRPG_AAP_BattleManager_initMembers.call(this);
-        this._agilityRate = 0;
-    };
 
     var _SRPG_AAP_BattleManager_makeActionOrders = BattleManager.makeActionOrders;
     BattleManager.makeActionOrders = function() {
         _SRPG_AAP_BattleManager_makeActionOrders.call(this);
-        // agi attack plus ->edited by dopan added var data & "check- meta.AgiExtra"
-        // SideNote: "<AgiExtra:true/false>" -> "true" is default if no SkillNote is used
-        // dopan Edit :  get data of "active Skill" Skill_ID
-        var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1]; //dopan edit
-        var activeSkill = user._actions[0]._item._itemId; //dopan edit
-        // dopan edit added "check- meta.AgiExtra"
-        if ((!_srpgUseAgiAttackPlus) || ($dataSkills[activeSkill].meta.AgiExtra == "false")) return;
+        //
         var battlers = this._actionBattlers;
         var firstBattler = battlers[0];
         if (!firstBattler.currentAction() || !firstBattler.currentAction().item()) {
             return;
         }
-        if (firstBattler.currentAction().isForOpponent() &&
-            !firstBattler.currentAction().item().meta.doubleAction) {
-            var dif = battlers[0].agi - battlers[1].agi;
-            var difMax = battlers[1].agi * _srpgAgilityAffectsRatio - battlers[1].agi;
-            if (difMax == 0) {
-                this._agilityRate = 100;
-            } else {
-                this._agilityRate = dif / difMax * 100;
-            }
-            firstBattler.reserveSameAction();
+        if (firstBattler.currentAction()) {
+            firstBattler.reserveAction();
             battlers.sort(function(a, b) {
                 return a.srpgActionTiming() - b.srpgActionTiming();
             });
             battlers.push(firstBattler);
             this._actionBattlers = battlers;
         }
-    }
-
-    var _SRPG_AAP_BattleManager_getNextSubject = BattleManager.getNextSubject;
-    BattleManager.getNextSubject = function() {
-        if (_AAPwithYEP_BattleEngineCore == 'false') {
-            var battler = _SRPG_AAP_BattleManager_getNextSubject.call(this);
-            if (battler) {
-                battler.addSameAction(this._agilityRate);
-            }
-        } else {
-            var battler = this.getNextSubjectWithYEP();
-            if (battler) {
-                battler.addSameAction(this._agilityRate);
-            }
-        }
-        return battler;
     };
 
     BattleManager.getNextSubjectWithYEP = function() {

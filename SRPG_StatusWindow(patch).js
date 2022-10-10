@@ -173,11 +173,11 @@
         this._page = (this._page + 1) % _pages;
         this.refresh();
     };
-    var _SRPG_import_enemyEquip_actorStatus = Window_SrpgStatus.prototype.drawContentsActor;
+    var _SRPG_import_actorEquip_actorStatus = Window_SrpgStatus.prototype.drawContentsActor;
     Window_SrpgStatus.prototype.drawContentsActor = function() {
         var lineHeight = this.lineHeight();
         if (this._page == 0) { 
-            _SRPG_import_enemyEquip_actorStatus.call(this);
+            _SRPG_import_actorEquip_actorStatus.call(this);
         } else if (this._page == 1) {
             //TODO: this part is for page 1
             //add data:

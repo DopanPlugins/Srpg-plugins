@@ -600,7 +600,7 @@ Game_Action.prototype.apply = function(target) {
         };
         // check SkillNote
         if ($gameSystem._srpgForceAction === true && this.item().meta.srpgForceAction) {
-           
+            this.srpgWieldSetup(target);return;
         };
     };
 };

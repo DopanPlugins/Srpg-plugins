@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_core.js -SRPGコンバータMV-
 // バージョン   : 1.34 + Q
 // 最終更新日   : 2021/1/3
@@ -6887,14 +6887,20 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				if (!data.counter && user != target && Math.random() < action.itemCnt(target)) {
 					var attackSkill = $dataSkills[target.attackSkillId()];
 					if (target.canUse(attackSkill) == true) {
-						target.performCounter();
+						target.event()._priorityType = 4;
+                                                user.event()._priorityType = 3;
+                                                target.performCounter();
 						this.srpgAddCounterAttack(user, target);
 					} else {
 						action.apply(target);
 					}
 				} else {
 					action.apply(target);
-				}
+				};
+                 //reset P-type
+                                user.event()._priorityType = oldUserPtype;
+                                target.event()._priorityType = oldTargetPtype;
+                 //reset P-type
 				break;
 
 			// run the common events and such
@@ -6923,10 +6929,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		// Show the results
 		user.srpgShowResults();
 		target.srpgShowResults();
-                 //reset P-type
-                user.event()._priorityType = oldUserPtype;
-                target.event()._priorityType = oldTargetPtype;
-                 //reset P-type
+
 		return true;
 	};
 

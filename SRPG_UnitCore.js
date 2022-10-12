@@ -1588,7 +1588,6 @@ Game_Action.prototype.checkChance = function(skillType, metaType, iName, typeID,
     }	
 };	
 
-// console.log(skillType, metaType, itemName, typeID, slotID);console.log(targetSlots[i]);
 // process all Steal & Break Skills related to their NoteTags	
 Game_Action.prototype.unitCoreSkill = function(skillType, metaType, iName, typeID, slotID) {
     var activeBattleUnit = $gameSystem.EventToUnit(this._userEventID);
@@ -2656,7 +2655,6 @@ BattleManager.gainExp = function() {
     if ($gameSystem.isSRPGMode() == true) {
         var exp = this._rewards.exp;
         var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
-        //console.log(activeBattler);console.log(exp);
         if (activeBattler) activeBattler.gainExp(exp);
     } else {
         _srpg_BattleManager_gainExp.call(this);
@@ -2666,7 +2664,7 @@ BattleManager.gainExp = function() {
 Game_Enemy.prototype.changeExp = function(exp, show) {
     this._exp[this._classId] = Math.max(exp, 0);
     var lastLevel = this._level;
-    var lastSkills = this.skills();
+    var lastSkills = this._skills;//skills()
     while (!this.isMaxLevel() && this.currentExp() >= this.nextLevelExp()) {
         this.levelUp();
     }
@@ -2684,7 +2682,6 @@ Game_Troop.prototype.expTotal = function() {
     if ($gameSystem.isSRPGMode() == true) {
         var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
         var targetBattler = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
-        //console.log(activeBattler[1]);console.log(targetBattler[1]);
         if (this.SrpgBattleEnemys() && this.SrpgBattleEnemys().length > 0) {
             if (this.isAllDead()) {
                 return _SRPG_Game_Troop_expTotal.call(this);
@@ -2724,7 +2721,6 @@ Scene_Map.prototype.processSrpgVictory = function() {
      var targetBattler = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
      if (activeBattler[1] && !activeBattler[1].isDead()) {
 	 this.makeRewards();test = true;
-         //console.log(this._rewards.exp);console.log(this._rewards.gold);console.log(this._rewards.items.length);
          if (this._rewards.exp > 0 || this._rewards.gold > 0 || this._rewards.items.length > 0) {
 	     this._srpgBattleResultWindow.setBattler(activeBattler[1]);
 	     this._srpgBattleResultWindow.setRewards(this._rewards);
@@ -2749,7 +2745,6 @@ Scene_Map.prototype.processSrpgVictory = function() {
 Scene_Battle.prototype.createSrpgBattleResultWindow = function() {
      var activeBattler = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId())[1];
      this._srpgBattleResultWindow = new Window_SrpgBattleResult(activeBattler);
-     //console.log(activeBattler);
      this._srpgBattleResultWindow.openness = 0;
      this.addWindow(this._srpgBattleResultWindow);
      BattleManager.setSrpgBattleResultWindow(this._srpgBattleResultWindow);
@@ -2763,7 +2758,6 @@ Game_Enemy.prototype.displayLevelUp = function() {
 
 Window_SrpgBattleResult.prototype.drawGainExp = function(x, y) {
       var lineHeight = this.lineHeight();
-      //console.log(this._battler);
       var exp = Math.round(this._rewards.exp * this._battler.finalExpRate()); 
       var width = this.windowWidth() - this.padding * 2;
       if (exp > 0) {
@@ -2793,7 +2787,7 @@ Window_SrpgBattleResult.prototype.drawGainExp = function(x, y) {
                      (this._battler.expForLevel(this._level + 1) - this._battler.expForLevel(this._level));
           var nextExp = this._battler.expForLevel(this._level + 1) - nowExp;
       }
-      //console.log(this._level);
+
       this.drawGauge(x + 100, y + lineHeight, width - 100, rate, color1, color2);
       this.changeTextColor(this.systemColor());
       this.drawText(TextManager.levelA, x, y + lineHeight, 48);
@@ -2820,7 +2814,7 @@ Window_Base.prototype.drawEnemyLevel = function(enemy, x, y) {
           this.changeTextColor(this.systemColor());
           this.drawText(TextManager.levelA, x, y, 48);
           this.resetTextColor();
-          this.drawText(srpgLevel, x + 20, y, 36, 'right');
+          this.drawText(srpgLevel, x + 87, y, 36, 'right');
       }
 };
 

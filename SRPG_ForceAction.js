@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // SRPG_ForceAction.js
 //=============================================================================
 /*:
@@ -212,39 +212,6 @@ BattleManager.invokeCounterAttack = function(subject, target) {
 // Scene_Map 
 //====================================================================
 
-//replace function to add counterSkill note check
-Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
-     // get the data
-     var user = userArray[1];
-     var target = targetArray[1];
-     var action = user.action(0);
-     var reaction = null;
-     //get data for activeSkil
-     var activeSkill = user._actions[0]._item._itemId;
-     // queue up counterattack
-     if (userArray[0] !== targetArray[0] && target.canMove() && !action.item().meta.srpgUncounterable) {
-	 target.srpgMakeNewActions();
-	 reaction = target.action(0);
-	 reaction.setSubject(target);
-	 reaction.setAttack();
-         if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added
-	 var actFirst = (reaction.speed() > action.speed());
-	 // dopan edit added "check- meta.AgiExtra"
-	 if ((_srpgUseAgiAttackPlus == 'true') && (!$dataSkills[activeSkill].meta.AgiExtra == "false")) actFirst = false;
-             this.srpgAddMapSkill(reaction, target, user, actFirst);
-         }
-};
-
-//replace function to add counterSkill note check
-Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
-     target.srpgMakeNewActions();
-     target.action(0).setSubject(target);
-     target.action(0).setAttack();
-     if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added
-     this.srpgAddMapSkill(target.action(0), target, user, true);
-     this._srpgSkillList[0].counter = true;
-};
-
 // update Scene_Map .. this adds Actions to the MapBattles
  var _SRPG_SceneMap_update = Scene_Map.prototype.update;
 Scene_Map.prototype.update = function() {
@@ -409,7 +376,7 @@ Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
          target.srpgMakeNewActions();
          target.action(0).setSubject(target);
          target.action(0).setAttack();
-         if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added counterskill check
+         if (target.counterSkillId() !== 0) target.action(0).setSkill(target.counterSkillId()); //added counterskill check
          this.srpgAddMapSkill(target.action(0), target, user, true);
          this._srpgSkillList[0].counter = true;
          // trigger forceAction if skill has forceAction note
@@ -582,8 +549,12 @@ Game_Action.prototype.subject = function() {
 var _srpg_apply = Game_Action.prototype.apply;
 Game_Action.prototype.apply = function(target) {
     _srpg_apply.call(this ,target);
+    if ($gameSystem.isSRPGMode() == true) {
+        if (this._forcing == false) $gameSystem._lastNormalAction = this;
+        if (this._forcing == true) $gameSystem._lastForceAction = this;
+        $gameSystem._lastAction = this;
+    };
     // add codechain for extra Actions to "GameActionApply"
-
     if ($gameSystem.isSRPGMode() == true && !$gameSystem.useMapBattle()) {
         // enable the forceAction controll switch
         if ($gameSystem._srpgForceAction === undefined) $gameSystem._srpgForceAction = true;

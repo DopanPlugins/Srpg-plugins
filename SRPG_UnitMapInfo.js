@@ -220,7 +220,7 @@
     };
 
     // add stuff to eventAfterAction_scene
-    //  add debug Switch Setup
+    // add debug Switch Setup
     var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
     Scene_Map.prototype.srpgAfterAction = function() {
 	 _srpgAfterActionScene.call(this);
@@ -235,7 +235,7 @@
           if (SceneManager._scene._statusWindow && _debugSwitch === true) {
               return SceneManager._scene._statusWindow.textColor(n);
           }
-};
+    };
 
 //=============================================================================
 // Sprite_Character
@@ -341,13 +341,13 @@
 		    } 
 		}    
             }
-        }
+        } else { if (!$gameSystem.isSRPGMode() == true && this._AttIcon) this._AttIcon.visible = false};
     };
 
 //sprite Char create hpGaugeSprite
 	
     Sprite_Character.prototype.createhpGaugeSprite = function() {
-        if (!this._hpGaugeSprite) {
+        if ($gameSystem.isSRPGMode() == true && !this._hpGaugeSprite) {
             this._hpGaugeSprite = new Sprite_hpGaugeSprite();
             var battler = $gameSystem.EventToUnit(this._character.eventId())[1];
             this._hpGaugeSprite.setBattler(battler);
@@ -357,7 +357,7 @@
 
 //sprite Char create hpNumberSprit
     Sprite_Character.prototype.createhpNumberSprite = function() {
-        if (!this._hpNumberSprite) {
+        if ($gameSystem.isSRPGMode() == true && !this._hpNumberSprite) {
             this._hpNumberSprite = new Sprite_hpNumberSprite();
             var battler = $gameSystem.EventToUnit(this._character.eventId())[1];
             this._hpNumberSprite.setBattler(battler);
@@ -367,7 +367,7 @@
 
 //sprite Char create StateIconSprite
     Sprite_Character.prototype.createStateIconSprite = function() {
-        if (!this._StateIconSprite) {
+        if ($gameSystem.isSRPGMode() == true && !this._StateIconSprite) {
             this._StateIconSprite = new Sprite_StateIcon();
             var battler = $gameSystem.EventToUnit(this._character.eventId())[1];
             this._StateIconSprite.setup(battler);
@@ -419,7 +419,7 @@
     // hpGauge color
     Sprite_hpGaugeSprite.prototype.refresh = function() {
         this.bitmap.clear();
-        if (this._hp === 0) return;
+        if (this._hp === 0) return;if (!$gameSystem.isSRPGMode() == true) return ;
         this.bitmap.fillRect(0, 0, hpGaugeWidth, hpGaugeHeight, hpGaugeOutline);
         var d = hpGaugeWidth - hpGaugeHeight + hpGaugeFill;
         var w = Math.floor(this._hp / this._mhp * d);
@@ -478,10 +478,10 @@
             this.refresh();
         }
     };
-
+ 
     Sprite_hpNumberSprite.prototype.refresh = function() {
         this.bitmap.clear();
-        if (this._newNumber === 0) return;
+        if (this._newNumber === 0) return;if (!$gameSystem.isSRPGMode() == true) return ;
         var width = this.bitmap.width;
         var height = this.bitmap.height;
 
@@ -496,3 +496,4 @@
     };
 
 })();
+

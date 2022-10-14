@@ -190,6 +190,8 @@
   var _callMapNextAction = false;
   var _finalCallMFA = false;
   var _triggerBattleStart = false;
+  var _mapCounter = false;
+
 
 // console.log();
 //-----------------------------------------------------------------------------------------
@@ -243,17 +245,7 @@ Scene_Map.prototype.update = function() {
 Scene_Map.prototype.eventBeforeBattle = function() {
      _srpgPreAction.call(this);
      // if srpg mapbattle
-     if ($gameSystem.isSRPGMode() == true && $gameSystem.useMapBattle()) {
-         //get data
-         var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
-         var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
-         var action = user[1]._actions[0];
-         var dataSkill = action._item._dataClass === "skill";
-         // if skill & (wield or frorceAction) trigger wield setup
-         if (dataSkill && (_srpg_Controll_MultiWield === 'true' || user[1].currentClass().meta.srpgWield || action.item().meta.srpgForceAction)) {
-             this.mapWieldAttack(user, target);
-         };
-     };
+
 };
 
  var _srpgAfterActionScene = Scene_Map.prototype.srpgAfterAction;
@@ -327,6 +319,8 @@ Scene_Map.prototype.mapForceAction = function(skill, user, target) {
 	  $gameTemp.setAutoMoveDestination($gameTemp.targetEvent().posX(), $gameTemp.targetEvent().posY());
           // process action
           userUnit[1].forceAction(skill, targetUnit[1]);
+          userUnit[1]._actions[0].setUserEventId();
+          userUnit[1]._actions[0].setTargetEventId(); 
           userUnit[1]._freeCost = true;
           $gameSystem.setSubBattlePhase('invoke_action');
           this.srpgBattleStart(userUnit, targetUnit); 
@@ -345,11 +339,11 @@ Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
          //get data for activeSkil
          var activeSkill = user._actions[0].item();
 	 // queue up counterattack
-	 if (userArray[0] !== targetArray[0] && target.canMove() && !action.item().meta.srpgUncounterable) {
+	 if (userArray[1] !== targetArray[1] && target.canMove() && !action.item().meta.srpgUncounterable) {
              for (var i = 0; i < target.weapons().length; i++) {
                   // add action & get skill to Mapbattle related to equiped weapons
                   // get skill 
-                  skill = target.attackSkillId();
+                  var skill = target.attackSkillId();
                   var weaponMeta = target.weapons()[i].meta;
                   if (weaponMeta.srpgWeaponSkill) skill = weaponMeta.srpgWeaponSkill;
                   if (target.counterSkillId() !== 0) skill = target.counterSkillId(); //added counterskill check
@@ -361,7 +355,7 @@ Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
                   // trigger forceAction if skill has forceAction note
                   if (reaction.item().meta.srpgForceAction) {
                      // trigger forceSetup
-                     this.mapforceSetup(user, target);
+                     //this.forceSetup(user, target);
                   };
 
              };
@@ -382,12 +376,53 @@ Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
          // trigger forceAction if skill has forceAction note
          if (target.action(0).item().meta.srpgForceAction) {
              // trigger forceSetup
-             this.mapforceSetup(user, target);
+             this.forceSetup(user, target);
              this._srpgSkillList[0].counter = true;
          };
      };
 };
+Scene_Map.prototype.forceSetup = function(user, target) {
+     if (!$gameSystem.isSRPGMode() == true || !$gameSystem.useMapBattle()) return;
+     //var result = target.result();    
+     if (user[1]._actions[0].item().meta.srpgForceAction) { // && result.isHit()
+        // read skill meta data
+        var metaSplit = user[1]._actions[0].item().meta.srpgForceAction.split(", ");
+        var forceSkill = Number(metaSplit[0]);
+        var forceUser = Number(metaSplit[1]); 
+        var forceTarget = Number(metaSplit[2]);
+        var skillID = 0;
+        var userEID = 0;
+        var targetEID = 0;
+        // gameTemp active/target eventID
+        if (forceUser == 0) userEID = $gameTemp.activeEvent().eventId();
+        if (forceTarget == 0) targetEID = $gameTemp.targetEvent().eventId();
+        //if enemy get eventID
+        if (forceUser > 0) userEID = $gameSystem.EnemyUnit(forceUser);
+        if (forceTarget > 0) targetEID = $gameSystem.EnemyUnit(forceTarget); 
+        //if actor get eventID
+        if (forceUser < 0) {
+            forceUser = Number(forceUser * -1);
+            userEID = $gameSystem.ActorToEvent(forceUser);
+        };
+        if (forceTarget < 0) {
+            forceTarget = Number(forceTarget * -1);
+            targetEID  = $gameSystem.ActorToEvent(forceTarget);
+        };
+        // get skillID
+        if (forceSkill > 0) skillID = Number(forceSkill);
+        if (forceSkill === 0) {  
+            var unit = $gameSystem.EventToUnit(userEID);
+            if (unit[1].weapons()[0] && unit[1].weapons()[0].meta.srpgWeaponSkill) {
+                skillID = Number(unit[1].weapons()[0].meta.srpgWeaponSkill);
+            } else {skillID = Number(unit[1].attackSkillId())};
+        };
 
+        $gameSystem.EventToUnit(userEID)[1].forceMetaAction(skillID, $gameSystem.ActorToEvent(forceTarget)[1]);
+        var action = $gameSystem.EventToUnit(userEID)[1]._metaActions[0];
+        return action;
+    };
+    return false;
+};
 Scene_Map.prototype.mapforceSetup = function(user, target) {
      if (!$gameSystem.isSRPGMode() == true || !$gameSystem.useMapBattle()) return;
      //var result = target.result();    
@@ -398,30 +433,30 @@ Scene_Map.prototype.mapforceSetup = function(user, target) {
         var forceUser = Number(metaSplit[1]); 
         var forceTarget = Number(metaSplit[2]);
         var skillID = 0;
-        var userID = 0;
-        var targetID = 0;
+        var userEID = 0;
+        var targetEID = 0;
         // gameTemp active/target eventID
-        if (forceUser == 0) userID = $gameTemp.activeEvent().eventId();
-        if (forceTarget == 0) targetID = $gameTemp.targetEvent().eventId();
+        if (forceUser == 0) userEID = $gameTemp.activeEvent().eventId();
+        if (forceTarget == 0) targetEID = $gameTemp.targetEvent().eventId();
         //if enemy get eventID
-        if (forceUser > 0) userID = $gameSystem.EnemyUnit(forceUser);
-        if (forceTarget > 0) targetID = $gameSystem.EnemyUnit(forceTarget); 
+        if (forceUser > 0) userEID = $gameSystem.EnemyUnit(forceUser);
+        if (forceTarget > 0) targetEID = $gameSystem.EnemyUnit(forceTarget); 
         //if actor get eventID
         if (forceUser < 0) {
             forceUser = Number(forceUser * -1);
-            userID = $gameSystem.ActorToEvent(forceUser);
+            userEID = $gameSystem.ActorToEvent(forceUser);
         };
         if (forceTarget < 0) {
             forceTarget = Number(forceTarget * -1);
-            targetID  = $gameSystem.ActorToEvent(forceTarget);
+            targetEID  = $gameSystem.ActorToEvent(forceTarget);
         };
         // get skillID
         if (forceSkill > 0) skillID = Number(forceSkill);
         if (forceSkill === 0) {  
-            var user = $gameSystem.EventToUnit(userID);
-            if (user[1].weapons()[0] && user[1].weapons()[0].meta.srpgWeaponSkill) {
-                skillID = Number(user[1].weapons()[0].meta.srpgWeaponSkill);
-            } else {skillID = Number(user[1].attackSkillId())};
+            var unit = $gameSystem.EventToUnit(userEID);
+            if (unit[1].weapons()[0] && unit[1].weapons()[0].meta.srpgWeaponSkill) {
+                skillID = Number(unit[1].weapons()[0].meta.srpgWeaponSkill);
+            } else {skillID = Number(unit[1].attackSkillId())};
         };
         // check if user&target have changed or if its a counter action
         if (user[1] === forceUser[1] && target[1] === forceTarget[1]) { 
@@ -431,8 +466,7 @@ Scene_Map.prototype.mapforceSetup = function(user, target) {
         } else {
             // call action with "after action scene" because user&target have changed
             user[1].useMapForceAction(skillID, targetID);
-        };
-        return true;
+        };return
     };
     return false;
 };
@@ -442,12 +476,12 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
      var userWeapons = user[1].weapons();
      var attSkill = user[1].attackSkillId();
      var skill = 0;
-
-     // if forceAction meta skill
-     if (user[1]._actions[0].item().meta.srpgForceAction) {
-        // trigger forceSetup
-        this.mapforceSetup(user, target);
-     }; 
+     var action = user[1].currentAction();console.log(this._srpgSkillList);
+              if (action.item().meta.srpgForceAction) {
+                  // trigger forceSetup
+                  var metaAction = this.forceSetup(user, target);console.log(metaAction);
+                  this.srpgAddMapSkill(metaAction, user[1], target[1]);
+              }; 
 //check if this is an default attack
      if (user[1].currentAction()._item._itemId !== attSkill) return;
 //
@@ -457,31 +491,57 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
           skill = attSkill;
           if (weaponMeta.srpgWeaponSkill) skill = weaponMeta.srpgWeaponSkill;
           if (i) { // add action & skill to Mapbattle related to equiped weapon
-              user[1].forceAction(skill, target[1]);
-              var action = user[1].currentAction();
-              this.srpgAddMapSkill(action, user[1], target[1]);
+              
+              this.srpgAddMapSkill(action, user[1], target[1]);this.srpgMapActionText(user);
               // trigger forceAction if skill has forceAction note
               if (action.item().meta.srpgForceAction) {
                   // trigger forceSetup
-                  this.mapforceSetup(user, target);
+                  var metaAction = this.forceSetup(user, target);console.log(metaAction);
+                  this.srpgAddMapSkill(metaAction, user[1], target[1]);
               };
-          };
-     }; 
+          }; console.log(user[1].currentAction());
+
+     };
+};
+Scene_Map.prototype.srpgMapForceActionSetup = function(userArray, targetArray) {
+     if ($gameSystem.isSRPGMode() == true && $gameSystem.useMapBattle()) {
+         //get data
+         var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+         var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+         var action = user[1]._actions[0];
+         var dataSkill = action._item._dataClass === "skill";
+         // if skill & (wield or frorceAction) trigger wield setup
+         if (dataSkill && (_srpg_Controll_MultiWield === 'true' || user[1].currentClass().meta.srpgWield || action.item().meta.srpgForceAction)) {
+             this.mapWieldAttack(user, target);  
+         };
+     };
+}; 
+Game_Battler.prototype.forceMetaAction = function(skillId, targetIndex) {
+    this._metaActions = [];
+    var action = new Game_Action(this, true);
+    action.setSkill(skillId);
+    if (targetIndex === -2) {
+        action.setTarget(this._lastTargetIndex);
+    } else if (targetIndex === -1) {
+        action.decideRandomTarget();
+    } else {
+        action.setTarget(targetIndex);
+    }
+    this._metaActions.push(action);
 };
 
 //====================================================================
 // Game_Battler & Game_BattlerBase
 //====================================================================
-    // this adresses the target batler in VSbattles
-    Game_Battler.prototype.addSVforceAction = function(battler) {
+    // this adresses the target batler in SVbattles
+    Game_Battler.prototype.addSVforceAction = function(battler, skill) {
         if (!$gameSystem.isSRPGMode() || $gameSystem.useMapBattle() || !this.isAlive()) {
 	    return;
         };
-        if (!this.currentAction() && this._reserveAction) {
+        if (!this.currentAction()) {
             var target = this; 
             battler._freeCost = true;
-            battler.forceAction(_extraSkill, target);
-            this._reserveAction = null;
+            battler.forceAction(skill, target);
             _callSVForceAction = false;
         }
     };
@@ -491,12 +551,12 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
         if (_withYEP_BattleEngineCore) {
             var battler = _SRPG_AAP_BattleManager_getNextSubject.call(this);
             if (battler && _callSVForceAction == true) { 
-                battler.addSVforceAction(battler); 
+                battler.addSVforceAction(battler, _extraSkill); 
             }
         } else {
             var battler = this.getNextSubjectWithYEP();
             if (battler) {
-                battler.addSVforceAction();
+                battler.addSVforceAction(battler, _extraSkill);
             }
         }
         return battler;
@@ -512,7 +572,7 @@ Game_BattlerBase.prototype.paySkillCost = function(skill) {
 // ScriptCall = "$gameSystem.EventToUnit(eventiD)[1].useMapForceAction(skillID, targetID);" 
 Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
     // get the data (event&skill id)
-    _faUser = this.event().eventId();
+    _faUser = this.event().eventId();console.log(_faUser);
     _faTarget = targetID;
     _faSkill = skillID;
     // clean up "waiting" status

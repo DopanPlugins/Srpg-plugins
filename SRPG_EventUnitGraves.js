@@ -414,7 +414,7 @@
 // Unspawn Actor&Enemy Graves:	
 //----------------------------
 
-    //example scritcall: "$gameSystem.eraseAllActorGraves()"
+    //example scritcall: "$gameTemp.eraseAllActorGraves()"
     Game_Temp.prototype.eraseAllActorGraves = function() {
 	$gameMap.events().forEach(function(event) {
              var battleUnit = $gameSystem.EventToUnit(event.eventId());   
@@ -428,7 +428,7 @@
         });
     };
 
-    //unspawn single ActorGrave by actorId  "$gameSystem.eraseActorGrave(actorID)"
+    //unspawn single ActorGrave by actorId  "$gameTemp.eraseActorGrave(actorID)"
     Game_Temp.prototype.eraseActorGrave = function(actor) {
         var actorID = actor;
 	var relatedGrave = $gameMap.event($gameTemp.actorGrave(actorID));
@@ -437,7 +437,7 @@
         }	    
     };
 
-    //example scritcall: "$gameSystem.eraseAllEnemyGraves()"
+    //example scritcall: "$gameTemp.eraseAllEnemyGraves()"
     Game_Temp.prototype.eraseAllEnemyGraves = function() {
    	$gameMap.events().forEach(function(event) {
              var battleUnit = $gameSystem.EventToUnit(event.eventId());
@@ -451,7 +451,7 @@
         });
     };
 
-    //unspawn singel EnemyGrave by unitId "$gameSystem.eraseEnemyGrave(unitID)"
+    //unspawn singel EnemyGrave by unitId "$gameTemp.eraseEnemyGrave(unitID)"
     Game_Temp.prototype.eraseEnemyGrave = function(unit) {
         var unitID = unit;
         var relatedGrave = $gameMap.event($gameTemp.enemyGrave(unitID));

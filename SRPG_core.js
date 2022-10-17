@@ -1621,7 +1621,7 @@
     Game_BattlerBase.prototype.initMembers = function() {
         _SRPG_Game_BattlerBase_initMembers.call(this);
         this._srpgTurnEnd = false;
-        this._srpgActionTiming = -1; // 0:攻撃側、1:防御側
+        this._srpgActionTiming = -1; // 0:attacker、1:defender
     };
 
     // 移動力を返す（定義は、gameActor, gameEnemyで行う）
@@ -2010,7 +2010,7 @@
         if (skill && skill.meta.srpgRange == -1) {
             if (!this.hasNoWeapons()) {
                 weapon = this.weapons()[0];
-                range = Number(weapon.meta.weaponRange);
+                if (weapon.meta.weaponRange) range = Number(weapon.meta.weaponRange);
                 // ステートによる変更
                 this.states().forEach(function(state) {
                     if (state && state.meta.srpgWRangePlus) {
@@ -2171,7 +2171,7 @@
         if (skill && skill.meta.srpgRange == -1) {
             if (!this.hasNoWeapons()) {
                 var weapon = $dataWeapons[Number(this.enemy().meta.srpgWeapon)];
-                range = Number(weapon.meta.weaponRange);
+                if (weapon.meta.weaponRange) range = Number(weapon.meta.weaponRange);
             } else {
                 range = Number(this.enemy().meta.weaponRange);
             }
@@ -6240,31 +6240,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
         }
     };
 
-    //入力開始
-    var _SRPG_BattleManager_invokeAction = BattleManager.invokeAction;
-    BattleManager.invokeAction = function(subject, target) {
-        if ($gameSystem.isSRPGMode() == true) {
-            this._logWindow.push('pushBaseLine');
-            if (Math.random() < this._action.itemCnt(target)) {
-                var attackSkill = $dataSkills[target.attackSkillId()];
-                if (target.canUse(attackSkill) == true) {
-                    this.invokeCounterAttack(subject, target);
-                } else {
-                    this.invokeNormalAction(subject, target);
-                }
-            } else if (Math.random() < this._action.itemMrf(target)) {
-                this.invokeMagicReflection(subject, target);
-            } else {
-                this.invokeNormalAction(subject, target);
-            }
-            subject.setLastTarget(target);
-            this._logWindow.push('popBaseLine');
-            this.refreshStatus();
-        } else {
-            _SRPG_BattleManager_invokeAction.call(this, subject, target);
-        }
-    };
-
     //戦闘終了のチェック（SRPG戦闘では無効化する）
     var _SRPG_BattleManager_checkBattleEnd = BattleManager.checkBattleEnd;
     BattleManager.checkBattleEnd = function() {
@@ -6524,6 +6499,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var target = targetArray[1];
 		var action = user.action(0);
 		var reaction = null;
+                    user.reserveMapAction();
                 //get data for activeSkil
                 var activeSkill = user._actions[0]._item._itemId;
 		// check if we're using map battle on this skill
@@ -6557,10 +6533,15 @@ Window_WinLoseCondition.prototype.refresh = function() {
                 this.srpgMapActionText(userArray);
 		this.eventBeforeBattle();
                 this.srpgMapTroopSetup(userArray, targetArray);
-                this.srpgMapCounter(userArray, targetArray);
-
+                this.srpgMapForceActionSetup(userArray, targetArray);
+                //decide counter stuff 
+                if ($gameSystem.srpgCntInRange(user.event()._eventId, target.event()._eventId) == true) {
+                    this.srpgMapCounter(userArray, targetArray);
+                }; 
 	};
-
+        Scene_Map.prototype.srpgMapForceActionSetup = function(userArray, targetArray) {
+        // placeholder for the srpg forceAction plugin
+        }; 
         Scene_Map.prototype.srpgMapActionText = function(userArray) {
              var skill = userArray[1]._actions[0].item(); 
              var skillName = skill.name;
@@ -6585,7 +6566,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		BattleManager.setup(_srpgTroopID, false, true);
 		action.setSubject(user);
 		// queue the action
-		this.srpgAddMapSkill(action, user, target);
+		this.srpgAddMapSkill(action, user, target, true);
         };
 
         Scene_Map.prototype.srpgMapCounter = function(userArray, targetArray) {
@@ -6597,7 +6578,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                 //get data for activeSkil
                 var activeSkill = user._actions[0]._item._itemId;
 		// queue up counterattack
-		if (userArray[0] !== targetArray[0] && target.canMove() && !action.item().meta.srpgUncounterable) {
+		if (userArray[1] !== targetArray[1] && target.canMove() && !action.item().meta.srpgUncounterable) {
 		    target.srpgMakeNewActions();
 		    reaction = target.action(0);
 		    reaction.setSubject(target);
@@ -6605,6 +6586,11 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		    var actFirst = (reaction.speed() > action.speed());
 		    this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
+                if (reaction.item().meta.srpgForceAction) {
+                // trigger srpgForceAction skillNote
+                   var metaWieldAction = this.forceMetaSetup(user, target);
+                   this.srpgAddMapSkill(metaWieldAction, _metaUser[1], _metaTarget[1]);
+		};
         };
 
 	// work through the queue of attacks
@@ -6742,18 +6728,21 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				count: action.numRepeats() + action.item()._srpgRepeats,
 			};
                 }
-		if (addToFront) this._srpgSkillList.unshift(data);
+	if (addToFront) this._srpgSkillList.unshift(data);
 		else this._srpgSkillList.push(data);
+        console.log("MapSkill List Data", data);	
 	};
 
 	// build the physical counter attack
-	Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
-		target.srpgMakeNewActions();
-		target.action(0).setSubject(target);
-		target.action(0).setAttack();
-		this.srpgAddMapSkill(target.action(0), target, user, true);
-		this._srpgSkillList[0].counter = true;
-	};
+        Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
+              target.srpgMakeNewActions();
+              var reaction = target.action(0);
+              reaction.setSubject(target);
+              reaction.setAttack();
+              if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added
+              this.srpgAddMapSkill(target.action(0), target, user, true);
+              this._srpgSkillList[0].counter = true;
+        };
 
 	// check how many skills are left on the queue
 	Scene_Map.prototype.srpgHasMapSkills = function() {
@@ -6780,7 +6769,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		var action = data.action;
 		var user = data.user;
 		var target = data.target;
-
+                    
         //dopan edit -> makes sure that user is always displayed above target in mapbattle
                 var oldUserPtype = user.event()._priorityType;
                 var oldTargetPtype = target.event()._priorityType;
@@ -6885,24 +6874,22 @@ Window_WinLoseCondition.prototype.refresh = function() {
 
 				// apply effects or trigger a counter
 				if (!data.counter && user != target && Math.random() < action.itemCnt(target)) {
+                                    if ($gameSystem.srpgCntInRange(user.event()._eventId, target.event()._eventId) == true) {
 					var attackSkill = $dataSkills[target.attackSkillId()];
+                                        if (target.counterSkillId() !== 0) attackSkill = target.counterSkillId();
 					if (target.canUse(attackSkill) == true) {
-						target.event()._priorityType = 4;
-                                                user.event()._priorityType = 3;
-                                                target.performCounter();
-						this.srpgAddCounterAttack(user, target);
-					} else {
-						action.apply(target);
-					}
-				} else {
-					action.apply(target);
-				};
+					    target.event()._priorityType = 4;
+                                            user.event()._priorityType = 3;
+                                            target.performCounter();
+				            this.srpgAddCounterAttack(user, target);
+                                     	} else {action.apply(target)};   	
+				    } else {action.apply(target)};
+				} else {action.apply(target)};	
                  //reset P-type
                                 user.event()._priorityType = oldUserPtype;
                                 target.event()._priorityType = oldTargetPtype;
                  //reset P-type
 				break;
-
 			// run the common events and such
 			case 'global':
                                 // Control Skill CE Timing // dopan Edit start
@@ -7158,43 +7145,24 @@ Window_Options.prototype.addGeneralOptions = function() {
 //====================================================================
 // ●Game_Battler
 //====================================================================
+
     var _SRPG_AAP_Game_Battler_initMembers = Game_Battler.prototype.initMembers;
     Game_Battler.prototype.initMembers = function() {
         _SRPG_AAP_Game_Battler_initMembers.call(this);
-        this._reserveAction = null;
+        this._reserveSvAction = null;this._reserveMapAction = null;
     };
 
-    Game_Battler.prototype.reserveAction = function() {
-        if (!this._actions[0]._forcing) {
-            this._reserveAction = this._actions[0];
-        }
-        
+    Game_Battler.prototype.reserveSvAction = function() {
+        this._reserveSvAction = this._actions[0];
     };
-
-
-
+    Game_Battler.prototype.reserveMapAction = function() {
+        this._reserveMapAction = this._actions[0];
+    };
 //====================================================================
 // ●BattleManager
 //====================================================================
 
-    var _SRPG_AAP_BattleManager_makeActionOrders = BattleManager.makeActionOrders;
-    BattleManager.makeActionOrders = function() {
-        _SRPG_AAP_BattleManager_makeActionOrders.call(this);
-        //
-        var battlers = this._actionBattlers;
-        var firstBattler = battlers[0];
-        if (!firstBattler.currentAction() || !firstBattler.currentAction().item()) {
-            return;
-        }
-        if (firstBattler.currentAction()) {
-            firstBattler.reserveAction();
-            battlers.sort(function(a, b) {
-                return a.srpgActionTiming() - b.srpgActionTiming();
-            });
-            battlers.push(firstBattler);
-            this._actionBattlers = battlers;
-        }
-    };
+
 
     BattleManager.getNextSubjectWithYEP = function() {
         for (;;) {
@@ -7239,32 +7207,121 @@ BattleManager.actionCastAnimation = function() {
 };
 
 var _SRPG_YEP_BattleManager_invokeAction = BattleManager.invokeAction;
-BattleManager.invokeAction = function(subject, target) {
-  if (_AAPwithYEP_BattleEngineCore == 'true') {
-	  if (!eval(Yanfly.Param.BECOptSpeed)) this._logWindow.push('pushBaseLine');
-	  var normal = true;
-	  if (Math.random() < this._action.itemMrf(target)) {
-	    this.invokeMagicReflection(subject, target);
-	  } else if (Math.random() < this._action.itemCnt(target)) {
-	    if ($gameSystem.isSRPGMode() == true) {
-	      var attackSkill = $dataSkills[target.attackSkillId()]
-	      if (target.canUse(attackSkill) == true) {
-	          this.invokeCounterAttack(subject, target);
-	      } else {
-	          this.invokeNormalAction(subject, target);
-	      }
-	    } else {
-	      this.invokeCounterAttack(subject, target);
-	    }
-	  } else {
-	    this.invokeNormalAction(subject, target);
-	  }
-	  if (subject) subject.setLastTarget(target);
-	  if (!eval(Yanfly.Param.BECOptSpeed)) this._logWindow.push('popBaseLine');
-	  if ($gameSystem.isSRPGMode() == true) this.refreshStatus();
-  } else {
-	_SRPG_YEP_BattleManager_invokeAction.call(this, subject, target);
-  }
+BattleManager.invokeAction = function(subject, target) { 
+      if ($gameSystem.isSRPGMode() == true) {
+         if (_AAPwithYEP_BattleEngineCore == 'true') {
+             if (!eval(Yanfly.Param.BECOptSpeed)) this._logWindow.push('pushBaseLine');
+             var normal = true;
+             if (Math.random() < this._action.itemMrf(target)) {
+                this.invokeMagicReflection(subject, target);
+             } else if (Math.random() < this._action.itemCnt(target)) {
+                       var attackSkill = $dataSkills[target.attackSkillId()]
+                       if (target.canUse(attackSkill) == true) {
+                          this.invokeCounterAttack(subject, target);
+                       } else {this.invokeNormalAction(subject, target)};    
+             } else {this.invokeNormalAction(subject, target)};
+             if (subject) subject.setLastTarget(target);
+             if (!eval(Yanfly.Param.BECOptSpeed)) this._logWindow.push('popBaseLine');
+             if ($gameSystem.isSRPGMode() == true) this.refreshStatus();
+         } else {// if not using yep core
+                this._logWindow.push('pushBaseLine');
+                if (Math.random() < this._action.itemCnt(target)) {
+                   var attackSkill = $dataSkills[target.attackSkillId()];
+                   if (target.canUse(attackSkill) == true) { 
+                      this.invokeCounterAttack(subject, target);
+                   } else {this.invokeNormalAction(subject, target)};
+                } else if (Math.random() < this._action.itemMrf(target)) {// ????? move this up before counter?
+                          this.invokeMagicReflection(subject, target);
+                } else {this.invokeNormalAction(subject, target)};console.log("hello")
+                subject.setLastTarget(target);
+                this._logWindow.push('popBaseLine');
+                this.refreshStatus();
+		};
+      // if not srpg mode get default function data
+      } else {_SRPG_YEP_BattleManager_invokeAction.call(this, subject, target)};
 };
 
+
+Game_System.prototype.srpgCntInRange  = function(userEID, targetEID) {
+    var user = $gameSystem.EventToUnit(userEID);
+    var target = $gameSystem.EventToUnit(targetEID);
+    var skill = 1;
+    if (target[1].attackSkillId() !== 0) skill = target[1].attackSkillId();
+    if (target[1].counterSkillId() !== 0) skill = target[1].counterSkillId();
+    if ($gameSystem.srpgBattlerDistance(userEID, targetEID) > $gameSystem.srpgUnitSkillRange(target, skill)) {
+        return false
+    } else {return true};
+};
+Game_System.prototype.srpgBattlerDistance = function(userEID, targetEID) {
+    // unit event id
+    if (userEID > 0) var user = $gameSystem.EventToUnit(userEID);
+    if (targetEID > 0) var target = $gameSystem.EventToUnit(targetEID);
+    // active/target event 
+    if (userEID === 0) var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
+    if (targetEID === 0) var target = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
+    var xUser = user[1].event().x;
+    var xTarget = target[1].event().x;
+    var yUser = user[1].event().y;
+    var yTarget = target[1].event().y;
+    return $gameMap.distance(xUser, yUser, xTarget, yTarget);
+};
+
+Game_System.prototype.srpgUnitSkillRange = function(userUnit, skillId) {
+      var range = 1;
+      var skill = $dataSkills[skillId];
+      if (userUnit[1].isActor()) {
+        if (skill && skill.meta.srpgRange == Number(-1)) {
+            if (!userUnit[1].hasNoWeapons()) {
+                var weapon = userUnit[1].weapons()[0];
+                if (weapon.meta.weaponRange) range = Number(weapon.meta.weaponRange);
+                // States 
+                userUnit[1].states().forEach(function(state) {
+                    if (state && state.meta.srpgWRangePlus) {
+                        range += Number(state.meta.srpgWRangePlus);
+                    }
+                }, userUnit[1]);
+                // Equip
+                userUnit[1].armors().forEach(function(armor) {
+                    if (armor && armor.meta.srpgWRangePlus) {
+                        range += Number(armor.meta.srpgWRangePlus);
+                    }
+                }, userUnit[1]);
+            }
+        } else if (skill.meta.srpgRange) {
+            range = skill.meta.srpgRange;
+        } else {
+            range = 1;
+        }
+      };
+      if (userUnit[1].isEnemy()) {
+        if (skill && skill.meta.srpgRange == -1) {
+            if (!userUnit[1].hasNoWeapons()) {
+                var weapon = userUnit[1].weapons()[0];
+                if (weapon.meta.weaponRange) range = Number(weapon.meta.weaponRange);
+            } else {
+                range = Number(userUnit[1].enemy().meta.weaponRange);
+            }
+            // states
+            userUnit[1].states().forEach(function(state) {
+                if (state && state.meta.srpgWRangePlus) {
+                    range += Number(state.meta.srpgWRangePlus);
+                }
+            }, userUnit[1]);
+        } else if (skill.meta.srpgRange) {
+            range = skill.meta.srpgRange;
+        } else {
+            range = 1;
+        }
+      };
+return Number(range);
+};
+
+
+
 })();
+
+
+//if ($gameSystem.srpgCntInRange(9, 8) == true);
+//if ($gameSystem.srpgBattlerDistance(9, 8) > $gameSystem.srpgUnitSkillRange($gameSystem.EventToUnit(9), 2)){};
+//$gameSystem.srpgBattlerDistance(9, 8);
+//$gameSystem.srpgUnitSkillRange($gameSystem.EventToUnit(9), 2);

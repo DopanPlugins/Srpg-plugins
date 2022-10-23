@@ -76,8 +76,7 @@
         var eva = action.itemEva(target);
         var actorCrit = Math.round(this._actionArray[1].cri * 100);
         var targetCrit = Math.round(this._targetArray[1].cri * 100);
-        action.srpgSetChances();
-        //console.log(action._stealChance);console.log(action._breakChance);
+        if (action.srpgSetChances()) action.srpgSetChances(); // requires srpgUnitCore plugin
         // display user Chances
         this.drawChances(action, x); 
         // display user crit

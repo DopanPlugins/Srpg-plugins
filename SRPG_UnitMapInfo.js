@@ -208,7 +208,6 @@
 //---------------------------------------------------------------------------------
 // dopan_debug for "enemyEquip plugin" & Yep BuffStatesCore
 
-    // check used SkillAction_itemObeject for meta"srpgSteal"
     // add debug Switch Setup
     var SRPG_Game_Action_apply = Game_Action.prototype.apply;
     Game_Action.prototype.apply = function(target) {
@@ -228,7 +227,7 @@
          if (_debugSwitch === false) {this.setSkillWait(30);_debugSwitch = true};
     };
 
-    // override error causing function from Yep BuffstatesCore to not trigger if steal action happens
+    // override error causing function from Yep BuffstatesCore to not trigger if steal/break action happens
     // this YEP function is supposses to happen in "status" window scene ,
     // so this should be no problem if its disabled in battleaction
     Sprite_StateIcon.prototype.textColor = function(n) {

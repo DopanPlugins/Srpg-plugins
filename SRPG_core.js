@@ -1,4 +1,4 @@
-//=============================================================================
+﻿//=============================================================================
 // SRPG_core.js -SRPGコンバータMV-
 // バージョン   : 1.34 + Q
 // 最終更新日   : 2021/1/3
@@ -6586,10 +6586,12 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		    var actFirst = (reaction.speed() > action.speed());
 		    this.srpgAddMapSkill(reaction, target, user, actFirst);
 		}
-                if (reaction.item().meta.srpgForceAction) {
+                if (reaction && reaction.item().meta.srpgForceAction) {
                 // trigger srpgForceAction skillNote
                    var metaWieldAction = this.forceMetaSetup(user, target);
-                   this.srpgAddMapSkill(metaWieldAction, _metaUser[1], _metaTarget[1]);
+                   var userUnit = $gameSystemEventToUnit(_metaUser);
+                   var targetUnit = $gameSystemEventToUnit(_metaTarget);
+                   this.srpgAddMapSkill(metaWieldAction, userUnit[1], targetUnit[1]);
 		};
         };
 
@@ -6674,7 +6676,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		if (this.skillAnimWait()) {
 			var active = $gameTemp.activeEvent();
 			if (active.isAnimationPlaying() || !active.isStopping()) return true;
-
 			var target = $gameTemp.targetEvent();
 			if (!target) return false;
 			if (target.isAnimationPlaying() || !target.isStopping()) return true;
@@ -6739,9 +6740,17 @@ Window_WinLoseCondition.prototype.refresh = function() {
               var reaction = target.action(0);
               reaction.setSubject(target);
               reaction.setAttack();
-              if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added
-              this.srpgAddMapSkill(target.action(0), target, user, true);
+              //if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added
+              this.srpgAddMapSkill(reaction, target, user, true);
               this._srpgSkillList[0].counter = true;
+              // trigger forceAction if skill has forceAction note
+              if (target.action(0).item().meta.srpgForceAction) {
+                  var metaWieldAction = this.forceMetaSetup(user, target);
+                  var userUnit = $gameSystemEventToUnit(_metaUser);
+                  var targetUnit = $gameSystemEventToUnit(_metaTarget);
+                  this.srpgAddMapSkill(metaWieldAction, userUnit[1], targetUnit[1]);
+                  this._srpgSkillList[0].counter = true;
+	      }; 
         };
 
 	// check how many skills are left on the queue
@@ -6776,15 +6785,16 @@ Window_WinLoseCondition.prototype.refresh = function() {
                 user.event()._priorityType = 4;
                 target.event()._priorityType = 3;
         //dopan edit end
-
+                
 		switch (data.phase) {
 			// skill cost and casting animations
 			case 'start': //dopan edit added  => " && !action._forcing"
-				if (!user.canMove() || !target.isAlive() || (!user.canUse(action.item()) && !action._forcing)) {
+				if (!user.canMove() || !user.isAlive() || !target.isAlive() || (!user.canUse(action.item()) && !action._forcing)) {
 					data.phase = 'cancel';
 					this._srpgSkillList.unshift(data);
 					break;
 				}
+                                //if ((!user.isAlive() || !target.isAlive()) && action._forcing) this._srpgSkillList.unshift(data);break;
 				// Control Skill CE Timing // dopan Edit
 				if (!$gameSwitches.value(_changed_Skill_CE_Timing)) {
                                     // nothing
@@ -6872,11 +6882,11 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				this._srpgSkillList.unshift(data);
 				this.resetSkillWait();
 
-				// apply effects or trigger a counter
+				// apply effects or trigger a counter 
+                                //(thats about the default counter not the statbased counter,which disables the default counter anyway)
 				if (!data.counter && user != target && Math.random() < action.itemCnt(target)) {
                                     if ($gameSystem.srpgCntInRange(user.event()._eventId, target.event()._eventId) == true) {
 					var attackSkill = $dataSkills[target.attackSkillId()];
-                                        if (target.counterSkillId() !== 0) attackSkill = target.counterSkillId();
 					if (target.canUse(attackSkill) == true) {
 					    target.event()._priorityType = 4;
                                             user.event()._priorityType = 3;
@@ -7241,6 +7251,7 @@ BattleManager.invokeAction = function(subject, target) {
       } else {_SRPG_YEP_BattleManager_invokeAction.call(this, subject, target)};
 };
 
+// added functions to handle if a counter is in range (dopan)
 
 Game_System.prototype.srpgCntInRange  = function(userEID, targetEID) {
     var user = $gameSystem.EventToUnit(userEID);

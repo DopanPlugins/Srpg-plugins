@@ -80,8 +80,7 @@
         var eva = action.itemEva(target);
         var actorCrit = Math.round(this._actionArray[1].cri * 100);
         var targetCrit = Math.round(this._targetArray[1].cri * 100);
-        action.srpgSetChances();
-        //console.log(action._stealChance);console.log(action._breakChance);
+        if (action.srpgSetChances()) action.srpgSetChances(); // requires srpgUnitCore plugin
         // display user Chances
         this.drawChances(action, x - 100); 
         // display user crit
@@ -95,17 +94,17 @@
         this.drawSrpgBattleDistance(actor, action, windowWidth / 2 + 160 + x, lineHeight * 1);
         this.drawSrpgBattleDamage(damage, windowWidth / 2 + x - 40, lineHeight * 2);
         // reaction data
-        var actor = this._targetArray[1];
+        var reactor = this._targetArray[1];
         var target = this._actionArray[1];
-        var action = actor.currentAction();
-        var userActionMeta = target.currentAction().item().meta;
+        var reaction = reactor.action(0);console.log(reaction);
+        var userActionMeta = target.action(0).item().meta;
         var counter = this._targetArray[1].cnt * 100;
-        if (!this._targetArray[1].canUse(action.item())) {
-            action = null;
+        if (!reactor.canUse(reaction.item())) {
+            reaction = null;
         }
         // if no reaction
-        if (!action || actor == target || counter === 0) {
-            this.drawSrpgBattleActionName(actor, action, x, lineHeight * 0, false);
+        if (!reaction || reactor == target || counter === 0) {
+            this.drawSrpgBattleActionName(reactor, reaction, x, lineHeight * 0, false);
             return;
         }
         // if counter
@@ -121,14 +120,14 @@
             this.drawText(targetCrit + '%', x + 220, lineHeight * 2);
         }
         // display target Chances
-        this.drawChances(action, x - 656); 
+        this.drawChances(reaction, x - 656); 
         // draw default content
-        var damage = action.srpgPredictionDamage(target);
-        var hit = action.itemHit(target);
-        var eva = action.itemEva(target);
-        this.drawSrpgBattleActionName(actor, action, x - 40, lineHeight * 0, true);
+        var damage = reaction.srpgPredictionDamage(target);
+        var hit = reaction.itemHit(target);
+        var eva = reaction.itemEva(target);
+        this.drawSrpgBattleActionName(reactor, reaction, x - 40, lineHeight * 0, true);
         this.drawSrpgBattleHit(hit, eva, x - 40, lineHeight * 1);
-        this.drawSrpgBattleDistance(actor, action, 160 + x, lineHeight * 1);
+        this.drawSrpgBattleDistance(reactor, reaction, 160 + x, lineHeight * 1);
         this.drawSrpgBattleDamage(damage, x - 40, lineHeight * 2);
         this._targetArray[1].clearActions();
     };

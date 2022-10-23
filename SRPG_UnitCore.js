@@ -1,4 +1,4 @@
-//=============================================================================
+﻿//=============================================================================
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
@@ -266,7 +266,7 @@
  *
  *  Type "x" is "armor" or "weapon" (it can only be "armor" or "weapon",never both)
  * Example1 => <srpgSlot0Type:weapon>  
- * (this tells the plugin that SlotType0 is an WeaponSlot,means EquipID of Slot0 from below will be a weapon_ID)
+ * (this tells the plugin that SlotType0 is a WeaponSlot,means EquipID of Slot0 from below will be a weapon_ID)
  *
  *   <srpgSlot0EquipID:x>
  *   <srpgSlot1EquipID:x>
@@ -284,7 +284,7 @@
  *
  * Example2 => <srpgSlot0EquipID:1> 
  *
- * ..so to equip the weapon with id_1 to "equipSlot_0" we need both together (Example1 and Example2)
+ *  to equip the weapon with id_1 to "equipSlot_0" we need both together (Example1 and Example2)
  * ==>
  *      <srpgSlot0Type:weapon>  
  *      <srpgSlot0EquipID:1>
@@ -397,7 +397,7 @@
  * 
  * "finalAmount" is where the "x" data is used, "random skills" use both (1.Random Amount & 2.Normal Amount)
  *
- * "normal amount skills" uses only the second formula (1.Normal Amount)
+ * "normal amount skills" uses only the second formula (Normal Amount)
  *
  * "randomAmount" is also where the "x" data is used. "activeLevel" is the users level
  *
@@ -433,7 +433,7 @@
  *(looting needs scripting/eventing this is not supported by default, but it should be possible with having eventGraves)
  *
  * The enemySlots_Size can be changed global for all enemys in the Plugin param
- * or with this EnemyNoteTage (affects all enemys with the same enemyID)
+ * or with this EnemyNoteTag (affects all enemys with the same enemyID)
  *
  *    <enemyEquipSlotSize:x>    // "x" is the size of enemySlot.. minimum is 3 ! default is 4
  *
@@ -447,7 +447,7 @@
  * if Actors Steal of loot Items ect, they will give it directly to the gameparty like usual!
  *
  * I might build an extension plugin in the future that overwrites the "$gameParty.gainItem"-function.
- * in order to get give items to the actors instead(and enemys might be able to store stolen items aswell)  
+ * in order to get/give items to the actors instead(and enemys might be able to store stolen items aswell)  
  * -> but this should be optional and it would require more coding to handle everything correctly,
  *     thats why i avoided to do that in this Plugin.
  *
@@ -504,16 +504,12 @@
  *
  * So it would make no sence to add restrictions to the enemys , when the player can't controll the Enemys.
  *
- * This oppinion forced me, to not just copy paste The whole Setup, from actors to enemys..
- * -> i had to figure out which Functions are required and which Functions doesnt help for my purposes.
- *
- * => also my main Purpose was to make all this compatible to the used srpg System.
  *
  * =======================
  * State NoteTags
  * =======================  "x" can be any Number from 0 to 100 (100 = 100% chance)
  *
- * Priority ,that decides which Chance applys
+ * Priority ,that decides which Chance applys:
  *
  * Chance_ScriptCalls > "target"-StateNote > "user"-StateNote > pluginParam
  *                            
@@ -527,17 +523,9 @@
  *
  * if a battleUnit has 2 or more States at the same time,that affect the same kind of Chance, 
  * the StateMeta of the State with the higher ID will be used
- * (its recommened to avoid this, or to make sure that States with higher priority to change the Chances,
+ * (its recommened to avoid this, or to make sure that States with higher priority, to change the Chances,
  *  use the higher State_IDs)
  *
- * =======================
- * about "dual wield" ect
- * =======================
- *
- * This plugin doesnt change that the System always only use the main hand weapon.
- * If i will be able to change this into actually using each equiped weapon,
- *  this will not happen in this plugin. I will build an Extension plugin for that,
- * if i can make this happen.
  * ============================================================================
  *
  * Terms of Use

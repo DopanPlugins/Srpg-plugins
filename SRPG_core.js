@@ -6782,8 +6782,10 @@ Window_WinLoseCondition.prototype.refresh = function() {
         //dopan edit -> makes sure that user is always displayed above target in mapbattle
                 var oldUserPtype = user.event()._priorityType;
                 var oldTargetPtype = target.event()._priorityType;
-                user.event()._priorityType = 4;
-                target.event()._priorityType = 3;
+        if (($gameTemp._areaTargets !== undefined) && ($gameTemp.areaTargets().length !== 0)) {
+                user.event()._priorityType = 2;
+                target.event()._priorityType = 1;
+        };
         //dopan edit end
                 
 		switch (data.phase) {
@@ -6895,10 +6897,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                                      	} else {action.apply(target)};   	
 				    } else {action.apply(target)};
 				} else {action.apply(target)};	
-                 //reset P-type
-                                user.event()._priorityType = oldUserPtype;
-                                target.event()._priorityType = oldTargetPtype;
-                 //reset P-type
+
 				break;
 			// run the common events and such
 			case 'global':
@@ -6917,6 +6916,10 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			// clean up at the end
 			case 'cancel':
 			case 'end':
+                 //reset P-type
+                                user.event()._priorityType = oldUserPtype;
+                                target.event()._priorityType = oldTargetPtype;
+                 //reset P-type
 				user.setLastTarget(target);
 				user.removeCurrentAction();
 				this._waitCount = 20;

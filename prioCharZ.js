@@ -59,7 +59,7 @@
  * # default rpgMV maker system Scriptcalls to double check ScreenZ:
  * (it cant change data it only shows the final data which is used, its often updated by the system)
  *
- * # for $gameMap.event() # insert eventId
+ * # for $gameMap.event(id) # insert eventId
  *
  * - $gameMap.event(eventId).screenZ();              # shows the Final Z data which is used for eventCharAnchor based on eventId
  *

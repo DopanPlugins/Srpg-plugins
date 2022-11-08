@@ -35,7 +35,7 @@
  * 
  * __Plugin ScriptCalls __ ALWAYS INSERT NUMBERS AS DATA TO THE ScriptCall-ARRAYS
  *
- * # for $gameMap.event() # insert eventId number & zValue number
+ * # for $gameMap.event(id) # insert eventId number & zValue number
  *
  * - $gameMap.setCharPrio(eventId, zValue); # eventId of manipulated event ,zValue is the z Achor and can be any Number
  *

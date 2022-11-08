@@ -47,7 +47,7 @@
  *
  * - $gamePlayer.resetCharPrio();           # reset $gamePlayer to default prioType data
  *
- * # for "gameFollowers" # insert dataId number & zValue number
+ * # for $gamePlayer._followers # insert dataId number & zValue number
  *
  * - $gamePlayer._followers.setCharPrio([dataId], zValue); # dataId starts with 0 (decides which followers is triggered), zValue is the new Z Anchor
  *
@@ -67,7 +67,7 @@
  *
  * - $gamePlayer.screenZ();                        # shows the Final Z data which is used for gamePlayer Char Anchor
  *
- * # for "gameFollowers" # insert dataId number
+ * # for $gamePlayer._followers # insert dataId number
  *
  * - $gamePlayer._followers._data[dataId].screenZ(); # dataId starts with 0 (decides which follower is triggered)
  *---------------------------------------------------------------------------------------------------------------

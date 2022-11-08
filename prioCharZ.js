@@ -7,13 +7,11 @@
  *
  *
  *
- *
- *
  * @help  
  *
  * this plugin allows to change the z data of Chars
  *
- * it works for $gameMap.events(id) & $gamePlayer & "gameFollowers"
+ * it works for $gameMap.event(id) & $gamePlayer & "gameFollowers"
  *
  * this wont edit the prioType directly, and can be reseted to default prioType
  *

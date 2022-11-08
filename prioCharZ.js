@@ -26,11 +26,11 @@
  *
  * # prio0 = screenZ_1 # prio1 = screenZ_3 # prio2 = screenZ_5 #
  *
- * default rpgMV maker system prio 0 is called "bellowChara"
+ * default rpgMV maker system prio 0 is called "belowChara"
  *
  * default rpgMV maker system prio 1 is called "sameAsChara"
  *
- * default rpgMV maker system prio 2 is called "AboveChara"
+ * default rpgMV maker system prio 2 is called "aboveChara"
  *
  * 
  * __Plugin ScriptCalls __ ALWAYS INSERT NUMBERS AS DATA TO THE ScriptCall-ARRAYS

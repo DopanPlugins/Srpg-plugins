@@ -117,7 +117,7 @@ Game_CharacterBase.prototype.screenZ = function() {
     };
 
     Game_Map.prototype.resetCharPrio = function(eventId) { 
-        if (this.event(evId)._charZ !== undefined) this.event(evId)._charZ = undefined;return this.event(evId).screenZ();
+        if (this.event(evId)._charZ !== undefined) this.event(evId)._charZ = undefined; return this.event(evId).screenZ();
         return false;
     };
 
@@ -128,7 +128,7 @@ Game_CharacterBase.prototype.screenZ = function() {
     };
 
     Game_Player.prototype.resetCharPrio = function() { 
-        if (this._charZ !== undefined) this._charZ = undefined;return this.screenZ();
+        if (this._charZ !== undefined) this._charZ = undefined; return this.screenZ();
         return false;
     };
 

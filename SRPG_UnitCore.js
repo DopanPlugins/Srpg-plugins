@@ -541,7 +541,7 @@
  * -> add Enemy class and enemy Level and "steal"Gold/Exp -Skills
  * -> added Bugfixes
  * -> added Chance StateNoteTags & GameActionVar => "this._breakChance"&"this_stealChance" 
- * -> reworked how chances are stored.. thats needed for a planed extansion plugin
+ * -> reworked how chances are stored.. thats needed for a planed extension plugin
  * -> added change class for enemys, and fixed a bug about menu char img not updating on "page Up/Down"
  * -> fixed Issue where exp in mapBattleActions wasnt added
  */
@@ -588,9 +588,9 @@
   var _enable_ItemSlotsCommand = true; 
   var _scriptcallBreakChance = -1;
   var _scriptcallStealChance = -1;	
+  
 
 //-----------------------------------------------------------------------------------------
-
 
 
 //Game_System:
@@ -603,7 +603,7 @@ Game_System.prototype.setEventToUnit = function(event_id, type, data) {
     if (battler && (battler[0] === 'enemy')) {
         var mapEventMetaUnitID = $gameMap.event(event_id).event().meta.unit;
         $gameMap.event(event_id)._eventEnemyUnitId = mapEventMetaUnitID;
-        battler[1]._enemyUnitId = mapEventMetaUnitID;
+        battler[1]._enemyUnitId = mapEventMetaUnitID; 
         battler[1].initEnemyUnitCoreSetup(event_id);
         battler[1].level = battler[1]._level;
     }
@@ -2172,7 +2172,7 @@ Scene_Map.prototype.eventBeforeBattle = function() {
              } else {_slotActorId = 0;_lastSlot = 0};
          }    
      }
-     _srpg_AI_EventBeforeBattle.call(this);
+_srpg_AI_EventBeforeBattle.call(this);
 };
 
 //---------------------------------------------------------------------------

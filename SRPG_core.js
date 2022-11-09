@@ -535,6 +535,12 @@
  *   $gameSystem.setSrpgWinCondition('text');            # Set win conditions. If you want to describe multiple conditions, execute it multiple times.
  *   $gameSystem.setSrpgLoseCondition('text');           # Set lose conditions. If you want to describe multiple conditions, execute it multiple times.
  *
+ * New Scriptcall ! :
+ *
+ * $gameTemp.noActionDeath();    # Incase adding the "deathstate" to one or more unit(s), without Action usage,..
+ *                               # and without "afterAction" Trigger.. use this Script aswell after adding deathState.
+ *                               # This will properly kill ALL deathState affected Units and trigger "performCollaps", "eraseEvent" ect
+ *
  * Dr. Q's modifications:
  * - new windows, sprites, etc. are made available to extension plugins
  * - end-of-turn / stunned / auto indicators disappear when you leave srpg mode
@@ -3619,7 +3625,8 @@ Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
         if (!this._turnEndSprite) {
             this._turnEndSprite = new Sprite();
             this._turnEndSprite.anchor.x = 0.5;
-            this._turnEndSprite.anchor.y = 1;
+            this._turnEndSprite.anchor.y = 1.1;//1;
+            this._turnEndSprite.anchor.z = 7;
             this.addChild(this._turnEndSprite);
         }
     };
@@ -3979,7 +3986,7 @@ Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
     };
 
     Window_SrpgActorCommandStatus.prototype.windowWidth = function() {
-        return Graphics.boxWidth - 240;
+        return Graphics.boxWidth - 530;// - 240
     };
 
     Window_SrpgActorCommandStatus.prototype.windowHeight = function() {
@@ -4904,7 +4911,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
     // アクターコマンド表示時のステータスウィンドウを作る
     Scene_Map.prototype.createSrpgActorCommandStatusWindow = function() {
         this._mapSrpgActorCommandStatusWindow = new Window_SrpgActorCommandStatus(0, 0);
-        this._mapSrpgActorCommandStatusWindow.x = 120;
+        this._mapSrpgActorCommandStatusWindow.x = Graphics.boxWidth / 4;//120;
         this._mapSrpgActorCommandStatusWindow.y = Graphics.boxHeight - this._mapSrpgActorCommandStatusWindow.windowHeight();
         this._mapSrpgActorCommandStatusWindow.openness = 0;
         this.addWindow(this._mapSrpgActorCommandStatusWindow);
@@ -5207,6 +5214,39 @@ Window_WinLoseCondition.prototype.refresh = function() {
         }
     };
 
+//dopan fix -> check & fix => if units died without actions, for example by poison or whatever reasons
+    // for Scriptcall Usage =>  $gameTemp.noActionDeath();
+    Game_Temp.prototype.noActionDeath = function() {
+        for (var i = 1; i <= $gameMap.events().length; i++) {
+            var battleunit = $gameSystem.EventToUnit([i]);
+            var eventunit = $gameMap.event([i]);
+            if (battleunit && eventunit && (battleunit[0] === 'actor')) {
+                if ((battleunit[1].isDeathStateAffected()) && (!eventunit._erased)) {
+                    battleunit[1].setActionTiming(-1);
+                    battleunit[1].performCollapse();
+                    $gameMap.eraseEvent([i]);
+                    var oldValue = $gameVariables.value(_existActorVarID);
+                    $gameVariables.setValue(_existActorVarID, oldValue - 1);
+                }
+            }
+            if (battleunit && eventunit && (battleunit[0] === 'enemy')) {
+                if ((battleunit[1].isDeathStateAffected()) && (!eventunit._erased)) {
+                   battleunit[1].setActionTiming(-1);
+                   battleunit[1].performCollapse();
+                   $gameMap.eraseEvent([i]);
+                   var oldValue = $gameVariables.value(_existEnemyVarID);
+                   $gameVariables.setValue(_existEnemyVarID, oldValue - 1);
+                }
+            }          
+        };
+    };
+
+    // for usage in Plugin "Scene_Map" => this.noActionDeath();
+    // INFO : this trigger is locaced/added on the last after action, where mapbattle code is stored..
+    Scene_Map.prototype.noActionDeath = function() {
+         $gameTemp.noActionDeath();
+    };
+
     //行動終了時の処理
     //戦闘終了の判定はイベントで行う。
     Scene_Map.prototype.srpgAfterAction = function() {
@@ -5260,7 +5300,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                 if (event.pageIndex() >= 0) event.start();
                 $gameTemp.pushSrpgEventList(event);
             }
-        });
+        }); 
     };
 
     //行動後イベントの実行
@@ -5322,7 +5362,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
     //アクターコマンド・キャンセル
     Scene_Map.prototype.selectPreviousActorCommand = function() {
         var event = $gameTemp.activeEvent();
-        event.locate($gameTemp.originalPos()[0], $gameTemp.originalPos()[1]);
+        event.setPosition($gameTemp.originalPos()[0], $gameTemp.originalPos()[1]);// dopan edit for eventspwaner
+        //event.locate($gameTemp.originalPos()[0], $gameTemp.originalPos()[1]);// dopan edit for better compatiblety
         $gameSystem.clearSrpgActorCommandWindowNeedRefresh();
         $gameSystem.setSubBattlePhase('actor_move');
     };
@@ -6467,6 +6508,33 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		return $gameMap.event(eventId);
 	};
 
+// dopan edit ,store default event priority
+    
+
+	// return DefaultPriority
+	Game_BattlerBase.prototype.defaultPriority = function() {
+            if (this._defaultPriority) {
+                return this._defaultPriority;
+            } else {return 1};
+	};
+
+	// setDefaultPriority
+       var _srpg_setEventToUnit = Game_System.prototype.setEventToUnit;
+       Game_System.prototype.setEventToUnit = function(event_id, type, data) {
+           _srpg_setEventToUnit.call(this, event_id, type, data);
+          var battler = this._EventToUnit[event_id];
+          if (battler && (battler[0] === 'enemy')) {
+              var enemy = battler[1];
+              var event = $gameMap.event(event_id)
+              if (!enemy._defaultPriority) enemy._defaultPriority = event._priorityType;
+          }
+          if (battler && (battler[0] === 'actor')) {
+              var actor = $gameActors.actor(battler[1]);
+              var event = $gameMap.event(event_id);
+              if (!actor._defaultPriority) actor._defaultPriority = event._priorityType;
+          }
+       };
+
 //====================================================================
 // process attacks directly on the map scene
 //====================================================================
@@ -6641,12 +6709,33 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			this.updateSkillWait();
 		}
 	};
+        // reset battler and events that were involed in battleAction prioChange
+        Scene_Map.prototype.srpgResetPriority = function() {
+             for (var i = 1; i <= $gameMap.events().length; i++) {
+                  var battleunit = $gameSystem.EventToUnit([i]);
+                  var eventunit = $gameMap.event([i]);
+                  if (eventunit)
+                  if (battleunit && eventunit && (battleunit[0] === 'actor' || battleunit[0] === 'enemy')) {  
+                      if (eventunit._prioReset === true) { 
+                          var defaultP = battleunit[1]._defaultPriority;
+                          eventunit._priorityType = defaultP;
+                          eventunit._prioReset = false;
+                      } 
+                  }       
+                  if (eventunit._prioReset === true && defaultP !== undefined) { 
+                      eventunit._priorityType = defaultP;
+                      eventunit._prioReset = false;
+                  }
+             }
+	};
 
 	// reset battle mode between skills
 	var _srpgAfterAction = Scene_Map.prototype.srpgAfterAction;
 	Scene_Map.prototype.srpgAfterAction = function() {
 		$gameSystem.clearSRPGBattleMode();
 		_srpgAfterAction.call(this);
+             // dopan edit =>  check & fix if Units died outside of Action (for example poison)
+             this.noActionDeath();
 	};
 
 	// time-based skill wait!
@@ -6730,8 +6819,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 			};
                 }
 	if (addToFront) this._srpgSkillList.unshift(data);
-		else this._srpgSkillList.push(data);
-        console.log("MapSkill List Data", data);	
+		else this._srpgSkillList.push(data);	
 	};
 
 	// build the physical counter attack
@@ -6740,7 +6828,6 @@ Window_WinLoseCondition.prototype.refresh = function() {
               var reaction = target.action(0);
               reaction.setSubject(target);
               reaction.setAttack();
-              //if (target.counterSkillId() !== 0) reaction.setSkill(target.counterSkillId()); //added
               this.srpgAddMapSkill(reaction, target, user, true);
               this._srpgSkillList[0].counter = true;
               // trigger forceAction if skill has forceAction note
@@ -6773,30 +6860,52 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		return this.srpgInvokeMapSkill(data);
 	};
 
+        // display user always above target while not overlapping other events which are below user, this makes a chain for all events below:
+        // if event has the same prio like user, get the same new prio to not get overlaped, it will be reseted later in after action..
+        // ..this will move screen_Z 1 higher for all affected units/events ,thats required to avoid all possible unwanted overlaps.
+        // prio formula info: "prio *2 + 1 = screenZ" ## prio_0 = screenZ_1 # prio_1 = screenZ_3 # prio_2 = screenZ_5 ##
+        Game_Temp.prototype.battlePrioChange = function(user, target) {      
+            if ($gameSystem.srpgBattlerDistance(user.event()._eventId, target.event()._eventId) === 1) {
+                if (user !== target && !(user.event().y < target.event().y)) {
+                   var userPrio = Number(user.event()._priorityType);
+                   var evY = user.event().y + 1;
+                   for (var i = 1; i <= $gameMap.events().length; i++) {
+                        var eventU = $gameMap.event([i]);
+                        var euPrio = Number(eventU._priorityType);
+                        if (eventU && eventU.y === evY && euPrio === userPrio) {   
+                            var newPrio = euPrio + 0.5;
+                            eventU._priorityType = newPrio;
+                            eventU._prioReset = true;
+                            var newEvY = evY + 1;
+                            evY = newEvY;
+                        } // all events under users which had same old prio, are same as new user prio now
+                   }// now give user that new prio aswell, this happens later to not conflict the stuff above
+                   var newUserPrio = userPrio + 0.5;
+                   user.event()._priorityType = newUserPrio;
+                   user.event()._prioReset = true;
+                };
+            };// prio formula info part2: adding 0.5 prio ,to old prio is equal to, growing screenZ anchor by 1
+        };// all that is only required on mapbattles in close combat where user should visual overlap target
+
 	// invoke skill effects
 	Scene_Map.prototype.srpgInvokeMapSkill = function(data) {
 		var action = data.action;
 		var user = data.user;
 		var target = data.target;
-                    
-        //dopan edit -> makes sure that user is always displayed above target in mapbattle
-                var oldUserPtype = user.event()._priorityType;
-                var oldTargetPtype = target.event()._priorityType;
-        if (($gameTemp._areaTargets !== undefined) && ($gameTemp.areaTargets().length !== 0)) {
-                user.event()._priorityType = 2;
-                target.event()._priorityType = 1;
-        };
-        //dopan edit end
-                
+
 		switch (data.phase) {
 			// skill cost and casting animations
 			case 'start': //dopan edit added  => " && !action._forcing"
 				if (!user.canMove() || !user.isAlive() || !target.isAlive() || (!user.canUse(action.item()) && !action._forcing)) {
-					data.phase = 'cancel';
+					data.phase = 'cancel';//if (target.isDead()) user._actionState == "";
 					this._srpgSkillList.unshift(data);
 					break;
 				}
-                                //if ((!user.isAlive() || !target.isAlive()) && action._forcing) this._srpgSkillList.unshift(data);break;
+
+//dopan edit-> makes sure that user is above target in mapbattle..thats for motions usage when events overlap each other
+                                $gameTemp.battlePrioChange(user, target);
+//dopan edit end, this will be resetet in after action
+
 				// Control Skill CE Timing // dopan Edit
 				if (!$gameSwitches.value(_changed_Skill_CE_Timing)) {
                                     // nothing
@@ -6881,23 +6990,22 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				} else {
 					data.phase = 'global';
 				}
-				this._srpgSkillList.unshift(data);
-				this.resetSkillWait();
-
 				// apply effects or trigger a counter 
                                 //(thats about the default counter not the statbased counter,which disables the default counter anyway)
 				if (!data.counter && user != target && Math.random() < action.itemCnt(target)) {
                                     if ($gameSystem.srpgCntInRange(user.event()._eventId, target.event()._eventId) == true) {
 					var attackSkill = $dataSkills[target.attackSkillId()];
 					if (target.canUse(attackSkill) == true) {
-					    target.event()._priorityType = 4;
-                                            user.event()._priorityType = 3;
                                             target.performCounter();
 				            this.srpgAddCounterAttack(user, target);
                                      	} else {action.apply(target)};   	
 				    } else {action.apply(target)};
 				} else {action.apply(target)};	
 
+				this._srpgSkillList.unshift(data);
+				this.resetSkillWait();
+                                // dopan edit =>  add "reset priority" right after skill effects
+                                this.srpgResetPriority();
 				break;
 			// run the common events and such
 			case 'global':
@@ -6910,16 +7018,13 @@ Window_WinLoseCondition.prototype.refresh = function() {
 				}
 				// dopan Edit End
 				data.phase = 'end';
+
 				this._srpgSkillList.unshift(data);
 				break;
 
 			// clean up at the end
 			case 'cancel':
 			case 'end':
-                 //reset P-type
-                                user.event()._priorityType = oldUserPtype;
-                                target.event()._priorityType = oldTargetPtype;
-                 //reset P-type
 				user.setLastTarget(target);
 				user.removeCurrentAction();
 				this._waitCount = 20;

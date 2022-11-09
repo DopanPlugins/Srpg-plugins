@@ -264,7 +264,7 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
      // trigger srpgForceAction skillNote if SkillNote
      if (action.item().meta.srpgForceAction) {
          // transfer meta data to plugin var
-         $gameTemp.getForceMeta();
+         action.getForceMeta();
          if (_faUser == $gameTemp.activeEvent().eventId()) {
             // if User hasnt changed add MapAction
             var metaAction = this.forceMetaSetup(user, target);
@@ -283,7 +283,7 @@ Scene_Map.prototype.mapWieldAttack = function(user, target) {
           if (weaponMeta.srpgWeaponSkill) skill = weaponMeta.srpgWeaponSkill;
           if (user[1].weapons()[i]) { 
               // add skill for next weapon
-              this.srpgAddMapSkill(action, user[1], target[1]);this.srpgMapActionText(user);
+              this.srpgAddMapSkill(action, user[1], target[1]);//this.srpgMapActionText(user);
               // trigger forceAction if skill has forceAction note
 
           };
@@ -294,7 +294,7 @@ Scene_Map.prototype.forceMetaSetup = function(user, target) {
      if (!$gameSystem.isSRPGMode() == true || !$gameSystem.useMapBattle()) return;
      //var result = target.result();    
      if (user[1]._actions[0].item().meta.srpgForceAction) { 
-        $gameTemp.getForceMeta();
+        user[1]._actions[0].getForceMeta();
 	// store metaBattlers eventID     
 	_metaUser = _faUser;
 	_metaTarget = _faTarget;
@@ -414,7 +414,7 @@ Scene_Map.prototype.svForceAction = function(skill, user, target) {
 	  $gameTemp.setAutoMoveDestination($gameTemp.targetEvent().posX(), $gameTemp.targetEvent().posY());
           userUnit[1].forceAction(skill, targetUnit[1]);
           userUnit[1]._freeCost = true;
-          this.srpgMapActionText(userUnit);
+          //this.srpgMapActionText(userUnit); // atm sv&map will both work if skillnote enables it
           $gameSystem.setSubBattlePhase('invoke_action');
           this.srpgBattleStart(userUnit, targetUnit); 
      }
@@ -493,7 +493,7 @@ Game_Battler.prototype.addSVforceAction = function(battler, skill) {
                var nextTarget = this; 
                if (user === this) nextTarget = target;
                battler._freeCost = true;
-               battler.forceAction(skill, nextTarget);console.log(nextTarget);
+               battler.forceAction(skill, nextTarget);
                
            };
         };
@@ -576,7 +576,7 @@ BattleManager.makeActionOrders = function() {
  
 // add stuff to Apply for Sv battles
 var _srpg_apply = Game_Action.prototype.apply;
-Game_Action.prototype.apply = function(target) {console.log(target);
+Game_Action.prototype.apply = function(target) {
     _srpg_apply.call(this ,target);
     // store last actions for uttility purposes 	
     if ($gameSystem.isSRPGMode() == true) {
@@ -672,7 +672,7 @@ Game_Action.prototype.srpgForceActionSetup = function(target) {
     if (!$gameSystem.isSRPGMode()) return;   
     if (this.item().meta.srpgForceAction) {
         // read skill meta data
-        $gameTemp.getForceMeta();
+        this.getForceMeta();
         // process srpgForceAction
         $gameTemp.srpgForceAction(_faSkill, _faUser, _faTarget);
         return true;
@@ -719,10 +719,10 @@ return false;
 };
 
 // read and store skillnote meta 
-Game_Temp.prototype.getForceMeta = function () { 
+Game_Action.prototype.getForceMeta = function () { 
     if (!$gameSystem.isSRPGMode()) return;
     var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId()); 
-    var metaSplit = user[1]._actions[0].item().meta.srpgForceAction.split(", ");
+    var metaSplit = this.item().meta.srpgForceAction.split(", ");
     var forceSkill = Number(metaSplit[0]);
     var forceUser = Number(metaSplit[1]); 
     var forceTarget = Number(metaSplit[2]);

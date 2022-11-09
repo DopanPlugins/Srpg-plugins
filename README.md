@@ -18,7 +18,7 @@ for a scriptcall list of SRPG related Scriptcalls pls visit:
 
 ScriptCallList_SRPG.js:
 
-https://github.com/DopanPlugins/Srpg-plugins/blob/main/ScriptCallList_SRPG.js
+https://github.com/DopanPlugins/Srpg-plugins/blob/main/%24ScriptCallList_SRPG.js
 
 
 

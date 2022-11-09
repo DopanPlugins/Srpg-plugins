@@ -3,7 +3,7 @@
 //=============================================================================
 /*:
  * @plugindesc v1.0 <prioCharZ> Controll the Z_Anchor of Chars & manipulate prioType
- * @author (dopan)
+ * @author dopan
  *
  *
  *

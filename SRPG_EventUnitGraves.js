@@ -432,17 +432,31 @@
 //----------------------------	
 // Unspawn Actor&Enemy Graves:	
 //----------------------------
-
+    // delete spawned grave events permanent
     //$gameTemp.eraseAllGraves();
     Game_Temp.prototype.eraseAllGraves = function() {
-        for (var i = 1; i <= $gameMap.events().length; i++) {
-             var event = $gameMap.event([i]);
-             var Info = false;
-             if (event && (event._graveUnitID !== undefined)) {  
-                if (event._erased === false) event._erased = true;//Info = true;
+        var Info = false;
+        var mapEvents = $gameMap._events;
+        for (var i = 1; i < mapEvents.length; i++) {
+             var mapEvI = mapEvents[i];
+             if (mapEvI !== null && mapEvI._graveDataEID) { 
+                Info = true;
+                mapEvents[i]._erased = true;
+                mapEvents[i] = null;
              };
         };
-    //return Info;
+        $gameMap.removeNullEvents();
+        //Galv.SPAWN.clear(0,true);
+    return Info;
+    };
+
+    // remove all "Map Null Events", and overwright galvs function if using "galv eventSpawner"
+    Game_Map.prototype.removeNullEvents = function() {
+	for (var i = this._events.length - 1; i > 0; i--) {
+	    if (this._events[i] === null) {
+		this._events.splice(i, 1);
+	    }
+	};
     };
 
     //unspawn single ActorGrave by actorId  "$gameTemp.eraseActorGrave(actorID)"

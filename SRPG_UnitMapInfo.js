@@ -292,7 +292,7 @@
               this._AttIcon._battler = battler[1];
               this._AttIcon.x = attIconPosX;
               this._AttIcon.y = attIconPosY;
-              this._AttIcon.z = 9;
+              this._AttIcon.z = 7;
               this._AttIcon.anchor.x = 0.5;
               this._AttIcon.anchor.y = 0.5;
               this._AttIcon.scale.x = 0.5;
@@ -372,7 +372,7 @@
             this._StateIconSprite.setup(battler);
             this._StateIconSprite.x = stateIconPosX;
             this._StateIconSprite.y = stateIconPosY;
-            this._StateIconSprite.z = 9;
+            this._StateIconSprite.z = 7;
             this._StateIconSprite.anchor.x = 0.5;
             this._StateIconSprite.anchor.y = 0.5;
             this._StateIconSprite.scale.x = 0.5;
@@ -395,7 +395,7 @@
     Sprite_hpGaugeSprite.prototype.initialize = function(character) {
         Sprite.prototype.initialize.call(this);
         this.bitmap = new Bitmap(hpGaugeWidth, hpGaugeHeight); // HP bar width, and thickness
-        this.z = 9;
+        this.z = 7;
         this.anchor.x = 0.5;
         this.anchor.y = 1;
         this.x = hpGaugePosX;

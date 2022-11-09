@@ -1,8 +1,8 @@
 //=============================================================================
-// dopan_Load_ImgOnEvent.js
+// Load_ImgOnChar.js
 //=============================================================================
 /*:
- * @plugindesc <Load_ImgOnEvent> add childs of charImgs above "gameplayer",..
+ * @plugindesc <Load_ImgOnChar> add childs of charImgs above "gameplayer",..
  *                          ..depending on Region id & WeaponTypeID.
  * @author dopan
  *
@@ -181,9 +181,6 @@
  *  
  * This plugin was made to add visual effects to the "$gameplayer",when in Water or in deepGras ect.
  *
- * But with a few Edits on the "if conditions" it could also be used to display different Armors/Weapons ect.
- *
- * (Or it can be used for whatever it might be needed)
  *-----------------------------------------------------------------------------
  * Update! : added another setup with a second IMG and more Switches
  * 
@@ -210,8 +207,8 @@
 
   // Plugin param Variables:
 
-  var parameters = PluginManager.parameters("Load_ImgOnEvent") ||
-  $plugins.filter(function (plugin) { return plugin.description.contains('<Load_ImgOnEvent>'); });
+  var parameters = PluginManager.parameters("Load_ImgOnChar") ||
+  $plugins.filter(function (plugin) { return plugin.description.contains('<Load_ImgOnChar>'); });
 
   var _imgRegion = parameters['Loaded Img Region'] || 'regionIdLoad';
   var _imgWtypeID = parameters['Loaded Img WtypeID'] || 'weaponTypeLoad';
@@ -267,10 +264,10 @@
 	  if (_globaLoadSwitch === 'true') {
 
               if (_globaLoadSwitchRegion === 'true') {
-                  this._dopanImgLoadBitmapRegion = ImageManager.loadCharacter('srpg_set');
+                  this._dopanImgLoadBitmapRegion = ImageManager.loadCharacter(_imgRegion);
               };
               if (_globaLoadSwitchWtypeID === 'true') {
-                  this._dopanImgLoadBitmapWtypeID = ImageManager.loadCharacter('Nymph_States');
+                  this._dopanImgLoadBitmapWtypeID = ImageManager.loadCharacter(_imgWtypeID);
               };
 
           };

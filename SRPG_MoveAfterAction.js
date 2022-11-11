@@ -43,6 +43,7 @@
     var _autoSelect = !!eval(params['auto select actor']);
     var coreParameters = PluginManager.parameters('SRPG_core');
     var _srpgAutoBattleStateId = Number(coreParameters['srpgAutoBattleStateId'] || 2);
+    var _ASbattler = false;
     var shoukang_Game_BattlerBase_initMembers = Game_BattlerBase.prototype.initMembers;
     Game_BattlerBase.prototype.initMembers = function() {
         shoukang_Game_BattlerBase_initMembers.call(this);
@@ -67,10 +68,11 @@
         this._SrpgRemainingMove = val;
     };
 
-// dopan edit "active battler remaining MovementPoints"
+    // dopan edit added Scritcall "active battler remaining MovementPoints"
     Game_Temp.prototype.setActiveUnitMoveRemain = function(val) {
         this._activeUnitMoveRemain = val;
     };
+
     // $gameTemp.activeUnitMoveRemain();
     Game_Temp.prototype.activeUnitMoveRemain = function() {
         if (this._activeUnitMoveRemain && $gameTemp.activeEvent() !== null) {
@@ -79,7 +81,7 @@
     };
 
 // store remaining move after move route force
-// edited by dopan to store active battler remaining MovementPoints
+    // edited by dopan to store active battler remaining MovementPoints
     var shoukang_Game_Event_srpgMoveRouteForce = Game_Event.prototype.srpgMoveRouteForce;
     Game_Event.prototype.srpgMoveRouteForce = function(array) {
         var unit = $gameSystem.EventToUnit(this.eventId());
@@ -119,44 +121,50 @@
         return false;
     };
 
-// dopan fix START, prevent "this._srpgTurnEnd = flag;" if actor can still move after action
+    // dopan fix START, prevent "this._srpgTurnEnd = flag;" if actor can still move after action
     Game_BattlerBase.prototype.setSrpgTurnEnd = function(flag) {
         if (!this.SrpgRemainingMove()) this._srpgTurnEnd = flag;
     };
 
-// if actor has remaining move and can do after move action, let the actor do after move action.
-    var shoukang_Scene_Map_srpgAfterAction = Scene_Map.prototype.srpgAfterAction;
+    // handle MoveAfterAction on active actor unit
+    var dopan_Scene_Map_srpgAfterAction = Scene_Map.prototype.srpgAfterAction;
     Scene_Map.prototype.srpgAfterAction = function() {
-        var currentEvent = $gameTemp.activeEvent();
-        var currentBattler = $gameSystem.EventToUnit(currentEvent.eventId())[1];
-        var oriX = $gameTemp.activeEvent().posX();
-        var oriY = $gameTemp.activeEvent().posY();
+        var actUnit = $gameSystem.EventToUnit($gameTemp.activeEvent()._eventId);
         var aoeStop = false;
-        if (($gameTemp._areaTargets !== undefined) && ($gameTemp.areaTargets().length > 0)) {aoeStop = true}; //dopan fix AOE
-        shoukang_Scene_Map_srpgAfterAction.call(this);
-        if (currentBattler.isActor() && !currentBattler.isAutoBattle() && aoeStop === false) { //dopan: prevent auto actor usage
-                     //dopan fix , addded " !== true " (thats related to "dopan fix START")
-           if (currentBattler.srpgTurnEnd() !== true && !currentBattler.isSrpgAfterActionMove() && 
-               currentBattler.SrpgRemainingMove() && !$gameTemp.isTurnEndFlag() &&
-               $gameSystem.isBattlePhase() !== 'auto_actor_phase') {
-               currentBattler.setSrpgAfterActionMove(true);
-                     //dopan fix: "setSrpgTurnEnd(false)" no longer required
-               $gameTemp.setAutoMoveDestinationValid(true);
-               $gameTemp.setAutoMoveDestination(oriX, oriY);
-               if (_autoSelect) {
-                   $gameMap._flagInvokeActionStart = false;
-                   $gameTemp.setActiveEvent(currentEvent);
-                   $gameSystem.srpgMakeMoveTable(currentEvent);
-                   var battlerArray = $gameSystem.EventToUnit(currentEvent.eventId());
-                   $gameParty.pushSrpgBattleActors(battlerArray[1]);
-                   $gameTemp.reserveOriginalPos($gameTemp.activeEvent().posX(), $gameTemp.activeEvent().posY());
-                   $gameSystem.setSrpgActorCommandStatusWindowNeedRefresh(battlerArray);
-                   $gameTemp.setResetMoveList(true);
-                   $gameSystem.setSubBattlePhase('actor_move');
-               }
-           } else if ($gameTemp.isTurnEndFlag()) currentBattler.setSrpgRemainingMove(0);
-        }; // <- dopan fix "prevent auto actor usage" END
-        if (aoeStop === true) {aoeStop = false; return}; // dopan fix AOE end
+        if (($gameTemp._areaTargets !== undefined) && ($gameTemp.areaTargets().length > 0)) {aoeStop = true};
+        dopan_Scene_Map_srpgAfterAction.call(this);
+        // handle active actor unit & store "austoSelect battler"
+        if (actUnit[1].isActor() && !actUnit[1].isAutoBattle() && aoeStop === false && !actUnit[1].srpgTurnEnd()) {
+           if (!actUnit[1].isSrpgAfterActionMove() && actUnit[1].SrpgRemainingMove() && !$gameTemp.isTurnEndFlag()) {
+               if (_autoSelect) {_ASbattler = actUnit};              
+           } else if ($gameTemp.isTurnEndFlag()) actUnit[1].setSrpgRemainingMove(0);
+        };
+        // if autoselect & no forced actions are active trigger autoselect function 
+        if (_autoSelect && !$gameSystem.srpgForceAction() && _ASbattler[1] && !_ASbattler[1].isDead()) {
+            var asBattler = _ASbattler;
+            $gameTemp.srpgAutoSelect(asBattler);
+        };
+        // dopan fix AOE reset
+        if (aoeStop === true) {aoeStop = false}; 
+    };
+
+    // autoselect function
+    Game_Temp.prototype.srpgAutoSelect = function(asBattler) {
+        var battler = asBattler;
+        var oriX = battler[1].event().posX();
+        var oriY = battler[1].event().posY();
+        battler[1].setSrpgAfterActionMove(true);
+        this.setAutoMoveDestinationValid(true);
+        this.setAutoMoveDestination(oriX, oriY);
+        $gameMap._flagInvokeActionStart = false;
+        this.setActiveEvent(battler[1].event());
+        $gameSystem.srpgMakeMoveTable(battler[1].event());
+        $gameParty.pushSrpgBattleActors(battler[1]);
+        this.reserveOriginalPos(battler[1].event().posX(), battler[1].event().posY());
+        $gameSystem.setSrpgActorCommandStatusWindowNeedRefresh(battler);
+        this.setResetMoveList(true);
+        $gameSystem.setSubBattlePhase('actor_move');
+        if (battler[1] === _ASbattler[1]) _ASbattler = false;
     };
 
     var shoukang_Scene_Menu_commandAutoBattle = Scene_Menu.prototype.commandAutoBattle
@@ -172,8 +180,8 @@
         });
     };
 
-    // "Scene_Map.prototype.isSrpgActorTurnEnd"
-    // dopan info: Fuction above is no longer required cose edit/fix prevents actors turn end  
+// "Scene_Map.prototype.isSrpgActorTurnEnd"
+// dopan info:this Fuction is no longer required cose edit/fix prevents actors turn end  
 
     var shoukang_Game_System_clearData = Game_System.prototype.clearData;
     Game_System.prototype.clearData = function() {

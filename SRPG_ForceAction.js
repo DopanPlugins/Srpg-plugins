@@ -119,13 +119,12 @@
  * Free for any commercial or non-commercial project!
  * (edits are allowed but pls dont claim it as yours without Credits.thx)
  * ===========================================================================================
- * Changelog 
+ * Changelog & Credits 
  * ===========================================================================================
- * Version 2.5:
- * - updated Release 02.10.2020 for SRPG (rpg mv)! 
- * => better compatiblety and reworked Functions
- * upgrade into new plugin named "SRPG_forceAction"
- * CREDITS: 
+ * Version 2.6:
+ * 
+ * 
+ * Credits 
  * - DrQ & his plugin SRPG_MapBattle.js
  *
  * changelog:
@@ -134,6 +133,7 @@
  *            - 2.3 => upgraded CounterSkill NoteTag for enemys incase "SRPG_UnitCore" is used
  *            - 2.4 => Fixed Counter not depending on skill range (now they do depend on it)
  *            - 2.5 => reworked plugin code and made bugfixes 
+ *            - 2.6 => code improvement for better compatiblety
  */
  
 (function() {
@@ -163,6 +163,24 @@
 
 // console.log();
 //-----------------------------------------------------------------------------------------
+
+//====================================================================
+// Game_System
+//====================================================================
+
+// $gameSystem.srpgForceAction();
+Game_System.prototype.srpgForceAction = function() {
+    if (this._srpgForceAction && this._srpgForceAction === 'isActive') return true
+       this._srpgForceAction = 'notActive';
+return false;
+};
+
+ var srpg_Game_System_initMembers = Game_System.prototype.initMembers;
+Game_System.prototype.initMembers = function() {
+        srpg_Game_System_initMembers.call(this);
+        this._srpgForceAction = 'notActive';
+};
+
 
 //====================================================================
 // BattleManager
@@ -225,9 +243,12 @@ Scene_Map.prototype.srpgAfterAction = function() {
      _srpgAfterActionScene.call(this);
      if (!$gameSystem.isSRPGMode()) return;
      if (_callMapNextAction === true || _callSVNextAction === true) this.mfaCheck();
+     this.srpgResetFA()
+};
+
+Scene_Map.prototype.srpgResetFA = function() {
      // reset Global var
-     $gameSystem._srpgForceAction = true;
-     $gameSystem._mfaIsActive = false;
+     $gameSystem._srpgForceAction = 'notActive';
      // reset freeCost
      for (var i = 1; i <= $gameMap.events().length; i++) {
           var battler = $gameSystem.EventToUnit([i]);
@@ -236,8 +257,8 @@ Scene_Map.prototype.srpgAfterAction = function() {
               battler[1]._freeCost = false;
           };
      };
-};
-	
+};	
+
 // add stuff dierectly to the MapAction battle Chain
 Scene_Map.prototype.srpgMapForceActionSetup = function(user, target) {
      if ($gameSystem.isSRPGMode() == true && $gameSystem.useMapBattle()) {
@@ -370,7 +391,6 @@ Scene_Map.prototype.srpgAddCounterAttack = function(user, target) {
      };
 };
 
-
 // checks if any Action should be triggered with "after action scene"
 Scene_Map.prototype.mfaCheck = function() {
      if (!$gameSystem.isSRPGMode()) return;
@@ -464,7 +484,7 @@ Game_Battler.prototype.useMapForceAction = function(skillID, targetID) {
     // Enable the "MapForceAction" Trigger ,this will happen with "update Scene_Map"
     _lastUserID = Number($gameTemp.activeEvent().eventId());
     _callMapNextAction = true;
-    $gameSystem._mfaIsActive = true;  
+    $gameSystem._srpgForceAction = 'isActive';  
 }; 
 
 // build storage for metaActions
@@ -571,7 +591,7 @@ BattleManager.makeActionOrders = function() {
 //====================================================================
 // importent data info below: 
 //----------------------------------------------------------------- 
-// $gameSystem._wieldSlot = 1; $gameSystem._srpgForceAction = true;
+// $gameSystem._wieldSlot = 1; $gameSystem._srpgForceAction;
 // <srpgWield> (ClassNotetag) , <srpgForceAction:skillID, UserID, TargetID> (SkillNoteTag) 
  
 // add stuff to Apply for Sv battles
@@ -586,8 +606,6 @@ Game_Action.prototype.apply = function(target) {
     };
     // add codechain for extra Actions to "GameActionApply" in SV battles
     if ($gameSystem.isSRPGMode() == true && !$gameSystem.useMapBattle()) {
-        // enable the forceAction controll switch
-        if ($gameSystem._srpgForceAction === undefined) $gameSystem._srpgForceAction = true;
         // Check plugin param and userClassNote
         var user = $gameSystem.EventToUnit($gameTemp.activeEvent().eventId());
         var gtTarget = $gameSystem.EventToUnit($gameTemp.targetEvent().eventId());
@@ -597,7 +615,7 @@ Game_Action.prototype.apply = function(target) {
             this.srpgWieldSetup(target);return;
         };
         // check SkillNote
-        if ($gameSystem._srpgForceAction === true && this.item().meta.srpgForceAction) {
+        if ($gameSystem._srpgForceAction === 'notActive' && this.item().meta.srpgForceAction) {
             this.srpgWieldSetup(target);return;           
         };
     };
@@ -614,7 +632,7 @@ Game_Action.prototype.srpgWieldSetup = function(target) {
         var userSkill = this._item._itemId;
         var skillType = this._item._dataClass;
         // if forceActionNote is active go to forceAction setup instead finishing this function
-        if ($gameSystem._srpgForceAction === true && this.item().meta.srpgForceAction) {
+        if ($gameSystem._srpgForceAction === 'notActive' && this.item().meta.srpgForceAction) {
             this.srpgForceActionSetup(target);
             return;
         };
@@ -693,7 +711,7 @@ Game_Temp.prototype.srpgForceAction = function(skill, userID, targetID) {
     var user = $gameSystem.EventToUnit(userID);
     var mapTag = $dataSkills[skill].meta.mapbattle;
     var useMap = false;
-    $gameSystem._srpgForceAction = false;
+    $gameSystem._srpgForceAction = 'isActive';
     if ($gameSystem.useMapBattle()) useMap = true; 
     if (mapTag == 'true') useMap = true; 
     if (mapTag == 'false') useMap = false;  

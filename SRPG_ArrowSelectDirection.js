@@ -5,6 +5,13 @@
  * @plugindesc Adds the ability for players to choose a direction of an actor after an action
  * @author dopan (PluginOriginal "SRPG_DirectionSelection.js" by Boomy) 
  * 
+ * 
+ * @param E Not Visible
+ * @desc Enable/Disable if Actor's "TurnEnd E img" is only visible after arrowUse is done. (Actors TurnEnd is added anyway)
+ * @type boolean
+ * @default true
+ * 
+ * 
  * @param Touch Mouse Usage
  * @desc Enable/Disable Touch Mouse Usage when choosing their direction after an action (Disable = only Keyboard/gamepad)
  * @type boolean
@@ -55,6 +62,7 @@
     var scriptName = document.currentScript.src.substring(substrBegin + 1, substrEnd);
     var parameters = PluginManager.parameters(scriptName);
     var _touchMouse = parameters['Touch Mouse Usage'] || 'true' || 'false';
+    var _eNotVisible = parameters['E Not Visible'] || 'true' || 'false';
     var _directionSelectionLunaticCode = parameters['After Battle Lunatic Code'];
     var _directionSelectionCharacterName = parameters['After Battle Character Image'];
     var _disableSwitch = parameters['Disable Switch'] || 'true' || 'false';
@@ -64,16 +72,40 @@
     var _mousehover = 'false';
     var _cursorPriority = 1;
 
+
 //-----------------------------------------------------------------------------------------------
+
     // Map update
     var _SRPG_SceneMap_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function () {
         _SRPG_SceneMap_update.call(this);
-        //Process Direction Selection after wait command #Boomy
+        //Process Direction Selection
         if ($gameSystem.isSRPGMode() && $gameSystem.isSubBattlePhase() === 'arrow_direction_selection') {
-            this.srpgArrowDirectionSelection();
+            // if arrowUser alive 0> trigger arrow usage
+            if ($gameSystem._arrowUser && !$gameSystem._arrowUser[1].isDead()) this.srpgArrowDirectionSelection();
+            // if arrowUser dead => reset data
+            if ($gameSystem._arrowUser && $gameSystem._arrowUser[1].isDead()) {
+                $gameSystem._arrowUser[1]._arrowUse === "false";$gameSystem._arrowUser = undefined;
+            }
         return;
         }
+    };
+
+    // turn off turn end img visiblety
+      var _SRPG_Sprite_Character_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
+    Sprite_Character.prototype.updateCharacterFrame = function() {
+          _SRPG_Sprite_Character_updateCharacterFrame.call(this);
+        if (this._turnEndSprite && this._turnEndSprite.visible === true && _eNotVisible === 'true') {
+            // avoid while arrow selction (normal)
+            if ($gameSystem.isSubBattlePhase() === 'arrow_direction_selection') this._turnEndSprite.visible = false;
+            // avoid till Combos & ForceActions are done (compatiblety for srpgForceAction)
+            if ($gameSystem._predictionUser && this._turnEndSprite.visible === true) {
+                this._turnEndSprite.visible = false;
+                var rightTimming = false;
+                if ($gameSystem._arrowUser) rightTimming = true;
+                if (!$gameSystem.isSubBattlePhase() === 'arrow_direction_selection' && rightTimming) this._turnEndSprite.visible = true;
+            };
+        };
     };
 
     // clean up at global srpg Turn End ( when all units have ended their turns
@@ -122,8 +154,8 @@
     Scene_Map.prototype.srpgAfterAction = function() {
          var userEvId = $gameTemp.activeEvent().eventId();
          var actUser = $gameSystem.EventToUnit(userEvId);
-         _SRPG_SceneMap_after.call(this);
-         if (actUser[1].isActor() && !actUser[1].isAutoBattle() && _disableSwitch !== 'true') {
+         _SRPG_SceneMap_after.call(this); console.log(!$gameSystem.srpgForceAction());
+         if (actUser[1].isActor() && !actUser[1].isAutoBattle() && _disableSwitch !== 'true' && !$gameSystem.srpgForceAction()) {
              if ($gameSystem._predictionUser !== undefined) var user = $gameSystem._predictionUser;
           // if wait command usage
              if (_waitUser === true) {
@@ -150,8 +182,8 @@
                     $gameSystem.setSubBattlePhase('arrow_direction_selection');
                 return;
                 };
-            };
-        };
+             };
+         };
     };
 
   // pre action scene	
@@ -266,7 +298,7 @@
              $gameSystem.setSubBattlePhase('normal');
           } else {$gameSystem.srpgStartAutoActorTurn()};
        }
-    };
+  };
 
 //-----------------------------------------------------------------------------------------------
     /**

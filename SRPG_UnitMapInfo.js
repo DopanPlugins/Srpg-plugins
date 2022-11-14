@@ -292,13 +292,13 @@
               this._AttIcon._battler = battler[1];
               this._AttIcon.x = attIconPosX;
               this._AttIcon.y = attIconPosY;
-              this._AttIcon.z = 7;
+              this._AttIcon.z = 5.5;// thats above upper Chars but below airship shadow
               this._AttIcon.anchor.x = 0.5;
               this._AttIcon.anchor.y = 0.5;
               this._AttIcon.scale.x = 0.5;
               this._AttIcon.scale.y = 0.5;
               // add child
-              this.addChild(this._AttIcon);
+              this.addChild(this._AttIcon); 
           }
     };
 	
@@ -309,17 +309,17 @@
         _SRPG_Sprite_Character_updateCharacterFrame.call(this);
         if ($gameSystem.isSRPGMode() == true && this._character.isEvent() == true) {
             var battlerArray = $gameSystem.EventToUnit(this._character.eventId());
-            if (battlerArray) {
+            if (battlerArray) { $gameMap._test = this;
                 // create State Icon
                 //  add debug Switch Setup
-                if (useStateIconUnit && (_debugSwitch = true)) this.createStateIconSprite();
+                if (useStateIconUnit && (_debugSwitch = true) && !this._StateIconSprite) this.createStateIconSprite();
                 // create HP number for HP
-                if (usehpNumUnit) this.createhpNumberSprite();
+                if (usehpNumUnit && !this._hpNumberSprite) this.createhpNumberSprite();
                 // create HP gauge
-                if (usehpGaugeUnit) this.createhpGaugeSprite();
+                if (usehpGaugeUnit && !this._hpGaugeSprite) this.createhpGaugeSprite();
                 // create Weapon Icon
                 //  add debug Switch Setup
-                if (useWeaponIconUnit && (_debugSwitch = true)) {
+                if (useWeaponIconUnit && (_debugSwitch = true) && !this._AttIcon) {
 		    this.createAttIcon();
                     // all battlers getting their attIcon displayed
 		    if (this._AttIcon && this._AttIcon._battler) { 
@@ -372,7 +372,7 @@
             this._StateIconSprite.setup(battler);
             this._StateIconSprite.x = stateIconPosX;
             this._StateIconSprite.y = stateIconPosY;
-            this._StateIconSprite.z = 7;
+            this._StateIconSprite.z = 5.5;// thats above upper Chars but below airship shadow
             this._StateIconSprite.anchor.x = 0.5;
             this._StateIconSprite.anchor.y = 0.5;
             this._StateIconSprite.scale.x = 0.5;
@@ -395,7 +395,7 @@
     Sprite_hpGaugeSprite.prototype.initialize = function(character) {
         Sprite.prototype.initialize.call(this);
         this.bitmap = new Bitmap(hpGaugeWidth, hpGaugeHeight); // HP bar width, and thickness
-        this.z = 7;
+        this.z = 5.5;// thats above upper Chars but below airship shadow
         this.anchor.x = 0.5;
         this.anchor.y = 1;
         this.x = hpGaugePosX;

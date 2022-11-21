@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // ESS_Storage.js
 //=============================================================================
 /*:
@@ -196,7 +196,12 @@
           _Game_event_ini.call(this, mapId, eventId);
            this._SelfSwitch = new Self_Switches(mapId, eventId);
       };
-	
+
+      // overwrite default function to clear reset the ESS.BOX aswell, or else ESS.BOX would rebuild data
+      Game_SelfSwitches.prototype.clear = function() {
+          this._data = {};$ESS.storageBuilder();
+      };	
+
       //overwrite default function to manipulate the default data if needed
       Game_SelfSwitches.prototype.value = function(key) {
           var list = [key];
@@ -228,19 +233,19 @@
 
       // get current key data & add data to events	
       Self_Switches.prototype.valueManager = function(key, value) {
-          if (key) {  
-              var list = [key];
-              var mapId = list[0][0];
-              var evId = list[0][1];
-              var info = list[0][2];
-              $ESS.BOX['lastDataKey'] = [key];
-              $ESS.BOX['data'] = $gameSelfSwitches._data;
-              if (value) {
-                  $ESS.BOX[mapId][evId][info] = true;  
-              } else {
-                  $ESS.BOX[mapId][evId][info] = false;
-              } 
-          };
+         if (key) {  
+             var list = [key];
+             var mapId = list[0][0];
+             var evId = list[0][1];
+             var info = list[0][2];
+             $ESS.BOX['lastDataKey'] = [key];
+             $ESS.BOX['data'] = $gameSelfSwitches._data;
+             if (value) {
+                 $ESS.BOX[mapId][evId][info] = true;  
+             } else {
+                 $ESS.BOX[mapId][evId][info] = false;
+             }
+         };
       };      
 
       // scriptcall to setValue of all Events on current Map
@@ -265,6 +270,8 @@
           if (contents.dopansESS) {$ESS = contents.dopansESS};
       };
 
+
+  
 
 
 

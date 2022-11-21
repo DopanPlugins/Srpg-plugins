@@ -95,10 +95,12 @@
  * -------------------------------------------------------------------------------------------------------------
  * -------------------------------------------------------------------------------------------------------------
  *
- * Plugin scriptcalls:
+ * Plugin scriptcalls: (some of these are very similar or even do the same thing)
  * --------------------
  *
- * $ESS.BOX;                       # use this in Console to read all related data
+ *  # pls note ESS.BOX is not a function, its an array data container #
+ *
+ * $ESS.BOX;       # Main data storage Container ,use this in Console to read all related data
  *
  * $ESS.BOX[mapId];                # use this in Console to read all related map data
  *
@@ -106,14 +108,27 @@
  *
  * $ESS.BOX[mapId][eventId]['A'];  # this returns true or false
  *
- * $ESS.list();                      # function that returns  => $ESS.BOX[mapId] 
+ * # pls note these below are all functions which use, read or return ESS.BOX data #
  *
- * $ESS.eventSwitch(mapId, eventId); # function that returns => $ESS.BOX[mapId][eventId]
+ * $ESS.list();        # function that returns  => $ESS.BOX map List 
+ *
+ * $ESS.list()[mapId]; # function that returns  => Event SelfSwitch list from map related to mapId
+ *
+ * $ESS.list()[mapId][eventId]; # function returns => $ESS.BOX events SelfSwitches storage
+ *
+ * $ESS.list()[mapId][eventId]['A']; #  function returns => SelfSwitch 'A' => true or false
+ *
+ *
+ * $ESS.eventSwitch(mapId, eventId); # function returns => $ESS.BOX events SelfSwitches storage
+ *
+ * $ESS.eventSwitch(mapId, eventId)['A']; # function returns => SelfSwitch 'A' => true or false
+ *
  *
  * $ESS.storageBuilder(); # function that builds "$ESS.BOX" minimum array, can be used to reset it
  *                        # only use at own risk or if you somehow messed up "$ESS.BOX"
  *
- * $ESS.setAllEvSelfSwitch(letter, value); # setValue of SelfSwitch, to all Events on current Map
+ *
+ * $ESS.setAllEvSelfSwitch(letter, value); # function setValue of SelfSwitch, to all Events on current Map
  *
  * example:
  *         $ESS.setAllEvSelfSwitch('A', true);
@@ -184,7 +199,7 @@
 	
       // function to return stored data	
       Self_Switches.prototype.list = function() {
-          return this._data.filter(function(element) {
+          return $ESS.BOX.filter(function(element) {
                  return !!element;
           });
       };

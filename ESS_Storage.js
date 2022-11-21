@@ -228,19 +228,19 @@
 
       // get current key data & add data to events	
       Self_Switches.prototype.valueManager = function(key, value) {
-         if (key) {  
-             var list = [key];
-             var mapId = list[0][0];
-             var evId = list[0][1];
-             var info = list[0][2];
-             $ESS.BOX['lastDataKey'] = [key];
-             $ESS.BOX['data'] = $gameSelfSwitches._data;
-             if (value) {
-                 $ESS.BOX[mapId][evId][info] = true;  
-             } else {
-                 $ESS.BOX[mapId][evId][info] = false;
-             }
-         };
+          if (key) {  
+              var list = [key];
+              var mapId = list[0][0];
+              var evId = list[0][1];
+              var info = list[0][2];
+              $ESS.BOX['lastDataKey'] = [key];
+              $ESS.BOX['data'] = $gameSelfSwitches._data;
+              if (value) {
+                  $ESS.BOX[mapId][evId][info] = true;  
+              } else {
+                  $ESS.BOX[mapId][evId][info] = false;
+              } 
+          };
       };      
 
       // scriptcall to setValue of all Events on current Map

@@ -82,7 +82,7 @@
  *
  * example:
  *   
- *  [1, 2, 4, 7].forEach(eventId => $gameSelfSwitches.setValue([$gameMap._mapId, eventId, 'A'], true));
+ * [1, 2, 4, 7].forEach(function(evId) {$gameSelfSwitches.setValue([$gameMap._mapId, evId, 'A'], true)});
  *
  *
  * #here the numbers are the eventIds, "$gameMap._mapId" is current mapId, 'A' is selfswitch , value is "true"#

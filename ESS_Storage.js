@@ -197,9 +197,9 @@
            this._SelfSwitch = new Self_Switches(mapId, eventId);
       };
 
-      // overwrite default function to clear reset the ESS.BOX aswell, or else ESS.BOX would rebuild data
+      // overwrite default function to clear/reset the ESS.BOX aswell, or else ESS.BOX would rebuild data
       Game_SelfSwitches.prototype.clear = function() {
-          this._data = {};$ESS.storageBuilder();
+          this._data = {};$ESS.BOX = undefined;
       };	
 
       //overwrite default function to manipulate the default data if needed

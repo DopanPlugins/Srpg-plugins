@@ -78,6 +78,11 @@
  *
  * $gameSelfSwitches.setValue([mapId, eventId, 'A'], value); 
  *
+ * # reset all SelfSwitches on all maps to false
+ *
+ * $gameSelfSwitches.clear(); # this will also reset the ESS.BOX , to prevent ESS.BOX from rebuilding all data
+ *-------------------------------------------------------------------------------------------------------------
+ *
  * #Script to set value of SelfSwitch 'A' to several events to "true"
  *
  * example:
@@ -87,8 +92,8 @@
  *
  * #here the numbers are the eventIds, "$gameMap._mapId" is current mapId, 'A' is selfswitch , value is "true"#
  *  
- * -------------------------------------------------------------------
- * -------------------------------------------------------------------
+ * -------------------------------------------------------------------------------------------------------------
+ * -------------------------------------------------------------------------------------------------------------
  *
  * Plugin scriptcalls:
  * --------------------
@@ -269,10 +274,6 @@
           old_extractSaveContents.call(this, contents);
           if (contents.dopansESS) {$ESS = contents.dopansESS};
       };
-
-
-  
-
 
 
 //-----------------------------------------------------------------------------------------

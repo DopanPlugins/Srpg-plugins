@@ -165,9 +165,6 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
 
 //============================================================================
 
-
-    "use strict";
-
     function Map_Region() {
        this.initialize.apply(this, arguments);
     }

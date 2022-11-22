@@ -67,7 +67,7 @@
  *
  * $mapRegion.Nr(number);  # returns the "Map_Region"tile from regionList, starts with 0 (sidenote:thats not the regionId)
  *
- * $mapRegion.NrVisible(number, value); # returns opacity, if value is added change oppacity (value can be from 0 to 255)
+ * $mapRegion.NrVisible(number, value); # returns opacity, if value is added change opacity (value can be from 0 to 255)
  *
  * $mapRegion.listVisible(value, regionId); # set opacity of all region_tiles based on regionId (all regions if regionId = 0) 
  *

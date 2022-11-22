@@ -57,7 +57,7 @@
  *
  *
  * Plugin Scriptcalls: ( i recommend to try out the first 7 scripts in console F8 to see what they do )
- *=========================
+ * =========================
  *
  * $mapRegion.setPicZ(number);    # leave blank to return the Z anchor of Pics, or add number to change the anchor
  *
@@ -73,11 +73,11 @@
  *
  * $mapRegion.touchEvents(regionId); # returns a list of all events that are on this region Id
  *
- *=========================
+ * =========================
  *
  * $gameScreen.nextPicId() # returns the number of the next free picture Id
  *
- *=========================
+ * =========================
  *
  * $mapRegion.rgSetImg(regionId, imgName, top); # set region Pic,if top = true,"PicZ" anchor is used, else "ReginPicZ"
  *
@@ -85,7 +85,7 @@
  *           $mapRegion.rgSetImg(1, "markBurned");       # img is on "ReginPicZ" anchor
  *           $mapRegion.rgSetImg(1, "markBurned", true); # img is on "PicZ" anchor
  *
- *=========================
+ * =========================
  *
  * $mapRegion.clearRegionImg(regionId, top); # clear all pics on this regionId, if regionId = 0 , its all reagions
  *
@@ -94,37 +94,37 @@
  *           $mapRegion.clearRegionImg(0, top);  # clears all reagions Pics that use "PicZ" anchor
  *           $mapRegion.clearRegionImg(1);       # clears all reagion_ID_1 Pics that use "ReginPicZ" anchor
  *
- *=========================
+ * =========================
  *
  * $mapRegion.rgSetSelfSwitch(regionId, letters, true); # set selfSwitch of events that are on this regionId
  * 
  * example: 
  *          $mapRegion.rgSetSelfSwitch(2, 'A', true);   # all events on this regionId set A to true
  *
- *=========================
+ * =========================
  *
  * $gameScreen.setRegionImg(regionId, name, origin, scaleX, scaleY, opacity, blendMode, top);  # set region Pic
  *
- *# its basicly the same like "rgSetImg",but with all the options that normal "ShowPicture" script has #
+ * # its basicly the same like "rgSetImg",but with all the options that normal "ShowPicture" script has #
  *
  * examples:
  *          $gameScreen.setRegionImg(2, "markWater", 1, 100, 100, 255, 0);       # use "ReginPicZ" anchor 
  *          $gameScreen.setRegionImg(2, "markWater", 1, 100, 100, 255, 0, true); # use "PicZ" anchor
  *
  *
- *=========================
+ * =========================
  *
  * sideNote: i made 2 scripts to show picture, because i like the shorter script usage,..
  *           ..if i dont need all the other options.
  *          
- *=========================
+ * =========================
  *
  *
  *
  * That below is what the Z Anchor Number in the param represent
  *
  * Z Anchor Info:
- *=========================
+ * =========================
  *  0 : On tiles
  *  1 : Lower characters
  *  3 : Normal characters
@@ -147,7 +147,7 @@
  * Version 1.0:
  * - first Release 22.11.2022 for SRPG (rpg mv)!
  */
- 
+
 (function() {
 
   // Plugin param Variables:
@@ -166,6 +166,7 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
     Map_Region = function() {
        this.initialize.apply(this, arguments);
     }
+
     $mapRegion = Object.create(Map_Region.prototype);
     Map_Region.prototype.constructor = Map_Region;
 
@@ -208,7 +209,7 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
        for (var r = 1; r <= 255; r++) { 
             for (var x = 0; x < mW; x++) {
                  for (var y = 0; y < mH; y++) {
-                      if ($gameMap.regionId(x, y) == r) {                     
+                      if ($gameMap.regionId(x, y) === r) {                     
                           var data = [x, y];
                           list.push([r, data]);
                           this._rgList.push([r]); 
@@ -216,8 +217,8 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
                               var Id = list[n][0];                      
                               var regionX = list[n][1][0];
                               var regionY = list[n][1][1];
-                              var regionSX = Math.round(this._rgList[n].x * tw + tw / 2);
-                              var regionSY = Math.round(this._rgList[n].y * th + th / 2);
+                              var regionSX = Math.round(regionX * tw + tw / 2);
+                              var regionSY = Math.round(regionY * th + th / 2);
                               this._rgList[n] = new Map_Region(Id, regionX, regionY, regionSX, regionSY, n);
                           } 
                       }
@@ -269,13 +270,11 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
        if ($gameScreen._pictures.length > 1) pictureId = $gameScreen._pictures.length;
            if (sx && sy && imgName && regionId && regionId === element.Id & element.picId === 0) {
                $gameScreen.showPicture(pictureId, imgName, 1, sx, sy, 100, 100, 255, 0);
-               element.picId = pictureId;
                if (top) {
                    $gameScreen.picture(pictureId)._zAnchor = 'top';
                };
-               if (regionId === element.Id) {
-                   $gameScreen.picture(pictureId)._regionId = regionId;
-               };
+               $gameScreen.picture(pictureId)._regionId = regionId;
+               element.picId = pictureId;
            };
        }); 
     };
@@ -348,13 +347,12 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
         if ($gameScreen._pictures.length > 1) pictureId = $gameScreen._pictures.length;
             if (sx && sy && name && regionId && regionId === element.Id & element.picId === 0) {
                 $gameScreen.showPicture(pictureId, name, origin, sx, sy, scaleX, scaleY, opacity, blendMode);
-                element.picId = pictureId;
                 if (top) {                    
                     $gameScreen.picture(pictureId)._zAnchor = 'top';
                 };                
-                if (regionId === element.Id) {
-                    $gameScreen.picture(pictureId)._regionId = regionId;
-                };
+                $gameScreen.picture(pictureId)._regionId = regionId;
+                element.picId = pictureId;
+
             };
         });                                              
     }; 
@@ -374,8 +372,7 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
 //--------------------------------------------------------------------------------------   
   Map_Region.prototype.createContainers = function() {
       if ($gameScreen.nextPicId() === 1) _reloaded = 'false'; 
-      if ($gameScreen.nextPicId() > 1) { 
-      this._spritSetMap.removeChild(pC);
+      if ($gameScreen.nextPicId() > 1) {
           this._regionPicContainer = new Sprite();
           var pC = this._spritSetMapPC;
           var rpC = this._regionPicContainer;
@@ -384,12 +381,14 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
           for (var s = allPics;s > - 1;s--) { 
                var spritPics = this._PCspritChild[s];
                if (spritPics.picture() && spritPics.picture()._regionId > 0  && spritPics.picture()._zAnchor === 'normal') {
+                   this._spritSetMap.removeChild(pC);
                    rpC.addChild(spritPics);
                    pC.removeChild(spritPics);
                    this._spritSetMap._tilemap.addChild(rpC);
+                   this._spritSetMap.addChild(pC);
                };     
           };   
-      this._spritSetMap.addChild(pC);
+
       };
   };
 

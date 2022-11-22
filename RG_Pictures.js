@@ -65,17 +65,17 @@
  *
  * $mapRegion.setMaxPics(number);   # leave blank to return the MaxPics Amount, or add number to change the Amount
  *
- * $mapRegion.Nr(number);  # this returns the region from region List, not reagion id (all region tiles are on a list)
+ * $mapRegion.Nr(number);  # this returns the region_tile nr from regionList, (sidenote:thats not about regionId)
  *
- * $mapRegion.clearNr(number); # clear this region from region List, not reagion id (all region tiles are on a list)
+ * $mapRegion.clearNr(number); # clear this region_tile nr from regionList, (sidenote:thats not about regionId)
  *
- * $mapRegion.rgList();        # returns the region list
+ * $mapRegion.rgList();        # returns the "region_tiles list" of regions that are set/active on map
  *
  * $mapRegion.touchEvents(regionId); # returns a list of all events that are on this region Id
  *
  * =========================
  *
- * $gameScreen.nextPicId() # returns the number of the next free picture Id
+ * $gameScreen.nextPicId(); # returns the number of the next free picture Id
  *
  * =========================
  *

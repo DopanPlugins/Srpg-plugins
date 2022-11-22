@@ -43,7 +43,7 @@
  *
  * Max Pics (rpg maker default is 100) can be changed via param and scriptcall
  *
- * SelfSwitches of all events can be set related to regionId location of events
+ * SelfSwitches of all events can be set related to regionId & location of events
  *
  * A script can return a list of all events that are located on a regionId
  *
@@ -61,7 +61,7 @@
  *
  * $mapRegion.setPicZ(number);    # leave blank to return the Z anchor of Pics, or add number to change the anchor
  *
- * $mapRegion.setReginPicZ(number); # leave blank to return the Z anchor of ReginPics, or add number to change the anchor
+ * $mapRegion.setRegionPicZ(number); # leave blank to return the Z anchor of RegionPics, or add number to change the anchor
  *
  * $mapRegion.setMaxPics(number);   # leave blank to return the MaxPics Amount, or add number to change the Amount
  *
@@ -79,20 +79,20 @@
  *
  * =========================
  *
- * $mapRegion.rgSetImg(regionId, imgName, top); # set region Pic,if top = true,"PicZ" anchor is used, else "ReginPicZ"
+ * $mapRegion.rgSetImg(regionId, imgName, top); # set region Pic,if top = true,"PicZ" anchor is used, else "RegionPicZ"
  *
  * examples: 
- *           $mapRegion.rgSetImg(1, "markBurned");       # img is on "ReginPicZ" anchor
+ *           $mapRegion.rgSetImg(1, "markBurned");       # img is on "RegionPicZ" anchor
  *           $mapRegion.rgSetImg(1, "markBurned", true); # img is on "PicZ" anchor
  *
  * =========================
  *
- * $mapRegion.clearRegionImg(regionId, top); # clear all pics on this regionId, if regionId = 0 , its all reagions
+ * $mapRegion.clearRegionImg(regionId, top); # clear all pics on this regionId, if regionId = 0 , its all regions
  *
  * examples: 
- *           $mapRegion.clearRegionImg(0);       # clears all reagions Pics that use "ReginPicZ" anchor
- *           $mapRegion.clearRegionImg(0, top);  # clears all reagions Pics that use "PicZ" anchor
- *           $mapRegion.clearRegionImg(1);       # clears all reagion_ID_1 Pics that use "ReginPicZ" anchor
+ *           $mapRegion.clearRegionImg(0);       # clears all regions Pics that use "RegionPicZ" anchor
+ *           $mapRegion.clearRegionImg(0, top);  # clears all regions Pics that use "PicZ" anchor
+ *           $mapRegion.clearRegionImg(1);       # clears all region_ID_1 Pics that use "RegionPicZ" anchor
  *
  * =========================
  *
@@ -108,7 +108,7 @@
  * # its basicly the same like "rgSetImg",but with all the options that normal "ShowPicture" script has #
  *
  * examples:
- *          $gameScreen.setRegionImg(2, "markWater", 1, 100, 100, 255, 0);       # use "ReginPicZ" anchor 
+ *          $gameScreen.setRegionImg(2, "markWater", 1, 100, 100, 255, 0);       # use "RegionPicZ" anchor 
  *          $gameScreen.setRegionImg(2, "markWater", 1, 100, 100, 255, 0, true); # use "PicZ" anchor
  *
  *
@@ -186,8 +186,8 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
        return _picZ; 
     };
 
-    //$mapRegion.setReginPicZ(number);  
-    Map_Region.prototype.setReginPicZ = function(number) {
+    //$mapRegion.setRegionPicZ(number);  
+    Map_Region.prototype.setRegionPicZ = function(number) {
        if (number) _regionPicZ = Number(number); 
        return _regionPicZ; 
     };

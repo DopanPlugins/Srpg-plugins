@@ -1,4 +1,4 @@
-//=============================================================================
+﻿//=============================================================================
 // RG_Pictures.js
 //=============================================================================
 /*:
@@ -65,13 +65,13 @@
  *
  * $mapRegion.setMaxPics(number);   # leave blank to return the MaxPics Amount, or add number to change the Amount
  *
- * $mapRegion.Nr(number);  # this returns the region_tile nr from regionList, (sidenote:thats not about regionId)
+ * $mapRegion.Nr(number);  # returns the "Map_Region"tile from regionList, starts with 0 (sidenote:thats not the regionId)
  *
  * $mapRegion.NrVisible(number, value); # returns opacity, if value is added change oppacity (value can be from 0 to 255)
  *
  * $mapRegion.listVisible(value, regionId); # set opacity of all region_tiles based on regionId (all regions if regionId = 0) 
  *
- * $mapRegion.rgList();        # returns the "region_tiles list" of regions that are set/active on map
+ * $mapRegion.rgList();        # returns the "Map_Region"tiles-list of regions that are set/active on map
  *
  * $mapRegion.touchEvents(regionId); # returns a list of all events that are on this region Id
  *
@@ -94,7 +94,7 @@
  * examples: 
  *           $mapRegion.clearRegionImg(0);       # clears all regions Pics that use "RegionPicZ" anchor
  *           $mapRegion.clearRegionImg(0, top);  # clears all regions Pics that use "PicZ" anchor
- *           $mapRegion.clearRegionImg(1);       # clears all region_ID_1 Pics that use "RegionPicZ" anchor
+ *           $mapRegion.clearRegionImg(1);       # clears all region_Id_1 Pics that use "RegionPicZ" anchor
  *
  * =========================
  *
@@ -226,7 +226,7 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
                       }
                  }
             }
-       }   
+       }  
     };   
 
     //$mapRegion.Nr(number);

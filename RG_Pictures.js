@@ -56,7 +56,7 @@
  *
  *
  *
- * Plugin Scriptcalls: ( i recommend to try out the first 7 scripts in console F8 to see what they do )
+ * Plugin Scriptcalls: ( i recommend to try out the first 8 scripts in console F8 to see what they do )
  * =========================
  *
  * $mapRegion.setPicZ(number);    # leave blank to return the Z anchor of Pics, or add number to change the anchor
@@ -67,7 +67,9 @@
  *
  * $mapRegion.Nr(number);  # this returns the region_tile nr from regionList, (sidenote:thats not about regionId)
  *
- * $mapRegion.clearNr(number); # clear this region_tile nr from regionList, (sidenote:thats not about regionId)
+ * $mapRegion.NrVisible(number, value); # returns opacity, if value is added change oppacity (value can be from 0 to 255)
+ *
+ * $mapRegion.listVisible(value, regionId); # set opacity of all region_tiles based on regionId (all regions if regionId = 0) 
  *
  * $mapRegion.rgList();        # returns the "region_tiles list" of regions that are set/active on map
  *
@@ -232,14 +234,24 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
        return this._rgList[number];
     };    
 
-    //$mapRegion.clearNr(number);
-    Map_Region.prototype.clearNr = function(number) {
-       this._rgList[number] = [];
+    //$mapRegion.NrVisible(number, value);
+    Map_Region.prototype.NrVisible = function(number, value) {
+       var id = this._rgList[number].picId; 
+       if (value => 0 && value <= 255) $gameScreen.picture(id)._opacity = value;
+       return $gameScreen.picture(id)._opacity;
     }; 
 
-    //$mapRegion.clearList();
-    Map_Region.prototype.clearList = function() {
-       this._rgList = [];
+    //$mapRegion.listVisible(value, regionId);
+    Map_Region.prototype.listVisible = function(value, regionId) {
+       this.rgList().forEach(function(element) {
+            var picId = element.picId;
+            if (regionId === 0 && (value => 0 && value <= 255)) $gameScreen.picture(picId)._opacity = value;
+            if (regionId > 0 && regionId < 256 && element.Id === regionId) {
+                if (value => 0 && value <= 255) $gameScreen.picture(picId)._opacity = value;
+            };
+       });
+    if (regionId => 0 && value => 0 && value <= 255) return value;
+    return false;
     };
 
     //$mapRegion.rgList(); 
@@ -381,6 +393,7 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
           for (var s = allPics;s > - 1;s--) { 
                var spritPics = this._PCspritChild[s];
                if (spritPics.picture() && spritPics.picture()._regionId > 0  && spritPics.picture()._zAnchor === 'normal') {
+                   //spritPics.picture()._sprite = spritPics;
                    this._spritSetMap.removeChild(pC);
                    rpC.addChild(spritPics);
                    pC.removeChild(spritPics);
@@ -422,7 +435,6 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
           this._regionId = 0;
           this._zAnchor = 'normal';
       };
-
 
 //-----------------------------------------------------------------------------------------
 

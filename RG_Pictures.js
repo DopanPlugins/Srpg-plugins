@@ -411,7 +411,7 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
             if (picture._regionId > 0 || ~picture.name().indexOf(_preFix)) { 
                 var tileX = $gameMap.tileWidth();
                 var tileY = $gameMap.tileHeight();
-	        this.x = (-tileX * $gameMap._displayX) + picture._x;
+                this.x = (-tileX * $gameMap._displayX) + picture._x;
                 this.y = (-tileY * $gameMap._displayY) + picture._y;      
             } else {_Sprite_Pic_updatePosition.call(this)};
       };

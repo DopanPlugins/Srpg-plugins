@@ -47,7 +47,7 @@
  *
  * A script can return a list of all events that are located on a regionId
  *
- * Also pictures get data about their x y postions, their regionId location & Z anchor
+ * Also pictures get data about their regionId location & Z anchor
  *
  * There is a script that returns the next free picture id
  *

@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // RG_Pictures.js
 //=============================================================================
 /*:
@@ -250,7 +250,7 @@ var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
                 if (value => 0 && value <= 255) $gameScreen.picture(picId)._opacity = value;
             };
        });
-    if (regionId => 0 && value => 0 && value <= 255) return value;
+    if (regionId => 0 && (value => 0 && value <= 255)) return value;
     return false;
     };
 

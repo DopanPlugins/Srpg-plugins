@@ -152,9 +152,9 @@
  * - first Release 20.11.2022 for SRPG (rpg mv)!
  */
  
- "use strict";
+ //"use strict";
 
- var $ESS = null;
+ //var $ESS = null;
 
 (function() {
 
@@ -196,9 +196,9 @@
       // build minimum default storage , can be used to reset the object	
       Self_Switches.prototype.storageBuilder = function() {
           $ESS.BOX = [];
-          $ESS.BOX['lastDataKey'] = "noData";
-          $ESS.BOX['lastEventKey'] = "noData";	
-          $ESS.BOX['data'] = $gameSelfSwitches._data;
+          $ESS.BOX.lastDataKey = "noData";
+          $ESS.BOX.lastEventKey = "noData";	
+          $ESS.BOX.data = $gameSelfSwitches._data;
       };
 	
       // function to return stored data	
@@ -233,7 +233,7 @@
           var evId = Number(list[0][1]);
           var info = list[0][2];
           // check Event Switches(for better compatiblety with other plugins which might need "this._data")
-          if ($ESS.BOX[mapId][evId] && $ESS.BOX[mapId][evId][info] !== undefined && !info > 0) {
+          if ($ESS.BOX[mapId][evId] && $ESS.BOX[mapId][evId][info] !== undefined && !Number(info) > 0) {
           // check if Event has changed its Switches to update "this._data"
               if ($ESS.BOX[mapId][evId][info] !== this._data[[mapId, evId, info]]) {
                   var value = $ESS.BOX[mapId][evId][info];
@@ -242,7 +242,7 @@
                   } else {
                       delete this._data[key];
                   }; 
-              $ESS.BOX['lastEventKey'] = [key];
+              $ESS.BOX.lastEventKey = [key]; $ESS.BOX.lastEventKey.selfSwitch = !!this._data[key];
               };
           };
       return !!this._data[key];
@@ -262,9 +262,9 @@
               var mapId = Number(list[0][0]);
               var evId = Number(list[0][1]);
               var info = list[0][2];
-              $ESS.BOX['lastDataKey'] = [key];
-              $ESS.BOX['data'] = $gameSelfSwitches._data;
-              if (!info > 0) { // galv spawner compatiblety bugfix
+              $ESS.BOX.lastDataKey = [key]; $ESS.BOX.lastDataKey.selfSwitch = value;
+              $ESS.BOX.data = $gameSelfSwitches._data;
+              if (!Number(info) > 0) { // galv spawner compatiblety bugfix
                   if (value) {
                       $ESS.BOX[mapId][evId][info] = true;  
                   } else {

@@ -152,6 +152,10 @@
  * - first Release 20.11.2022 for SRPG (rpg mv)!
  */
  
+ "use strict";
+
+ var $ESS = null;
+
 (function() {
 
   // Plugin param Variables:

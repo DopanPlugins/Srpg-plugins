@@ -1,4 +1,4 @@
-//=============================================================================
+﻿//=============================================================================
 // ESS_Storage.js
 //=============================================================================
 /*:
@@ -225,15 +225,15 @@
       //overwrite default function to manipulate the default data if needed
       Game_SelfSwitches.prototype.value = function(key) {
           var list = [key];
-          var mapId = list[0][0];
-          var evId = list[0][1];
+          var mapId = Number(list[0][0]);
+          var evId = Number(list[0][1]);
           var info = list[0][2];
           // check Event Switches(for better compatiblety with other plugins which might need "this._data")
-          if ($ESS.BOX[mapId][evId] && $ESS.BOX[mapId][evId][info] !== undefined) {
+          if ($ESS.BOX[mapId][evId] && $ESS.BOX[mapId][evId][info] !== undefined && !info > 0) {
           // check if Event has changed its Switches to update "this._data"
               if ($ESS.BOX[mapId][evId][info] !== this._data[[mapId, evId, info]]) {
                   var value = $ESS.BOX[mapId][evId][info];
-                  if (value) {
+                  if (value && info !== "1") {
                       this._data[key] = true;
                   } else {
                       delete this._data[key];
@@ -253,19 +253,21 @@
 
       // get current key data & add data to events	
       Self_Switches.prototype.valueManager = function(key, value) {
-         if (key) {  
-             var list = [key];
-             var mapId = list[0][0];
-             var evId = list[0][1];
-             var info = list[0][2];
-             $ESS.BOX['lastDataKey'] = [key];
-             $ESS.BOX['data'] = $gameSelfSwitches._data;
-             if (value) {
-                 $ESS.BOX[mapId][evId][info] = true;  
-             } else {
-                 $ESS.BOX[mapId][evId][info] = false;
-             }
-         };
+          if (key) {  
+              var list = [key];
+              var mapId = Number(list[0][0]);
+              var evId = Number(list[0][1]);
+              var info = list[0][2];
+              $ESS.BOX['lastDataKey'] = [key];
+              $ESS.BOX['data'] = $gameSelfSwitches._data;
+              if (!info > 0) { // galv spawner compatiblety bugfix
+                  if (value) {
+                      $ESS.BOX[mapId][evId][info] = true;  
+                  } else {
+                      $ESS.BOX[mapId][evId][info] = false;
+                  }
+              };
+          };
       };      
 
       // scriptcall to setValue of all Events on current Map

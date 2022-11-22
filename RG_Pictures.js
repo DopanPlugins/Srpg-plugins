@@ -150,6 +150,10 @@
  * - first Release 22.11.2022 for SRPG (rpg mv)!
  */
 
+ "use strict";
+
+ var $mapRegion = null;
+
 (function() {
 
   // Plugin param Variables:

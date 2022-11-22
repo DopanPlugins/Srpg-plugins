@@ -237,7 +237,7 @@
           // check if Event has changed its Switches to update "this._data"
               if ($ESS.BOX[mapId][evId][info] !== this._data[[mapId, evId, info]]) {
                   var value = $ESS.BOX[mapId][evId][info];
-                  if (value && info !== "1") {
+                  if (value) {
                       this._data[key] = true;
                   } else {
                       delete this._data[key];

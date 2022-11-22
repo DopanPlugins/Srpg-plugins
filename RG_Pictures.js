@@ -157,11 +157,11 @@
   var parameters = PluginManager.parameters("RG_Pictures") ||
   $plugins.filter(function (plugin) {return plugin.description.contains('<RG_Pictures>')});
 
-var _reloaded = 'false'; 
-var _preFix = (parameters['Prefix Name'] || "mark");
-var _maxPic = Number(parameters['Max Pictures'] || 100);
-var _picZ = Number(parameters['PicZ'] || 9.5);
-var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
+  var _reloaded = 'false'; 
+  var _preFix = (parameters['Prefix Name'] || "mark");
+  var _maxPic = Number(parameters['Max Pictures'] || 100);
+  var _picZ = Number(parameters['PicZ'] || 9.5);
+  var _regionPicZ = Number(parameters['RegionPicZ'] || 0);
 
 //============================================================================
 

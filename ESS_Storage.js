@@ -8,10 +8,10 @@
  *
  *
  * @help  
- *  -------------Introduction: (pls note this plugin safes its main data Object)
+ *  -------------[Introduction:] (pls note this plugin safes its main data Object)
  *
  * 
- * By default can only get/change value by using the "$gameSelfSwitches"-Scriptcalls
+ * By default we can only get/change value by using the "$gameSelfSwitches"-Scriptcalls
  * Also the "$gameSelfSwitches._data" stores only SelfSwitches that are "true",
  * and removes anything else,..(so that reading that data directly can often return "undefined")
  *

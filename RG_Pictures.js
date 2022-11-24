@@ -65,13 +65,13 @@
  *
  * $mapRegion.setMaxPics(number);   # leave blank to return the MaxPics Amount, or add number to change the Amount
  *
- * $mapRegion.region(regionNr);  # returns "MapRegion_Tile"tile from regionList, starts with 0 (sidenote:thats not the regionId)
+ * $mapRegion.region(regionNr);  # returns "MapRegion_Tile" from regionList, starts with 0 (sidenote:thats not the regionId)
  *
  * $mapRegion.imgVisible(regionNr, value); # returns opacity, if value is added change opacity (value can be from 0 to 255)
  *
  * $mapRegion.listVisible(value, regionId); # set opacity of all region_imgs based on regionId (all regions if regionId = 0) 
  *
- * $mapRegion.rgList();        # returns the "MapRegion_Tile"tiles-list of regions that are set/active on map
+ * $mapRegion.rgList();        # returns the "MapRegion_Tile"-list of regions that are set/active on map
  *
  * $mapRegion.touchEvents(regionId); # returns a list of all events that are on this region Id
  *

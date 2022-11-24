@@ -2,7 +2,7 @@
 // ESS_Storage.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 <ESS_Storage> Store SelfSwitch Data in Events
+ * @plugindesc v1.1 <ESS_Storage> Store SelfSwitch Data in Events
  * @author dopan
  *
  *

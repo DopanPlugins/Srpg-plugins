@@ -65,15 +65,29 @@
  *
  * $mapRegion.setMaxPics(number);   # leave blank to return the MaxPics Amount, or add number to change the Amount
  *
- * $mapRegion.Nr(number);  # returns the "Map_Region"tile from regionList, starts with 0 (sidenote:thats not the regionId)
+ * $mapRegion.region(regionNr);  # returns "MapRegion_Tile"tile from regionList, starts with 0 (sidenote:thats not the regionId)
  *
- * $mapRegion.NrVisible(number, value); # returns opacity, if value is added change opacity (value can be from 0 to 255)
+ * $mapRegion.imgVisible(regionNr, value); # returns opacity, if value is added change opacity (value can be from 0 to 255)
  *
- * $mapRegion.listVisible(value, regionId); # set opacity of all region_tiles based on regionId (all regions if regionId = 0) 
+ * $mapRegion.listVisible(value, regionId); # set opacity of all region_imgs based on regionId (all regions if regionId = 0) 
  *
- * $mapRegion.rgList();        # returns the "Map_Region"tiles-list of regions that are set/active on map
+ * $mapRegion.rgList();        # returns the "MapRegion_Tile"tiles-list of regions that are set/active on map
  *
  * $mapRegion.touchEvents(regionId); # returns a list of all events that are on this region Id
+ *
+ * $mapRegion.regionXY(x, y); # return the Region Nr if there is an region on xy else returns -1
+ *
+ * =========================
+ *
+ * $gameMap.event(eventId).mapRegion() # returns the Region Nr if there is an region on event Location xy else returns -1
+ *
+ * $gameMap.event(eventId).regionId() # if there is an region on events position xy, return the regionId else 0
+ *
+ * # sideNote: these 2 event data above are also added to the event by this plugin #
+ *
+ * #'default rpg maker script below
+ *
+ * $gameMap.regionId(x, y); # returns the regionId if there is an region on this xy mapLocation else 0
  *
  * =========================
  *
@@ -146,14 +160,14 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 1.0:
+ * Version 1.1:
  * - first Release 22.11.2022 for SRPG (rpg mv)!
+ * - bug fixed and added some data to events
  */
 
  "use strict";
-
- var $mapRegion = null;
-
+ var $mapRegion = ['Global Object'];
+ var MapRegion_Tile = ['MapRegion_Tile'];
 (function() {
 
   // Plugin param Variables:
@@ -169,43 +183,54 @@
 
 //============================================================================
 
-    function Map_Region() {
-       this.initialize.apply(this, arguments);
-    }
-
-    $mapRegion = Object.create(Map_Region.prototype);
-    Map_Region.prototype.constructor = Map_Region;
-
-    Map_Region.prototype.initialize = function(Id, regionX, regionY, regionSX, regionSY, n) {
-       this.Id = Id;
-       this.x = regionX;
-       this.y = regionY;
-       this.sx = regionSX;
-       this.sy = regionSY;
-       this.Nr = n;
-       this.picId = 0;
+    var old_createGameObjects = DataManager.createGameObjects;
+    DataManager.createGameObjects = function() {
+        old_createGameObjects.call(this);
+       $mapRegion = new RG_Pictures();
     };
 
+    function RG_Pictures() { 
+       this.initialize.apply(this, arguments);
+    };
+
+    RG_Pictures.prototype.initialize = function() {
+
+    };
+
+    function MapRegion_Tile() { 
+       this.initialize.apply(this, arguments);
+    };
+
+    MapRegion_Tile.prototype.initialize = function(Id, regionX, regionY, regionSX, regionSY, n) {
+       this._Id = Id;
+       this._x = regionX;
+       this._y = regionY;
+       this._sx = regionSX;
+       this._sy = regionSY;
+       this._Nr = n;
+       this._picId = 0;
+    }
+
     //$mapRegion.setPicZ(number);  
-    Map_Region.prototype.setPicZ = function(number) {
+    RG_Pictures.prototype.setPicZ = function(number) {
        if (number) _picZ = Number(number);
        return _picZ; 
     };
 
     //$mapRegion.setRegionPicZ(number);  
-    Map_Region.prototype.setRegionPicZ = function(number) {
+    RG_Pictures.prototype.setRegionPicZ = function(number) {
        if (number) _regionPicZ = Number(number); 
        return _regionPicZ; 
     };
 
     //$mapRegion.setMaxPics(number);  
-    Map_Region.prototype.setMaxPics = function(number) {
+    RG_Pictures.prototype.setMaxPics = function(number) {
        if (number) _maxPic = Number(number); 
        return _maxPic; 
     };
 
     //$mapRegion.initRgList()  $mapRegion._rgList
-    Map_Region.prototype.initRgList = function() {
+    RG_Pictures.prototype.initRgList = function() {
        this._rgList = [];
        var list = [];
        var tw = $gameMap.tileWidth();
@@ -225,7 +250,7 @@
                               var regionY = list[n][1][1];
                               var regionSX = Math.round(regionX * tw + tw / 2);
                               var regionSY = Math.round(regionY * th + th / 2);
-                              this._rgList[n] = new Map_Region(Id, regionX, regionY, regionSX, regionSY, n);
+                              this._rgList[n] = new MapRegion_Tile(Id, regionX, regionY, regionSX, regionSY, n);
                           } 
                       }
                  }
@@ -233,24 +258,24 @@
        }  
     };   
 
-    //$mapRegion.Nr(number);
-    Map_Region.prototype.Nr = function(number) {
-       return this._rgList[number];
+    //$mapRegion.region(regionNr);
+    RG_Pictures.prototype.region = function(regionNr) {
+       return this._rgList[regionNr];
     };    
 
-    //$mapRegion.NrVisible(number, value);
-    Map_Region.prototype.NrVisible = function(number, value) {
-       var id = this._rgList[number].picId; 
+    //$mapRegion.imgVisible(regionNr, value);
+    RG_Pictures.prototype.imgVisible = function(regionNr, value) {
+       var id = this._rgList[regionNr]._picId; 
        if (value => 0 && value <= 255) $gameScreen.picture(id)._opacity = value;
        return $gameScreen.picture(id)._opacity;
     }; 
 
     //$mapRegion.listVisible(value, regionId);
-    Map_Region.prototype.listVisible = function(value, regionId) {
+    RG_Pictures.prototype.listVisible = function(value, regionId) {
        this.rgList().forEach(function(element) {
-            var picId = element.picId;
+            var picId = element._picId;
             if (regionId === 0 && (value => 0 && value <= 255)) $gameScreen.picture(picId)._opacity = value;
-            if (regionId > 0 && regionId < 256 && element.Id === regionId) {
+            if (regionId > 0 && regionId < 256 && element._Id === regionId) {
                 if (value => 0 && value <= 255) $gameScreen.picture(picId)._opacity = value;
             };
        });
@@ -259,16 +284,16 @@
     };
 
     //$mapRegion.rgList(); 
-    Map_Region.prototype.rgList = function() {
+    RG_Pictures.prototype.rgList = function() {
        return this._rgList;
     };
 
     //returns list of all events that Touch region with "id"
-    Map_Region.prototype.touchEvents = function(regionId) {
+    RG_Pictures.prototype.touchEvents = function(regionId) {
        var list = [];
        for (var r = 0; r < this._rgList.length; r++) {
-            var x = this._rgList[r].x;
-            var y = this._rgList[r].y;
+            var x = this._rgList[r]._x;
+            var y = this._rgList[r]._y;
             var rId = this._rgList[r].rId;
             if ($gameMap.eventsXy(x, y).length > 0  && regionId === rId) {
                 list.push($gameMap.eventsXy(x, y));
@@ -278,54 +303,54 @@
     };
 
     //$mapRegion.rgSetImg(1, "markBurned")
-    Map_Region.prototype.rgSetImg = function(regionId, imgName, top) {
+    RG_Pictures.prototype.rgSetImg = function(regionId, imgName, top) {
        this.rgList().forEach(function(element) { 
-       var sx = element.sx;
-       var sy = element.sy; 
+       var sx = element._sx;
+       var sy = element._sy; 
        var pictureId = 1;
        if ($gameScreen._pictures.length > 1) pictureId = $gameScreen._pictures.length;
-           if (sx && sy && imgName && regionId && regionId === element.Id & element.picId === 0) {
+           if (sx && sy && imgName && regionId && regionId === element._Id & element._picId === 0) {
                $gameScreen.showPicture(pictureId, imgName, 1, sx, sy, 100, 100, 255, 0);
                if (top) {
                    $gameScreen.picture(pictureId)._zAnchor = 'top';
                };
                $gameScreen.picture(pictureId)._regionId = regionId;
-               element.picId = pictureId;
+               element._picId = pictureId;
            };
        }); 
     };
 
     //$mapRegion.clearRegionImg(regionId, top);
-    Map_Region.prototype.clearRegionImg = function(regionId, top) {
+    RG_Pictures.prototype.clearRegionImg = function(regionId, top) {
         this.rgList().forEach(function(element) { 
-            var anchor = $gameScreen.picture(element.picId)._zAnchor;
-            var pictureId = element.picId;
+            var anchor = $gameScreen.picture(element._picId)._zAnchor;
+            var pictureId = element._picId;
             var realPictureId = $gameScreen.realPictureId(pictureId);
             if (top && anchor === 'top') {  
-                if (element.Id === regionId && regionId > 0) {
+                if (element._Id === regionId && regionId > 0) {
                     $gameScreen._pictures[realPictureId] = null;
-                    element.picId = 0;
+                    element._picId = 0;
                 };
                 if (regionId === 0) {
                     $gameScreen._pictures[realPictureId] = null;
-                    element.picId = 0;
+                    element._picId = 0;
                 }; 
             };
             if (!top && anchor === 'normal') { 
-                if (element.Id === regionId && regionId > 0) {
+                if (element._Id === regionId && regionId > 0) {
                     $gameScreen._pictures[realPictureId] = null;
-                    element.picId = 0;
+                    element._picId = 0;
                 };
                 if (regionId === 0) {
                     $gameScreen._pictures[realPictureId] = null;
-                    element.picId = 0;
+                    element._picId = 0;
                 };    
             };     
         }); 
     };
 
     //$mapRegion.rgSetSelfSwitch(2, 'A', true) 
-    Map_Region.prototype.rgSetSelfSwitch = function(regionId, letters, value) {
+    RG_Pictures.prototype.rgSetSelfSwitch = function(regionId, letters, value) {
         var length = this.touchEvents.length;
         if (this.touchEvents.length > 0) {
             for (var e = 0; e <= this._rgList.length; e++) {
@@ -335,6 +360,17 @@
                  };
             };
         };
+    };
+
+    //$mapRegion.regionXY(7, 17); 
+    RG_Pictures.prototype.regionXY = function(x, y) { 
+       var region = -1;
+       $mapRegion.rgList().forEach(function(element) {
+           var regionX = element._x;
+           var regionY = element._y;
+           if ((x === regionX) && (y === regionY)) region = element._Nr;
+       });
+       return region;
     };
 
     var _GameMap_Setup = Game_Map.prototype.setup;
@@ -357,17 +393,17 @@
     // $gameScreen.setRegionImg(2, "markWater", 1, 100, 100, 255, 0)
     Game_Screen.prototype.setRegionImg = function(regionId, name, origin, scaleX, scaleY, opacity, blendMode, top) {
         $mapRegion.rgList().forEach(function(element) { 
-        var sx = element.sx;
-        var sy = element.sy; 
+        var sx = element._sx;
+        var sy = element._sy; 
         var pictureId = 1;
         if ($gameScreen._pictures.length > 1) pictureId = $gameScreen._pictures.length;
-            if (sx && sy && name && regionId && regionId === element.Id & element.picId === 0) {
+            if (sx && sy && name && regionId && regionId === element._Id & element._picId === 0) {
                 $gameScreen.showPicture(pictureId, name, origin, sx, sy, scaleX, scaleY, opacity, blendMode);
                 if (top) {                    
                     $gameScreen.picture(pictureId)._zAnchor = 'top';
                 };                
                 $gameScreen.picture(pictureId)._regionId = regionId;
-                element.picId = pictureId;
+                element._picId = pictureId;
 
             };
         });                                              
@@ -378,7 +414,8 @@
      var _SceneMap_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
          _SceneMap_update.call(this);
-         if ($gameScreen.nextPicId() > 1 && $mapRegion._PCspritChild[0].picture() && _reloaded === 'false') {
+         var spritChildPC = $mapRegion.spritSetMap._pictureContainer.children;
+         if ($gameScreen.nextPicId() > 1 && spritChildPC[0].picture() && _reloaded === 'false') {
              $mapRegion.createContainers();
          _reloaded = 'true';
          }; 
@@ -386,23 +423,23 @@
 
 // New Picture Container Function, sorts Pictures to Containers ( = different Z anchors)
 //--------------------------------------------------------------------------------------   
-  Map_Region.prototype.createContainers = function() {
+  RG_Pictures.prototype.createContainers = function() {
       if ($gameScreen.nextPicId() === 1) _reloaded = 'false'; 
       if ($gameScreen.nextPicId() > 1) {
           this._regionPicContainer = new Sprite();
-          var pC = this._spritSetMapPC;
+          var pC = this.spritSetMap._pictureContainer;
           var rpC = this._regionPicContainer;
+          var spritChildPC = pC.children;
           rpC.z = _regionPicZ; 
           var allPics = _maxPic - 1;
           for (var s = allPics;s > - 1;s--) { 
-               var spritPics = this._PCspritChild[s];
+               var spritPics = spritChildPC[s];
                if (spritPics.picture() && spritPics.picture()._regionId > 0  && spritPics.picture()._zAnchor === 'normal') {
-                   //spritPics.picture()._sprite = spritPics;
-                   this._spritSetMap.removeChild(pC);
+                   this.spritSetMap.removeChild(pC);
                    rpC.addChild(spritPics);
                    pC.removeChild(spritPics);
-                   this._spritSetMap._tilemap.addChild(rpC);
-                   this._spritSetMap.addChild(pC);
+                   this.spritSetMap._tilemap.addChild(rpC);
+                   this.spritSetMap.addChild(pC);
                };     
           };   
 
@@ -415,9 +452,7 @@
        Spriteset_Map.prototype.createPictures = function() {
                 alias.apply(this, arguments);
                 this._pictureContainer.z = _picZ;
-                $mapRegion._spritSetMapPC = this._pictureContainer;
-                $mapRegion._PCspritChild = this._pictureContainer.children;
-                $mapRegion._spritSetMap = this;
+                $mapRegion.spritSetMap = this;
                 $mapRegion.createContainers();
        };
        })(Spriteset_Map.prototype.createPictures);
@@ -438,6 +473,24 @@
           _GamePicture_initTarget.call(this);
           this._regionId = 0;
           this._zAnchor = 'normal';
+      };
+
+      // add data
+      var _Game_event_ini = Game_Event.prototype.initialize;
+      Game_Event.prototype.initialize = function(mapId, eventId) {
+          _Game_event_ini.call(this, mapId, eventId);
+           this._regionId = $gameMap.regionId(this.x, this.y);
+           this._mapRegion = -1;
+      };
+
+      Game_Event.prototype.regionId = function() {
+          this._regionId = $gameMap.regionId(this.x, this.y);
+          return this._regionId;
+      };
+
+      Game_Event.prototype.mapRegion = function() {
+          this._mapRegion = $mapRegion.regionXY(this.x, this.y);
+          return this._mapRegion;
       };
 
 //-----------------------------------------------------------------------------------------

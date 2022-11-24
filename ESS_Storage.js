@@ -219,7 +219,7 @@
       }
 
       ESS_BOX.prototype.initialize = function(mapId, eventId) {      
-         this.BOX = [];
+          this.BOX = [];
       };
 	
       // build minimum default storage , can be used to reset the object	
@@ -232,7 +232,7 @@
       };
 	
       // function to return stored data	
-      ESS_BOX.prototype.list = function() { console.log(this, this.mapId, 'this data');
+      ESS_BOX.prototype.list = function() { 
           return this.BOX.filter(function(element) {
                  return !!element;
           });

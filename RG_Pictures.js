@@ -2,7 +2,7 @@
 // RG_Pictures.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <RG_Pictures> Display & Fix Imgs on RegionId Tile
+ * @plugindesc v1.1 Adds <RG_Pictures> Display & Fix Imgs on RegionId Tile
  * @author dopan
  *
  *

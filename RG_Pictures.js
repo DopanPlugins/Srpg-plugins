@@ -87,7 +87,7 @@
  *
  * #'default rpg maker script below
  *
- * $gameMap.regionId(x, y); # returns the regionId if there is an region on this xy mapLocation else 0
+ * $gameMap.regionId(x, y); # returns the regionId if there is a region on this xy mapLocation else 0
  *
  * =========================
  *

@@ -98,7 +98,7 @@
  * Plugin scriptcalls: (some of these are very similar or even do the same thing)
  * --------------------
  *
- *  # pls note ESS.BOX is not a function, its an array data container #
+ *  # pls note $ESS.BOX is not a function, its an ARRAY data container list #
  *
  * $ESS.BOX;       # Main data storage Container ,use this in Console to read all related data
  *
@@ -108,7 +108,14 @@
  *
  * $ESS.BOX[mapId][eventId]['A'];  # this returns true or false
  *
- * # pls note these below are all functions which use, read or return ESS.BOX data #
+ * # pls note these below are all FUNCTIONS which use, read or return $ESS.BOX data #
+ *
+ * sidenote: $ESS.BOX should only be used to read data in console F8,
+ *           it could be used in scripts for "if conditions" ect,
+ *           but BETTER USE THE FUNCTIONS in order to avoid,         
+ *           accidently overwriting any data from $ESS.BOX. 
+ * (Thats why i made most of these functions, so that script usage on $ESS.BOX can be avoided)     
+ *
  *
  * $ESS.list();        # function that returns  => $ESS.BOX map List 
  *
@@ -148,13 +155,16 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 1.0:
+ * Version 1.1:
  * - first Release 20.11.2022 for SRPG (rpg mv)!
+ * - BugFixed added 2nd Object & Function Type => "ESS_BOX()"
  */
  
- //"use strict";
+ //-[use strict:]
+ "use strict";
 
- //var $ESS = null;
+ // this will be overwritten anyway, with "$ESS = new ESS_BOX();"
+ if ($ESS === undefined) var $ESS = ['Global Object'];
 
 (function() {
 
@@ -164,24 +174,32 @@
 
 //------------------------------------------------------------------------------------------------------- 
 
+//-------[Game_Event:]
+
+      // add SelfSwitches data storage to event (this triggers "Self_Switches.prototype.initialize")
+      var _Game_event_ini = Game_Event.prototype.initialize;
+      Game_Event.prototype.initialize = function(mapId, eventId) {
+          _Game_event_ini.call(this, mapId, eventId);
+           this._SelfSwitch = new Self_Switches(mapId, eventId);
+      };
+
+//-------[Self_Switches:]
+
       // new Class "Self_Switches"	
       function Self_Switches() {
                this.initialize.apply(this, arguments);
       }
 
-      // create Global Object "$ESS" & the "Self_Switches.prototype"
-      $ESS = Object.create(Self_Switches.prototype);
-      Self_Switches.prototype.constructor = Self_Switches;	
-      
       //initialize Self_Switches
       Self_Switches.prototype.initialize = function(mapId, eventId) {
+
           this.A = !!$gameSelfSwitches._data[[mapId, eventId, "A"]];
           this.B = !!$gameSelfSwitches._data[[mapId, eventId, "B"]];
           this.C = !!$gameSelfSwitches._data[[mapId, eventId, "C"]];
           this.D = !!$gameSelfSwitches._data[[mapId, eventId, "D"]];
           this.mapId = mapId;
           this.eventId = eventId;	      
-          if ($ESS.BOX === undefined) this.storageBuilder();
+          if ($ESS.BOX === undefined) $ESS.storageBuilder();
           $ESS.BOX[0] = "# MapId #";
           if ($ESS.BOX[mapId] === undefined) $ESS.BOX[mapId] = [];
           $ESS.BOX[mapId][0] = "# EventId #";
@@ -192,33 +210,73 @@
           $ESS.BOX[mapId][eventId]['C'] = this.C;
           $ESS.BOX[mapId][eventId]['D'] = this.D;	      
       };
+
+//-------[ESS_BOX:]
+
+      // new Class "ESS_BOX"	
+      function ESS_BOX() {
+               this.initialize.apply(this, arguments);
+      }
+
+      ESS_BOX.prototype.initialize = function(mapId, eventId) {      
+         this.BOX = [];
+      };
 	
       // build minimum default storage , can be used to reset the object	
-      Self_Switches.prototype.storageBuilder = function() {
+      ESS_BOX.prototype.storageBuilder = function() {
           $ESS.BOX = [];
           $ESS.BOX.lastDataKey = "noData";
           $ESS.BOX.lastEventKey = "noData";	
           $ESS.BOX.data = $gameSelfSwitches._data;
+
       };
 	
       // function to return stored data	
-      Self_Switches.prototype.list = function() {
-          return $ESS.BOX.filter(function(element) {
+      ESS_BOX.prototype.list = function() { console.log(this, this.mapId, 'this data');
+          return this.BOX.filter(function(element) {
                  return !!element;
           });
       };
 	
       // function to return singel event_SelfSwitches data related to mapId	
-      Self_Switches.prototype.eventSwitch = function(mapId, eventId) {
-          return this.list()[mapId][eventId];
+      ESS_BOX.prototype.eventSwitch = function(mapId, eventId) {
+          if (this.list()[mapId][eventId]) return this.list()[mapId][eventId];
           return false;
       };
+
+      // scriptcall to setValue of all Events on current Map
+      ESS_BOX.prototype.setAllEvSelfSwitch = function(letter, value) {
+          for (var i = 1; i <= $gameMap.events().length; i++) {
+               $gameSelfSwitches.setValue([$gameMap._mapId, i, letter], value);                       
+          };
+      };   
 	
-      // add SelfSwitches data storage to event (this triggers "Self_Switches.prototype.initialize")
-      var _Game_event_ini = Game_Event.prototype.initialize;
-      Game_Event.prototype.initialize = function(mapId, eventId) {
-          _Game_event_ini.call(this, mapId, eventId);
-           this._SelfSwitch = new Self_Switches(mapId, eventId);
+      // get current key data & add data to events	
+      ESS_BOX.prototype.valueManager = function(key, value) {
+          if (key) {  
+              var list = [key];
+              var mapId = Number(list[0][0]);
+              var evId = Number(list[0][1]);
+              var info = list[0][2];
+              this.BOX.lastDataKey = [key]; this.BOX.lastDataKey.selfSwitch = value;
+              this.BOX.data = $gameSelfSwitches._data;
+              if (!Number(info) > 0) { // galv spawner compatiblety bugfix
+                  if (value) {
+                      this.BOX[mapId][evId][info] = true;  
+                  } else {
+                      this.BOX[mapId][evId][info] = false;
+                  }
+              };
+          };
+      }; 
+
+//-------[Game_SelfSwitches:]
+
+      // connect "setValue" to "event_SelfSwitches"	
+      var _Game_SelfSwitches_setValue = Game_SelfSwitches.prototype.setValue;
+      Game_SelfSwitches.prototype.setValue = function(key, value) {
+          _Game_SelfSwitches_setValue.call(this, key, value);
+          $ESS.valueManager(key, value);
       };
 
       // overwrite default function to clear/reset the ESS.BOX aswell, or else ESS.BOX would rebuild data
@@ -247,39 +305,15 @@
           };
       return !!this._data[key];
       };
+
+//-------[DataManager:]
 	
-      // connect "setValue" to "event_SelfSwitches"	
-      var _Game_SelfSwitches_setValue = Game_SelfSwitches.prototype.setValue;
-      Game_SelfSwitches.prototype.setValue = function(key, value) {
-          _Game_SelfSwitches_setValue.call(this, key, value);
-          $ESS.valueManager(key, value);
+      // create $ESS Object
+      var old_createGameObjects = DataManager.createGameObjects;
+      DataManager.createGameObjects = function() {
+          old_createGameObjects.call(this);
+          $ESS = new ESS_BOX();
       };
-
-      // get current key data & add data to events	
-      Self_Switches.prototype.valueManager = function(key, value) {
-          if (key) {  
-              var list = [key];
-              var mapId = Number(list[0][0]);
-              var evId = Number(list[0][1]);
-              var info = list[0][2];
-              $ESS.BOX.lastDataKey = [key]; $ESS.BOX.lastDataKey.selfSwitch = value;
-              $ESS.BOX.data = $gameSelfSwitches._data;
-              if (!Number(info) > 0) { // galv spawner compatiblety bugfix
-                  if (value) {
-                      $ESS.BOX[mapId][evId][info] = true;  
-                  } else {
-                      $ESS.BOX[mapId][evId][info] = false;
-                  }
-              };
-          };
-      };      
-
-      // scriptcall to setValue of all Events on current Map
-      Self_Switches.prototype.setAllEvSelfSwitch = function(letter, value) {
-          for (var i = 1; i <= $gameMap.events().length; i++) {
-               $gameSelfSwitches.setValue([$gameMap._mapId, i, letter], value);                       
-          };
-      };      
 
       // store/save Object data	
       var old_makeSaveContents = DataManager.makeSaveContents;
@@ -300,9 +334,10 @@
 //-----------------------------------------------------------------------------------------
 
 
-//
+
+//-------
 
 
-//--End:
+//--[End:]
 
 })();

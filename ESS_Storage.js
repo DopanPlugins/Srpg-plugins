@@ -16,7 +16,7 @@
  * and removes anything else,..(so that reading that data directly can often return "undefined")
  *
  * This plugin adds selfswitch data directly to Events, and it gives us options
- * to know the data of all selfSwitches from maps that allready have been visited.
+ * to know the data of all selfSwitches from maps that already have been visited.
  * 
  * -> I didnt add data from "dataMaps" because we know the default data from our maps setup anyway) 
  * ("dataMaps" means in this context , maps that dont have been visited yet by the gamePlayer)

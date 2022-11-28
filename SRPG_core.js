@@ -3624,9 +3624,10 @@ Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
     Sprite_Character.prototype.createTurnEndSprites = function() {
         if (!this._turnEndSprite) {
             this._turnEndSprite = new Sprite();
+            this._turnEndSprite.z = 5.6;// thats above upper Chars but below airship shadow
             this._turnEndSprite.anchor.x = 0.5;
             this._turnEndSprite.anchor.y = 1.1;//1;
-            this._turnEndSprite.anchor.z = 7;
+            this._turnEndSprite.anchor.z = 5.6;// thats above upper Chars but below airship shadow
             this.addChild(this._turnEndSprite);
         }
     };
@@ -6722,7 +6723,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                           eventunit._prioReset = false;
                       } 
                   }       
-                  if (eventunit._prioReset === true && defaultP !== undefined) { 
+                  if (eventunit && eventunit._prioReset === true && defaultP !== undefined) { 
                       eventunit._priorityType = defaultP;
                       eventunit._prioReset = false;
                   }
@@ -6935,7 +6936,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 					}
 				}
 				// check for reflection
-				if (user != target && Math.random() < action.itemMrf(target)) {
+				if (user !== target && action.itemMrf(target) > Math.random()) {
 					data.phase = 'reflect';
 				} else {
 					data.phase = 'animation';
@@ -7191,7 +7192,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		this.setupDamagePopup_MB();
 		if (this._damages.length > 0) {
 			for (var i = 0; i < this._damages.length; i++) {
-				this._damages[i].update();
+			     this._damages[i].update();
 			}
 			if (!this._damages[0].isPlaying()) {
 				this.parent.removeChild(this._damages[0]);
@@ -7206,13 +7207,13 @@ Window_WinLoseCondition.prototype.refresh = function() {
 		if ($gameSystem.isSRPGMode() && array && array[1]) {
 			var battler = array[1];
 			if (battler.isDamagePopupRequested()) {
-				var sprite = new Sprite_Damage();
-				sprite.x = this.x;
-				sprite.y = this.y;
-				sprite.z = 9;
-				sprite.setup(battler);
-				this._damages.push(sprite);
-				this.parent.addChild(sprite);;
+			    var sprite = new Sprite_Damage();
+			    sprite.x = this.x;
+			    sprite.y = this.y;
+			    sprite.z = 9;
+			    sprite.setup(battler);
+			    this._damages.push(sprite);
+			    this.parent.addChild(sprite);
 			}
 			battler.clearDamagePopup();
 			battler.clearResult();
@@ -7366,7 +7367,7 @@ Game_System.prototype.srpgCntInRange  = function(userEID, targetEID) {
     var target = $gameSystem.EventToUnit(targetEID);
     var skill = 1;
     if (target[1].attackSkillId() !== 0) skill = target[1].attackSkillId();
-    if (target[1].counterSkillId() !== 0) skill = target[1].counterSkillId();
+    //if (target[1].counterSkillId() !== 0) skill = target[1].counterSkillId();
     if ($gameSystem.srpgBattlerDistance(userEID, targetEID) > $gameSystem.srpgUnitSkillRange(target, skill)) {
         return false
     } else {return true};

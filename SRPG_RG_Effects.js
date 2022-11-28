@@ -188,9 +188,22 @@
  *
  * =========================
  *
- * $mapRegion._infoActive;          # returns if "region-InfoPicture" is activated
+ * $mapRegion._infoActive;          # returns if "region-InfoPicture" is activated ,true or false
  * 
  * $mapRegion._infoActive = false;  # set true or false to activate or deactivate "region-InfoPicture"
+ *
+ * sideNote: if deactivating "region-InfoPicture", incase current img is displayed, use:
+ *
+ * $mapRegion.infoClear();  # checks if "region-InfoPicture" is displayed and clear the Img
+ *
+ * sideNote: better use following function to set activity of "region-InfoPicture"  
+ * 
+ * $mapRegion.setInfoImgActive(value); # set value => true or false to activate or deactivate "region-InfoPicture"
+ *
+ * Exampe: 
+ * 
+ *   $mapRegion.setInfoImgActive(false);  # "region-InfoPicture" is deactivated & "$mapRegion.infoClear()" is used.
+ *
  *
  * =========================
  * $gameMap.event(eventId).mapRegion(); # returns the "Region Nr" if there is an region on eventLocation_xy else returns -1
@@ -486,6 +499,13 @@
         };
     };
 
+    //$mapRegion.setInfoImgActive(value); 
+    RG_Effects.prototype.setInfoImgActive = function(value) { 
+      if (value) this._infoActive = true; return true; 
+      this._infoActive = false; $mapRegion.infoClear(); return false;
+      
+    };
+
     //$mapRegion.regionXY(7, 17); 
     RG_Effects.prototype.regionXY = function(x, y) { 
        var region = -1;
@@ -569,7 +589,7 @@
 
         };
     };
-
+       
     // update sceneMap
     //-------------------------------------------------
      var _SceneMap_update = Scene_Map.prototype.update;
@@ -586,7 +606,7 @@
          // compatiblety with "arrowSelectDirection.js" .. trigger "rgTurnEndEffect" after arrow usage
          if ($mapRegion._EffectEid && !$gameSystem._arrowUser) {
              var evId  = $mapRegion._EffectEid;
-             $gameSystem.EventToUnit(evId)[1].rgTurnEndEffect();
+             if ($gameSystem.isSRPGMode() == true) $gameSystem.EventToUnit(evId)[1].rgTurnEndEffect();
              $mapRegion._EffectEid = undefined;
          }; 
          // handle RGinfo Picture
@@ -693,24 +713,26 @@
    
     // battler Turn End Effect on mapRegions
     Game_BattlerBase.prototype.rgTurnEndEffect = function() {
-        var unitRGid = this.event().regionId();
-        var mapRegion = this.event().mapRegion();
-        this._rgEffectDone = mapRegion; 
-        //#Check# StateNotes
-        for (var ds = 1; ds < $dataStates.length; ds++) {
-             var state = $dataStates[ds];
-             // #Eval# NoteTags only affect battler if state is addable
-             if (state.meta.RGstateRegion && state.meta.RGeval && this.isStateAddable(state.id)) {
-                 // read data of State notetag "RGstateRegion"
-                 var metaInfo = $mapRegion.RGdataInfo(state.meta.RGstateRegion, unitRGid);
-                 if (metaInfo && metaInfo !== 0) {
-                     eval(state.meta.RGeval);
+        if ($gameSystem.isSRPGMode() == true) {
+            var unitRGid = this.event().regionId();
+            var mapRegion = this.event().mapRegion();
+            this._rgEffectDone = mapRegion; 
+            //#Check# StateNotes
+            for (var ds = 1; ds < $dataStates.length; ds++) {
+                 var state = $dataStates[ds];
+                 // #Eval# NoteTags only affect battler if state is addable
+                 if (state.meta.RGstateRegion && state.meta.RGeval && this.isStateAddable(state.id)) {
+                     // read data of State notetag "RGstateRegion"
+                     var metaInfo = $mapRegion.RGdataInfo(state.meta.RGstateRegion, unitRGid);
+                     if (metaInfo && metaInfo !== 0) {
+                         eval(state.meta.RGeval);
+                     };
+                     // if Note is "0" means all regionIds are using eval
+                     if (state.meta.RGstateRegion === "0") {
+                         eval(state.meta.RGeval);
+                     };
                  };
-                 // if Note is "0" means all regionIds are using eval
-                 if (state.meta.RGstateRegion === "0") {
-                     eval(state.meta.RGeval);
-                 };
-             };
+            };
         };
     //function from edited srpg core: needed incase any Unit dies from Turn End Effect
     if (this.isDeathStateAffected()) $gameTemp.noActionDeath();
@@ -720,17 +742,19 @@
     var _setSrpgTurnEnd = Game_BattlerBase.prototype.setSrpgTurnEnd;
     Game_BattlerBase.prototype.setSrpgTurnEnd = function(flag) {
         _setSrpgTurnEnd.call(this, flag); 
-        // trigger rgTurnEndEffect (State notetag related)
-        var mapRegion = this.event().mapRegion();
-        if (this._rgEffectDone === mapRegion) {
-            this._rgEffectDone = false;
-            return;
-        } else {
-            if (this._arrowUse) {
-                $mapRegion._EffectEid = this.event()._eventId;
-            return;
-            };
+        if ($gameSystem.isSRPGMode() == true) {
+            // trigger rgTurnEndEffect (State notetag related)
+            var mapRegion = this.event().mapRegion();
+            if (this._rgEffectDone === mapRegion) {
+                this._rgEffectDone = false;
+                return;
+            } else {
+                if (this._arrowUse) {
+                    $mapRegion._EffectEid = this.event()._eventId;
+                return;
+                };
             this.rgTurnEndEffect();
+            };
         };
     };
 

@@ -44,6 +44,12 @@
  * @default mark
  *
  * @help  
+ *              (Compatiblety Info)
+ *
+ * If using "SRPG_ArrowSelectDirection" or "SRPG_MoveAfterAction", 
+ * place this Plugin somewhere below these 2 others
+ *
+ *                (Introduction)
  *
  * This plugin can Display fixed Pictures on Regions, 
  * that happens related to the regionId and region xy position.

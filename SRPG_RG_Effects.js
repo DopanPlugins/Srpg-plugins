@@ -712,6 +712,8 @@
                  };
              };
         };
+    //function from edited srpg core: needed incase any Unit dies from Turn End Effect
+    if (this.isDeathStateAffected()) $gameTemp.noActionDeath();
     };
 
     // Timming for battler Turn End Effect

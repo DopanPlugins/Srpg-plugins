@@ -77,15 +77,31 @@
  *   of units to decide which unit will run script of "eval-notetag" on regions
  *   
  * - second srpg related addon is "region-InfoPicture", if activated, this shows a
- *  Picture  whenever the Cursor is on this region in srpg battle, while subPhase Normal.
- *  (in srpg battle the $gamePlayer is the Cursor)
+ *   Picture  whenever the $gamePlayer is on this region.
+ *   (in srpg battle the $gamePlayer is the Cursor)
  *  -> this img is supposed to be the description Picture for this regionId
  *
  *
  *
+ * region-InfoPicture: 
+ * ===================
+ *
+ * You need an img for each region which should display an Info Picture.
+ * these imgs should be located in your "pictures" folder.
+ *
+ * The names of these Imgs MUST be correct! Examples below:
+ *
+ * 1RGinfo.png        # this Img will be used on regionId_1
+ *
+ * 2RGinfo.png        # this Img will be used on regionId_2
+ *
+ * sidenote: if using region with Id 155 , the name would be => 155RGinfo.png
+ *
+ * (its always first the Id Number and than "RGinfo.png")
  *
  *
- * GameMap NoteTags: 
+ * =================
+ * Map NoteTags: 
  * =================
  *
  * <RGinfo:regionId,regionId,ect>  # regionId is the id of regions that show "region-InfoPicture"
@@ -98,6 +114,7 @@
  *       <RGinfo:0>              # all mapRegions will show "region-InfoPicture" 
  *
  *
+ * =========================
  * State NoteTags: 
  * =========================
  * Following NoteTags should be used together:
@@ -141,7 +158,7 @@
  * => basicly you can use any script that works on battler,..
  *
  *
- *
+ * =========================
  * Plugin Scriptcalls: ( i recommend to try out the first 8 scripts in console F8 to see what they do )
  * =========================
  *

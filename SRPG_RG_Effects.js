@@ -187,9 +187,9 @@
  * $mapRegion._infoActive = false;  # set true or false to activate or deactivate "region-InfoPicture"
  *
  * =========================
- * $gameMap.event(eventId).mapRegion() # returns the Region Nr if there is an region on event Location xy else returns -1
+ * $gameMap.event(eventId).mapRegion(); # returns the "Region Nr" if there is an region on eventLocation_xy else returns -1
  *
- * $gameMap.event(eventId).regionId() # if there is an region on events position xy, return the regionId else 0
+ * $gameMap.event(eventId).regionId()   # if there is an region on eventLocation_xy, return the regionId else 0
  *
  * # sideNote: these 2 event data above are also added to the event by this plugin #
  *

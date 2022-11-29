@@ -714,6 +714,7 @@
     // battler Turn End Effect on mapRegions
     Game_BattlerBase.prototype.rgTurnEndEffect = function() {
         if ($gameSystem.isSRPGMode() == true) {
+            if (!this.event()) return;
             var unitRGid = this.event().regionId();
             var mapRegion = this.event().mapRegion();
             this._rgEffectDone = mapRegion; 
@@ -743,6 +744,7 @@
     Game_BattlerBase.prototype.setSrpgTurnEnd = function(flag) {
         _setSrpgTurnEnd.call(this, flag); 
         if ($gameSystem.isSRPGMode() == true) {
+            if (!this.event()) return;
             // trigger rgTurnEndEffect (State notetag related)
             var mapRegion = this.event().mapRegion();
             if (this._rgEffectDone === mapRegion) {

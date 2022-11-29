@@ -675,7 +675,7 @@
                       if (event._hasGrave === false) {anyUnitDead = true};
                  }
              }
-        });console.log("hello");
+        });
         return anyUnitDead; 
     };  
       

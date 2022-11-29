@@ -1364,7 +1364,6 @@
 //戦闘終了に関係する処理
     //戦闘終了するためのプラグイン・コマンド
     Game_System.prototype.endSRPG = function() {
-        $gameSystem.clearSrpgActorCommandStatusWindowNeedRefresh(); // dopan edit clear ActorCommandStatusWindow
         $gameTemp.clearActiveEvent();
         $gameMap.events().forEach(function(event) {
             var battlerArray = $gameSystem.EventToUnit(event.eventId());

@@ -1364,6 +1364,7 @@
 //戦闘終了に関係する処理
     //戦闘終了するためのプラグイン・コマンド
     Game_System.prototype.endSRPG = function() {
+        $gameSystem.clearSrpgActorCommandStatusWindowNeedRefresh(); // dopan edit clear ActorCommandStatusWindow
         $gameTemp.clearActiveEvent();
         $gameMap.events().forEach(function(event) {
             var battlerArray = $gameSystem.EventToUnit(event.eventId());
@@ -6872,7 +6873,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                    var evY = user.event().y + 1;
                    for (var i = 1; i <= $gameMap.events().length; i++) {
                         var eventU = $gameMap.event([i]);
-                        var euPrio = Number(eventU._priorityType);
+                        if (eventU) var euPrio = Number(eventU._priorityType);
                         if (eventU && eventU.y === evY && euPrio === userPrio) {   
                             var newPrio = euPrio + 0.5;
                             eventU._priorityType = newPrio;
@@ -7351,7 +7352,7 @@ BattleManager.invokeAction = function(subject, target) {
                    } else {this.invokeNormalAction(subject, target)};
                 } else if (Math.random() < this._action.itemMrf(target)) {// ????? move this up before counter?
                           this.invokeMagicReflection(subject, target);
-                } else {this.invokeNormalAction(subject, target)};console.log("hello")
+                } else {this.invokeNormalAction(subject, target)};
                 subject.setLastTarget(target);
                 this._logWindow.push('popBaseLine');
                 this.refreshStatus();

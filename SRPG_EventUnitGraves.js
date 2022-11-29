@@ -723,9 +723,9 @@
         if (_controllGraveSpawn === 'true') {
             if (SceneManager._scene instanceof Scene_Map === true) { 
                 if (_updateSwitch === 'true') {
-                    _updateSwitch = 'false';
                     if ($gameSystem.anyUnitDead()) {
                         $gameSystem.startGraveSpawn();
+                        _updateSwitch = 'false';
                         
                     };
                 };

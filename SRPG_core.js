@@ -3987,7 +3987,7 @@ Game_Interpreter.prototype.unitRemoveState = function(eventId, stateId) {
     };
 
     Window_SrpgActorCommandStatus.prototype.windowWidth = function() {
-        return Graphics.boxWidth - 530;// - 240
+        return Graphics.boxWidth / 1.9; //- 530;// - 240;
     };
 
     Window_SrpgActorCommandStatus.prototype.windowHeight = function() {
@@ -5172,6 +5172,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                 return;
             }
         }
+
         //エネミーフェイズの処理
         if ($gameSystem.isBattlePhase() === 'enemy_phase') {
             if ($gameSystem.isSubBattlePhase() === 'enemy_command') {
@@ -5301,7 +5302,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
                 if (event.pageIndex() >= 0) event.start();
                 $gameTemp.pushSrpgEventList(event);
             }
-        }); 
+        });$gameTemp.clearMoveTable(); 
     };
 
     //行動後イベントの実行
@@ -5636,7 +5637,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
     };
 
     //エネミーの移動先決定と移動実行
-    Scene_Map.prototype.srpgInvokeEnemyMove = function() {
+    Scene_Map.prototype.srpgInvokeEnemyMove = function() {console.log("here");
         var event = $gameTemp.activeEvent();
         var type = $gameSystem.EventToUnit(event.eventId())[0];
         var enemy = $gameSystem.EventToUnit(event.eventId())[1];
@@ -5645,8 +5646,8 @@ Window_WinLoseCondition.prototype.refresh = function() {
         this.srpgPriorityTarget(enemy); //優先ターゲットの設定
         var canAttackTargets = this.srpgMakeCanAttackTargets(enemy, targetType); //行動対象としうるユニットのリストを作成
         var targetEvent = this.srpgDecideTarget(canAttackTargets, event, targetType); //ターゲットの設定
-        $gameTemp.setTargetEvent(targetEvent);
-        if ($gameTemp.isSrpgBestSearchFlag() == true) {
+        $gameTemp.setTargetEvent(targetEvent);console.log("here");
+        if ($gameTemp.isSrpgBestSearchFlag() == true) { 
             $gameTemp.setSrpgBestSearchFlag(false);
             $gameSystem.srpgMakeMoveTable(event);
         }
@@ -5655,6 +5656,7 @@ Window_WinLoseCondition.prototype.refresh = function() {
         $gameSystem.setSrpgWaitMoving(true);
         event.srpgMoveRouteForce(route);
         $gameSystem.setSubBattlePhase('enemy_action');
+        $gameSystem.setSrpgWaitMoving(true);
     };
 
     // 行動対象とするユニットのタイプを返す

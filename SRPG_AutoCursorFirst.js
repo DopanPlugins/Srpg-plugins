@@ -2,7 +2,7 @@
 // SRPG_AutoCursorFirst.js
 //=============================================================================
 /*:
- * @plugindesc v1.0 Adds <SRPG_AutoCursorFirst> Cursor move to Destination before autoUnits in SRPG battle
+ * @plugindesc v1.0 <SRPG_AutoCursorFirst> Cursor move to Destination before autoUnits in SRPG battle
  * @author dopan
  *
  *

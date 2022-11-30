@@ -81,31 +81,31 @@
         _SRPG_SceneMap_update.call(this);
         //Process Direction Selection
         if ($gameSystem.isSRPGMode() && $gameSystem.isSubBattlePhase() === 'arrow_direction_selection') {
-            // if arrowUser alive 0> trigger arrow usage
+            // if arrowUser alive => trigger arrow usage
             if ($gameSystem._arrowUser && !$gameSystem._arrowUser[1].isDead()) this.srpgArrowDirectionSelection();
             // if arrowUser dead => reset data
             if ($gameSystem._arrowUser && $gameSystem._arrowUser[1].isDead()) {
-                $gameSystem._arrowUser[1]._arrowUse === "false";$gameSystem._arrowUser = undefined;
+                $gameSystem._arrowUser[1]._arrowUse = "false";$gameSystem._arrowUser = undefined;
             }
         return;
         }
     };
 
-    // turn off turn end img visiblety
-      var _SRPG_Sprite_Character_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
-    Sprite_Character.prototype.updateCharacterFrame = function() {
-          _SRPG_Sprite_Character_updateCharacterFrame.call(this);
-        if (this._turnEndSprite && this._turnEndSprite.visible === true && _eNotVisible === 'true') {
-            // avoid while arrow selction (normal)
-            if ($gameSystem.isSubBattlePhase() === 'arrow_direction_selection') this._turnEndSprite.visible = false;
-            // avoid till Combos & ForceActions are done (compatiblety for srpgForceAction)
-            if ($gameSystem._predictionUser && this._turnEndSprite.visible === true) {
-                this._turnEndSprite.visible = false;
-                var rightTimming = false;
-                if ($gameSystem._arrowUser) rightTimming = true;
-                if (!$gameSystem.isSubBattlePhase() === 'arrow_direction_selection' && rightTimming) this._turnEndSprite.visible = true;
-            };
-        };
+    // overwright srpg_core function to turn off turn end img visiblety
+    Sprite_Character.prototype.isTurnEndUnit = function() {
+        if (this._character.isEvent() == true) {
+            var battlerArray = $gameSystem.EventToUnit(this._character.eventId());
+            if (battlerArray) {
+                if (battlerArray[0] === 'actor' || battlerArray[0] === 'enemy') {
+                    if (battlerArray[1]._arrowUse === "true" && _eNotVisible === 'true') return false;// added
+                    return battlerArray[1].srpgTurnEnd();
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     };
 
     // clean up at global srpg Turn End ( when all units have ended their turns
@@ -154,7 +154,7 @@
     Scene_Map.prototype.srpgAfterAction = function() {
          var userEvId = $gameTemp.activeEvent().eventId();
          var actUser = $gameSystem.EventToUnit(userEvId);
-         _SRPG_SceneMap_after.call(this); console.log(!$gameSystem.srpgForceAction());
+         _SRPG_SceneMap_after.call(this);
          if (actUser[1].isActor() && !actUser[1].isAutoBattle() && _disableSwitch !== 'true' && !$gameSystem.srpgForceAction()) {
              if ($gameSystem._predictionUser !== undefined) var user = $gameSystem._predictionUser;
           // if wait command usage
@@ -267,8 +267,9 @@
        if (Input.isTriggered('ok')) {
            if (_directionSelectionCharacterName !== "-1") $gamePlayer._characterName = _srpgSet;$gamePlayer._priorityType = _cursorPriority;
       // clean up & get next actor or next phase    
-           unit[1]._arrowUse = "false";$gameSystem._predictionUser = undefined;$gameSystem._arrowUser = undefined;
-           $gameSystem.getNextRActor();_mousehover = 'false';
+           unit[1]._arrowUse = "false";$gameSystem._predictionUser = undefined;
+           $gameSystem._arrowUser = undefined;_mousehover = 'false';
+
            if (this.isSrpgActorTurnEnd()) {
               $gameSystem.setSubBattlePhase('normal');
            } else {$gameSystem.srpgStartAutoActorTurn()};
@@ -292,8 +293,9 @@
              $gamePlayer._characterName = _srpgSet;$gamePlayer._priorityType = _cursorPriority;   
           }
       // clean up & get next actor or next phase 
-          unit[1]._arrowUse = "false";$gameSystem._predictionUser = undefined;$gameSystem._arrowUser = undefined;
-          $gameSystem.getNextRActor();_mousehover = 'false';
+          unit[1]._arrowUse = "false";$gameSystem._predictionUser = undefined;
+          $gameSystem._arrowUser = undefined;_mousehover = 'false';
+
           if (this.isSrpgActorTurnEnd()) {
              $gameSystem.setSubBattlePhase('normal');
           } else {$gameSystem.srpgStartAutoActorTurn()};
@@ -351,7 +353,7 @@
              var battleunit = $gameSystem.EventToUnit([i]);
              var eventunit = $gameMap.event([i]);          
              if (battleunit && eventunit && (battleunit[0] === 'actor')) {
-                 if (battleunit[1]._arrowUse && battleunit[1]._arrowUse === true) { 
+                 if (battleunit[1]._arrowUse && battleunit[1]._arrowUse === "true") { 
                      battleunit[1]._arrowUse = "false";
                  };
                  // srpg MobeAfterAction compatiblety
@@ -365,6 +367,14 @@
     // reset stuff
     _mousehover = 'false';$gameSystem._predictionUser = undefined;$gameSystem._arrowUser = undefined;
     };
+
+    // clean up before srpgbattle end is executed
+    var _Game_System_endSRPG = Game_System.prototype.endSRPG;
+    Game_System.prototype.endSRPG = function() {
+        $gameTemp.clearASD();
+        _Game_System_endSRPG.call(this);
+    };
+
 
 //--------------------------
 //PluginEnd("thanks for reading") dopan.say = "have a nice Day"; 

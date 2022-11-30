@@ -23,7 +23,7 @@
  *
  * With this plugin we can even change the data , by using the "$gamemap.event(eventId)"
  *
- * EXAMPLE: $gamemap.event(eventId)._SelfSwitch['A'] = true; $gameMap.requestRefresh();
+ * EXAMPLE: $gameMap.event(eventId)._SelfSwitch['A'] = true; $gameMap.requestRefresh();
  *
  * -> in such case, if we DONT add "$gameMap.requestRefresh();" 
  * ..the Event wont know that the data has changed, till any other event was activated/started afterwards..

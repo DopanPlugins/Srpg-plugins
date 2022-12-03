@@ -489,8 +489,8 @@
  *
  * These are related to Steal & Break skills ,similar to the same ItemNotetags
  *
- * <noSteal> # Equip & Weapon Note that protects the Equip from beeing Stolen
- * <noBreak> # Equip & Weapon Note that protects the Equip from beeing Broken  
+ * <noSteal> # Equip & Weapon Note that protects the Equip/Weapon from beeing Stolen
+ * <noBreak> # Equip & Weapon Note that protects the Equip/Weapon from beeing Broken  
  *
  * ============================================================================
  * ============================================================================

@@ -2,7 +2,7 @@
 // SRPG_UnitCore.js
 //=============================================================================
 /*:
- * @plugindesc v2.7 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
+ * @plugindesc v2.8 Adds <SRPG_UnitCore> for SRPG.This Plugin includes "SRPG_Teams".               
  *               And it replaces the "SRPG_EnemyEquip"-Plugin.                     
  *
  * @author dopan ("SRPG_Teams" is made by doctorQ)
@@ -129,130 +129,40 @@
  *
  * @help  
  *
- * this Plugins requires: 
+ * this Plugins requires: (place it directly under the srpg core)
  *  "SRPG_Core.js" 
  *
- * This Plugin let Enemys use Equipment (default is = 5 base slots) & and it adds the Equipment
- * into the battleStatusWindow of actor&enemys.And it adds enemyClasses & enemyEXP. 
- * 
- * => the max Amount of used EnemySlots is 10
- * (but if using more than the default 5, you need to edit the BattleStatusWindow,or only the default_5 will be displayed)
- *  => such BattleStatusWindow_edit can be made in this plugin or in the "SRPG_StatusWindow(patch)" plugin
- * 
- * => the max Amount of  EquipSlots from which can be stolen/broken is also 10
- * (itemSlotSize can be 20 or more if changing the param, but never try to change a ItemSlot which doesnt exist) 
+ * This plugin adds following features:
+ * ________________________________________________________
+ * - DrQs plugin "SRPG_Teams" 
+ * - Enemy Equip (replaces my old "SRPG_EnemyEquip" plugin)
+ * - Enemy Classes
+ * - Enemy Level & Enemy Exp
+ * - Actor & Enemy ItemSlots for SRPG
+ * - Stealing Skills & breaking Skills for SRPG 
+ * - upgrade of battlers Status Window on srpg BattleMap
+ * ________________________________________________________
  *
+ * ====================
+ * ====================
+ *  ENEMY NOTETAGS
+ * ====================
+ * ====================
  *
- * => this Plugin includes a stealing/breaking function!
+ * ========================================================
+ * ====== [ENEMY EQUIP:] ==================================
  *
- * 
- * Pls check out the Plugin param to change a few things if needed.
+ * Enemy can have Equipment, which is added with Enemy NoteTags
  *
- * Everything else is handled with EnemyNotetags, SkillNoteTags & Scriptcalls..
+ * Global Enemy EquipSlot Amount:
  *
- * (by editing the Plugins JS_code the battleStatusWindow can be changed if needed,
- *  but i think i already made the best of it) 
+ * <enemyEquipSlotSize:x> # "x" is the number of EquipSlots all Enemys have by default
  *
- * For the default  BattleStatusWindow Setup pls use resolution of  "1110 x 768"
- * -> if using resolution of "1110 x 768", you can put "SRPG_StatusWindow(patch)" below this plugin.
- * -> if using the default resoluton of "816x624", you can put "SRPG_StatusWindow(816x624)" below this plugin.
+ * (if not used the Plugin param data will apply (by default 5)
  *
- * When using EnemyNote to set Equip,
- * every enemyClone with the same EnemyID will have the same Equip..
- * 
- * But you can also use 2 Scriptcalls,for changing BattlerUnits Equipment on Battlemap,
- * based on the eventID..
+ * Enemy EquipSlots NoteTags: (this adds the EquipSlot Type to Enemys)
+ * __________________________
  *
- * By default the chanceRates are 50%, this can be changed in the Plugin param,
- *  or by using the plugin Scriptcall.Incase its wanted to have a UnitRelated Chance:
- * ->Such change should happen in the "eventBeforeAction",or with "customExecution" (with scriptcall).
- * Pls Note: (plugin auto reset Chance)
- * The "BreakChance"&"StealChance" will always be reseted to the Plugin param "BreakChance"&"StealChance",
- * ..in the AfterAction_Scene.
- *
- * Default equipSlots are : (BattleStatusWindow related)
- *-------------------------
- * 0 = weapon slot or shield slot (plugin checks if equip is armor or weapon)
- * 1 = shield slot or weapon slot (plugin checks if equip is armor or weapon)
- * 2 = head slot (plugin asumes armor)
- * 3 = body slot (plugin asumes armor)
- * 4 = accessory slot  (plugin asumes armor)
- * (can be used otherways aswell)
- *
- * Plugin Scriptcalls:
- *--------------------
- *
- * (Change Equip related to event ID works for Actors&Enemys .. and on all slots)
- * -> this allows individual EquipChange to every battleUnit
- *
- * $gameTemp.changeUnitArmor(eventID, slotID, armorID);   //by Default armor Slot IDs are "1","2","3","4"
- *                                                      
- * $gameTemp.changeUnitWeapon(eventID, slotID, weaponID); //by Default weapon Slot ID is "0"
- *
- * (weaponID and armorID , is the Number related to the equipment in your Project)
- * => using 0 on weaponID or armorID, will delete any equipment in that slot!!
- *
- * these 2 Scriptcalls above can be used on battlemap to change the Equipment of battleUnits individually
- *-------------------------------------------------------------------------------------------------------
- * ScriptCall to change the Enemys ItemSlot_Item (min 3slots availleble). This is only for enemyUnits!
- *
- * $gameTemp.changeEnemyItem(eventID, slotID, itemID, typeID);
- * 
- * 
- *  "eventID" of the enemyUnit
- *  "slotID" can be 0 or higher, depending on the ItemslotSize (it starts with 0 = first slot)
- *  "itemID" the ID of the Item or Equip, if id 0 this will leave an empty Slot!!
- *  "typeID" can be "item","armor" or "weapon" 
- * 
- * 
- * Example:  $gameTemp.changeEnemyItem(30, 0, 3, "item");
- * 
- *----------------------------------------------
- * Scriptcall to change the Stealchance in Game:
- *----------------------------------------------
- *
- *
- * BreakChance:
- *--------------
- *
- *
- *  "this.changeBreakChance(chanceNumber);" // usage in Events ,commonEvents  ect
- *
- *
- * StealChance:
- *--------------
- *
- *
- *  "this.changeStealChance(chanceNumber);" // usage in Events ,commonEvents  ect
- *
- *
- *
- * => "chanceNumber" can be any number betwen "1" and "100". "100" means 100% stealChance.
- * (default is ChanceNumber in the Plugin param)
- * => if you want more complex Chance_options you can make a script or $gameVariable to define the number ,
- *    and put it in a common event. This common event can use this scriptcall as final trigger
- * 
- * (in such case the common event should be triggered with "custom execution" or the "preBattle phase" for example)
- *
- *
- * Scriptcall to enable/disable "ItemSlots menuCommand":
- *------------------------------------------------------
- *  
- *  "this.enableItemSlotsCommand(true/false);"
- * 
- * Plugin default is true, if false the MenuCommand is disabled.
- * 
- * 
- *
- * Plugin NoteTags:
- *-----------------
- * Enemy noteTags: (for classes and Levels)
- *
- *   <srpgClass:X>      # set class id.THIS IS REQUIRED! (number)
- *   <srpgLevel:X>      # set level id (number).If not used default level is 1
- *----------------
- * Enemy noteTags: (for equip)
- *----------------
  *   <srpgSlot0Type:x>
  *   <srpgSlot1Type:x>
  *   <srpgSlot2Type:x>
@@ -264,9 +174,15 @@
  *   <srpgSlot8Type:x>
  *   <srpgSlot9Type:x>
  *
- *  Type "x" is "armor" or "weapon" (it can only be "armor" or "weapon",never both)
- * Example1 => <srpgSlot0Type:weapon>  
- * (this tells the plugin that SlotType0 is a WeaponSlot,means EquipID of Slot0 from below will be a weapon_ID)
+ *  "x" is "armor" or "weapon" (it can only be "armor" or "weapon",never both)
+ *
+ * Example1: <srpgSlot0Type:weapon>  
+ *
+ * (this tells the plugin that SlotType0 is a WeaponSlot,
+ *  means EquipID of Slot0 from "SlotEquip" NoteTags below will be a weapon_ID)
+ *
+ * Enemy Equip NoteTags: (this adds the Equip to Enemys EquipSlots)
+ * __________________________
  *
  *   <srpgSlot0EquipID:x>
  *   <srpgSlot1EquipID:x>
@@ -279,32 +195,157 @@
  *   <srpgSlot8EquipID:x>
  *   <srpgSlot9EquipID:x>
  *
- * EquipID "x" is the number of the ID of Weapon or Armor in your project
- * (the plugin will know if its an armor or weapon because of the "SlotType" from above)
+ *  "x" is the number of the ID of Weapon or Armor in your project
+ * (the plugin will know if its an armor or weapon because of the "SlotType"-NoteTag from above)
  *
- * Example2 => <srpgSlot0EquipID:1> 
+ * Example2: <srpgSlot0EquipID:1> 
  *
- *  to equip the weapon with id_1 to "equipSlot_0" we need both together (Example1 and Example2)
- * ==>
+ *  to equip the weapon with id_1 to "equipSlot_0" we need both NoteTags together (Example1 and Example2)
+ * 
+ * Example3:
+ *
  *      <srpgSlot0Type:weapon>  
  *      <srpgSlot0EquipID:1>
  *
- * 
+ * ==========================================================
+ * ====== [ENEMY CLASSES:] ==================================
  *
- *------------------------------------------------------------------------------------
- * ENEMY EquipSlotAmount & ItemSlotAmount:
- *---------------------------------------------------
- * by default the Global EquipSlotAmount for enemys is set in the plugin param, 
+ * Enemy can have CLASSES, which are added with Enemy NoteTags:
+ *
+ * pls note when enemys have Classes, by default they use the Classes Params,
+ * to define their stats.. (same way like actors do)
+ *
+ * But this plugin gives us the Option to use the Enemy params data in addition!
+ *
+ *   <srpgClass:X>      # set class id.THIS IS REQUIRED! (number)
+ *                      # Now the enemy will get the Stats from its Class
+ *
+ *   <addEnemyParams>   # add Stat data from Enemy Params to the Enemy 
+ *                      # thats in addition to the Class Stat Params
+ * ______________________________________________________________________________
+ *
+ * There is also the extra option to restrict enemy Skill usage with "Class Learnings":
+ *
+ * Actors use Class-Learning to learn new Skills by leveling up
+ *
+ * Enemys have all skills that are added to their Enemy params data,
+ * but we can restrict these skills related to their Level,
+ * and the "Class Learning" data of the Enemy Class 
+ * (its recommended to give actors and enemys seperated classes)
+ *
+ * CLASS LEARNINGS:
+ *
+ * Here we have 3 datas:
+ *
+ * Level: # is the required level to use the skill
+ *
+ * Skill: # thats the skill which can be resticted related to Level
+ *
+ * Note:  # this can be "All" or the name of the Monster => example "Slime"
+ *
+ * Example1: (restrict Skill Usage if Enemy hasnt learned Skill because of low Level)
+ * 
+ *              Level:2  Skill:3  Note:All
+ *
+ * => this means all Enemys which use this Class must have Level 2 to use Skill 3
+ * (Skill 3 must be added to the Enemy params, but now its restricted to the Enemy Level)
+ *
+ *
+ * Example2:
+ *
+ *              Level:2  Skill:3  Note:Slime
+ *
+ * => this means only Enemys with the name "Slime" are affected of this restriction
+ *
+ * ==========================================================
+ * ====== [ENEMY LEVEL & ENEMY EXP:] ========================
+ *
+ * Enemy can have Level & Exp:
+ *
+ *   <srpgLevel:X>      # set level id (number). If not used default level is 1
+ *
+ *
+ * pls note the Level , Exp and Level_up data is all related to the Enemy Class
+ *
+ *
+ * ==========================================================
+ * ====== [Enemy ITEMSLOTS:] ================================
+ *
+ * by default the Global ItemSlotAmount for Enemys is set in the plugin param, 
  * it can be any number from 1 up to 20 (default is 4) 
  *
- * This enemyNote can set the slotAmount for that enemy ID individually!
- * (if not used default 4 will be used)
+ * This enemyNote can set the slotAmount for this enemy ID individually!
+ * (if not used the plugin param data will be used)
  *
- *   <enemyEquipSlotSize:x>  //enemyNote
+ *   <enemyItemSlotSize:x>  # enemyNote: "x" is the number to set SlotSize
+ *
+ * SideNote about Enemy ItemSlots:
+ * _______________________________
+ * Whatever Items the Enemy ID has on its "dropItems setup" (3slots) will be added to EnemyItemSlots 
+ * (the first 3 EnemyItemSlots will store them, all other Slots are empty by default,
+ *  but can be equiped with scripcalls)
+ *
+ * The steal chance is NOT related to the dropItem chance from the enemy Setup.
+ * Stolen ENEMY-items are erased from the "itemSlot"-storage, this has no Effect on "dropItem Slot" of that enemyUnit.
  * 
- *---------------
- * SkillNoteTags: (for actors & enemys)
- *---------------
+ * (enemy can still drop that item if killed in such case)
+ * => if we would try to change the "dropItem Slot", this would affect all Enemys with the same enemy ID
+ *
+ * pls note: enemys dont use these items they only store them to get stolen or lootet.
+ * If enemys use items with skills they will get the data from the system similar to how other enemySkills work. 
+ * And when enemys steal Stuff and they are not in the actorTeam,these stolen stuff gets erased..
+ * (looting needs scripting/eventing this is not supported by default,
+ * but it should be possible with having eventGraves)
+ *
+ * The enemyItemSlots_Size can be changed global for all enemys in the Plugin param
+ * or with this EnemyNoteTag (affects all enemys with the same enemyID)
+ *
+ * Enemys can even carry Weapons or Equip in their ItemSlots (while Actors only carry Items in ItemSlots)
+ *
+ * ====================
+ * ====================
+ *  ACTOR NOTETAGS
+ * ====================
+ * ====================
+ *
+ * ==========================================================
+ * ====== [ACTOR ITEMSLOTS:] ================================
+ *
+ * Actor NoteTag ItemSlots:
+ *------------------------
+ *
+ * <actorItemSlotSize:x>  # "x" is the number amount ,min 1 max 20
+ *                        # if not used plugin param default(5) is used
+ *
+ * SideNote about Actor ItemSlots:
+ * _______________________________
+ * For Actors this plugin provides an extra itemslot menu outside of SRPGbattle, 
+ * and the inBattle Item command will be overwritten to only allow the usage of these ActorSlot Items for Actors.
+ *
+ * if Actors Team Members Steal of loot Items ect, they will give it directly to the $gameParty like usual!
+ *
+ * ====================
+ * ====================
+ *  ITEM NOTETAGS
+ * ====================
+ * ====================
+ *
+ * Item NoteTag:
+ * -------------
+ *
+ * <noSteal> # ItemNote that protects the Item from beeing Stolen
+ * <noBreak> # ItemNote that protects the Item from beeing Broken  
+ *
+ * <noActorItemSlot>  # Items with this noteTag cant be equiped in the ActorItemSlots
+ *                    #  (for usage on unique items or story items ect)
+ * 
+ * ====================
+ * ====================
+ *  SKILL NOTETAGS
+ * ====================
+ * ====================
+ *
+ * These Skill NoteTags are all related to STEAL & BREAK Skills
  *
  * Pls note : you can combine these Notetags by using more than one in 1 skill,
  * BUT make sure to NEVER use the SAME NoteTag 2 times in the same skill
@@ -314,217 +355,246 @@
  * => its the same order from top to down in which they are displayed and explained below!  
  *    (for obvius reasons all break skills are executed first, broken stuff cant be stolen^^)
  *
- * by default "x" is used to define whats explained below,
- *  and that will always just steal 1 Item/Equip per NoteTag_Usage
- * But we can also use the "all&next-Options" for more complex Usage
- * (the "all&next-Options" will be explained below after the NoteTags)
+ * <srpgBreak:x>           #"x" is "item" or "armor" or "weapon" ("item" = ItemSlot else=> EquipSlot)
+ *                         # this will target the next fitting Slot from the top if it matches with "x"
  *
- *                      //EXPLANATION: "breakSkills" show what "x" is, "stealSkills" add usage info
+ * <srpgItemBreak:x>       #"x" is itemName (example "potion" => "<srpgItemBreak:potion>" only for items!!)
+ *                         # this will target the next fitting ItemSlot from the top if it matches with "x"
  *
- *                      // X data info:
- *                             
- * <srpgBreak:x>           //"x" is "item" "armor" "weapon" ("item" = ItemSlot else=> EquipSlot)
- * <srpgItemBreak:x>       //"x" is itemName (example "potion" => "<srpgItemBreak:potion>" only for items!!)
- * <srpgTypeBreakEquip:x>  //"x" is eTypeID = EquipmentTypeID of your System (starts with 1)
- * <srpgTypeBreakWeapon:x> //"x" is wTypeID = WeaponTypeID of your System (starts with 1)
- * <srpgTypeBreakArmor:x>  //"x" is aTypeID = ArmorTypeID of your System  (starts with 1)
- * <srpgSlotBreakEquip:x>  //"x" is slotID of EquipSlot (starts with 0 ) 
- * <srpgSlotBreakItem:x>   //"x" is slotID of ItemSlot (starts with 0 )  
- *                            
+ * <srpgTypeBreakEquip:x>  #"x" is eTypeID = EquipmentTypeID of your System (starts with 1)
+ *                         # this will target the next fitting EquipSlot from the top if it matches with "x"
  *
- * <srpgSteal:x>           // this will target the next fitting Slot from the top if it matches with "x"
- * <srpgItemSteal:x>       // this will target the next fitting ItemSlot from the top if it matches with "x"
- * <srpgTypeStealWeapon:x> // this will target the next fitting EquipSlot from the top if it matches with "x"
- * <srpgTypeStealArmor:x>  // this will target the next fitting EquipSlot from the top if it matches with "x"
- * <srpgTypeStealEquip:x>  // this will target the next fitting EquipSlot from the top if it matches with "x"
- * <srpgSlotStealEquip:x>  // this will target the SlotID of EquipSlot "x"
- * <srpgSlotStealItem:x>   // this will target the SlotID of ItemSlot "x"
+ * <srpgTypeBreakWeapon:x> #"x" is wTypeID = WeaponTypeID of your System (starts with 1)
+ *                         # this will target the next fitting EquipSlot from the top if it matches with "x"
+ *
+ * <srpgTypeBreakArmor:x>  #"x" is aTypeID = ArmorTypeID of your System  (starts with 1)
+ *                         # this will target the next fitting EquipSlot from the top if it matches with "x"
+ *
+ * <srpgSlotBreakEquip:x>  #"x" is slotID of EquipSlot (starts with 0 ) 
+ *                         # this will target the SlotID of EquipSlot "x", no matter whats stored there
+ *
+ * <srpgSlotBreakItem:x>   #"x" is slotID of ItemSlot (starts with 0 )  
+ *                         # this will target the SlotID of ItemSlot "x", no matter whats stored there
+ *
+ *
+ * <srpgSteal:x>            # same as the Break Note from above but for Stealing
+ * <srpgItemSteal:x>        # same as the Break Note from above but for Stealing
+ * <srpgTypeStealWeapon:x>  # same as the Break Note from above but for Stealing
+ * <srpgTypeStealArmor:x>   # same as the Break Note from above but for Stealing
+ * <srpgTypeStealEquip:x>   # same as the Break Note from above but for Stealing
+ * <srpgSlotStealEquip:x>   # same as the Break Note from above but for Stealing 
+ * <srpgSlotStealItem:x>    # same as the Break Note from above but for Stealing
+ * ______________________________________________________________________________
  *
  * "All & Next"-Options:
  *---------------------
  * in some cases you might want to use Options to break OR steal "all" or the "next" Item/Equip
  *
+ * "next" means the next slot from top (only for slot usage)
+ * "all" means it will target all related data 
+ *
  * SCHOWCASE EXAMPLES: to show where you can use these extra options
  *
- * <srpgBreak:allItems>              //"x" can be "allItems" or "allWeapons" or "allArmors"
- * <srpgItemBreak:allNames>          //"x" can be only "allNames"
- * <srpgTypeBreakEquip:allTypes>     //"x" can be only "allTypes"
- * <srpgTypeBreakWeapon:allTypes>    //"x" can be only "allTypes"  
- * <srpgTypeBreakArmor:allTypes>     //"x" can be only "allTypes"   
- * <srpgSlotBreakEquip:allSlots>     //"x" can be "allSlots" or "nextSlot"
- * <srpgSlotBreakItem:nextSlot>      //"x" can be "allSlots" or "nextSlot" 
+ * <srpgBreak:allItems>              #"x" can be "allItems" or "allWeapons" or "allArmors"
+ * <srpgItemBreak:allNames>          #"x" can be only "allNames"
+ * <srpgTypeBreakEquip:allTypes>     #"x" can be only "allTypes"
+ * <srpgTypeBreakWeapon:allTypes>    #"x" can be only "allTypes"  
+ * <srpgTypeBreakArmor:allTypes>     #"x" can be only "allTypes"   
+ * <srpgSlotBreakEquip:allSlots>     #"x" can be "allSlots" or "nextSlot"
+ * <srpgSlotBreakItem:nextSlot>      #"x" can be "allSlots" or "nextSlot" 
  *
- * <srpgSteal:x>            // "x" is same as on break noteTags, if "allItems" = ItemSlot. Else => EquipSlot
- * <srpgItemSteal:x>        // this will target all ItemNames of the targetBattleUnit's ItemSlots..
- * <srpgTypeStealWeapon:x>  // this will target all Weapons of all WeaponTypes (EquipSlots)
- * <srpgTypeStealArmor:x>   // this will target all Armor of all ArmorTypes (EquipSlots)
- * <srpgTypeStealEquip:x>   // this will target all Equip of all EquipTypes (EquipSlots)
- * <srpgSlotStealEquip:x>   // this targets "all" or only 1 which is the "next" Equiped from the Top (EquipSlot)
- * <srpgSlotStealItem:x>    // this targets "all" or only 1 which is the "next" Item from the Top (ItemSlot)
+ * <srpgSteal:x>            # same as the Break Note from above but for Stealing
+ * <srpgItemSteal:x>        # same as the Break Note from above but for Stealing
+ * <srpgTypeStealWeapon:x>  # same as the Break Note from above but for Stealing
+ * <srpgTypeStealArmor:x>   # same as the Break Note from above but for Stealing
+ * <srpgTypeStealEquip:x>   # same as the Break Note from above but for Stealing
+ * <srpgSlotStealEquip:x>   # same as the Break Note from above but for Stealing
+ * <srpgSlotStealItem:x>    # same as the Break Note from above but for Stealing
  *
  *
  * Note: I admit i only tested a few NoteTags, but they are all bound into 1 Function,
  *        and on this Version i had no Bugs left with the tested skills & NoteTags
- *(normaly that means they should all work,no matter how they are combined,but if you find a buged One pls let me know!)       
- *
- *------------------------------------
- * gain Exp & gain Gold -Skills:
- *------------------------------------
- *
- * <srpgGoldStealAmount:x> // Steals Gold using a fixed amount that is influenced by the Units Levels
- *
- * <srpgGoldStealRandom:x> // Steals Gold ,influenced by Units Levels and an randomized around the number "x"
- *
- * <srpgExpStealAmount:x> // Steals EXP using a fixed amount that is influenced by the Units Levels
- *
- * <srpgExpStealRandom:x> // Steals EXP ,influenced by Units Levels and an randomized around the number "x"
+ * (normaly that means they should all work,no matter how they are combined,
+ * but if you find a buged One pls let me know!)
  *
  *
- * "x" can be any number, i can recommend using 99, 111 & 123 for example..
+ * ------------------------------------
+ * gainExp & gainGold -SkillNotetags:
+ * ------------------------------------
+ *
+ * <srpgGoldStealAmount:x> # Steals Gold using a fixed amount that is influenced by the Units Levels
+ *
+ * <srpgGoldStealRandom:x> # Steals Gold ,influenced by Units Levels and an randomized around the number "x"
+ *
+ * <srpgExpStealAmount:x>  # Steals EXP using a fixed amount that is influenced by the Units Levels
+ *
+ * <srpgExpStealRandom:x>  # Steals EXP ,influenced by Units Levels and an randomized around the number "x"
  *
  *
- * Explanation, in all 4 cases the Levels of the Units do Influence the outcome 
+ * "x" can be any number, for "Random" i can recommend using 99, 111 & 123 for example..
+ *
+ * SideNote: in all 4 cases the Levels of the Units do Influence the outcome 
  * (if the target has a higher level,than the user,.. the outcome gets higher)
- * => and the levels also change the Final Amount
- *
- * used formulas are these: (can be tested in console F8, to figure out what "x" data you wanna use)
- *
- * 1.Random Amount => Math.round(Math.floor(Math.random() * finalAmount + finalAmount / 2))
- *
- * 2a.Normal Amount => Math.round((randomAmount / (activeLevel + 1)) * targetLevel); 
- *
- * 2b.Normal Amount => Math.round((randomAmount / (activeLevel - 1)) * targetLevel); 
- * 
- * "finalAmount" is where the "x" data is used, "random skills" use both (1.Random Amount & 2.Normal Amount)
- *
- * "normal amount skills" uses only the second formula (Normal Amount)
- *
- * "randomAmount" is also where the "x" data is used. "activeLevel" is the users level
- *
- * "targetLevel" is the targets level..
- *
- * 2a. is used,when the "user" has a higher level",.. 2b is used when the "target" has the higher Level
- *
- *--------------------------------------------------
- * Item or Equip "Protection NoteTags"
- *--------------------------------------------------
- *
- * <noSteal> //protects the Item Or Equip permanent from beeing Stolen
- * <noBreak> //protects the Item Or Equip permanent from beeing Broken       
- *
- *----------------------------------------------------
- * Explanation about EnemyItemSlots & ActorItemSlots
- *----------------------------------------------------
- *
- * EnemyItemSlots:
- *-----------------
- * Whatever Items the Enemy ID has on its "dropItems setup" (3slots) will be added to EnemyItemSlots 
- * (the first 3 EnemyItemSlots will store them, all other Slots are empty by default but can be equiped with scripcall)
- *
- * The steal chance is not related to the dropItem chance from the enemy Setup.
- * Stolen ENEMYitems are erased from the "itemSlot"-storage, this has no Effect on "dropItem Slot" of that enemyUnit.
- * 
- * (enemy can still drop that item if killed in such case)
- * => if we would try to change the "dropItem Slot", this would affect all Enemys with the same enemy ID
- *
- * pls note: enemys dont use these items they only store them to get stolen or lootet.
- * If enemys use items with skills they will get the data from the system similar to how other enemySkills work. 
- * And when enemys steal Stuff and they are not in the actorTeam,these stolen stuff gets erased..
- *(looting needs scripting/eventing this is not supported by default, but it should be possible with having eventGraves)
- *
- * The enemySlots_Size can be changed global for all enemys in the Plugin param
- * or with this EnemyNoteTag (affects all enemys with the same enemyID)
- *
- *    <enemyEquipSlotSize:x>    // "x" is the size of enemySlot.. minimum is 3 ! default is 4
  *
  *
- * ActorItemslots: 
- *----------------
+ * ------------------------------------------
+ * BreakChance & StealChance -SkillNotetags:
+ * ------------------------------------------
  *
- * For Actors this plugin provides an extra itemslot menu outside of SRPGbattle, 
- * and the Item command will be overwritten to only allow the usage of these ActorSlot Items for Actors.
- *
- * if Actors Steal of loot Items ect, they will give it directly to the gameparty like usual!
- *
- * I might build an extension plugin in the future that overwrites the "$gameParty.gainItem"-function.
- * in order to get/give items to the actors instead(and enemys might be able to store stolen items aswell)  
- * -> but this should be optional and it would require more coding to handle everything correctly,
- *     thats why i avoided to do that in this Plugin.
- *
- * ActorNoteTag ItemSlots
- *-----------------------
- *
- * <actorItemSlotSize:x> // actorNote minimum is 1, default is 5
- *
- * this can change the ItemSlotsize for each single Actor individually
- * there is also a global Option for all actors in the Param which get overwriten when using this
- *
- * ItemNoteTag:
- *-------------
- *
- * <noActorItemSlot>  // ItemNote
- *
- * Items with this noteTag cant be equiped in the ActorItemSlots
- *
- * (for usage on unique items or story items ect)
- *
- *----------------------------------------------------------------------------------------------------------
  * "BreakChance" & "StealChance" are by default "50" or whatever you added to the plugin param
  * (if Equip get broken, stealing wont work ,even if stealChance was succesfull)
  *
- * <srpgSkillBreakChance:x> // SkillNote
- * <srpgSkillStealChance:x> // SkillNote
+ * <srpgSkillBreakChance:x> # SkillNote "x" can be any number from 0 to 100
+ * <srpgSkillStealChance:x> # SkillNote "x" can be any number from 0 to 100
  * 
  * "x" is a number betwen 1 and 100. Example => 100 would mean %100 chance => <srpgSkillBreakChance:100>
- * (these Skill_NOTETAGs are only needed if you want a skill with other chances)
+ * (these Skill_NOTETAGs are only needed if you want a skill with unique chances)
  *
  * "Chances" can be changed global with Scriptcall for usage with "custom execution" or in the "preActionPhase"
- * The "BreakChance"&"StealChance" will always be reseted to the Plugin param "BreakChance"&"StealChance",
+ * The "BreakChance" & "StealChance" will always be reseted to the Plugin param "BreakChance"&"StealChance",
  * ..in the AfterAction_Scene.
- * 
- * ============================================================================
- * about enemyClass & enemyEXP (Classes are required to handle EXP)
- * ============================================================================
  *
- * The Class for enemys must be added in the enemy Note!
+ * ====================
+ * ====================
+ *  STATE NOTETAGS
+ * ====================
+ * ==================== 
  *
- * use a Number for this (id of class)
- *
- * Enemy Classes wont let enemy learn skills or use the Class param,Classes are only used for:
- *
- * - using Class Notetags
- *
- * - using the EXP curves of the Class to handle the EXP Setup
- *
- * - display the Classname in battleStatus window
- *
- * also enemys dont need to care about Equip restrictions,.. 
- *
- * In my oppinion, Class/Equip Restrictions are made for the "player" of your Game.Not for you the Dev.
- *
- * So it would make no sence to add restrictions to the enemys , when the player can't controll the Enemys.
- *
- *
- * =======================
- * State NoteTags
- * =======================  "x" can be any Number from 0 to 100 (100 = 100% chance)
+ * These are all related to Steal & Break Chances
  *
  * Priority ,that decides which Chance applys:
  *
+ *  "x" can be any Number from 0 to 100 (100 = 100% chance)
+ *
  * Chance_ScriptCalls > "target"-StateNote > "user"-StateNote > pluginParam
  *                            
- * <userBreakChance:x>     // SkillUser BreakChance
+ * <userBreakChance:x>     # StateNotetag that decides the SkillUser BreakChance
  * 
- * <targetBreakChance:x>   // SkillTarget BreakChance 
+ * <targetBreakChance:x>   # StateNotetag that decides the SkillTarget BreakChance 
  *
- * <userStealChance:x>     // SkillUser StealChance
+ * <userStealChance:x>     # StateNotetag that decides the SkillUser StealChance
  * 
- * <targetStealChance:x>   // SkillTarget StealChance
+ * <targetStealChance:x>   # StateNotetag that decides the SkillTarget StealChance
  *
  * if a battleUnit has 2 or more States at the same time,that affect the same kind of Chance, 
  * the StateMeta of the State with the higher ID will be used
- * (its recommened to avoid this, or to make sure that States with higher priority, to change the Chances,
- *  use the higher State_IDs)
+ * (its recommened to avoid this, or to make sure that States with higher priority,
+ *  to change the Chances,  use the higher State_IDs)
+ *
+ * =========================
+ * =========================
+ *  EQUIP & WEAPON NOTETAGS
+ * =========================
+ * ========================= 
+ *
+ * These are related to Steal & Break skills ,similar to the same ItemNotetags
+ *
+ * <noSteal> # Equip & Weapon Note that protects the Equip from beeing Stolen
+ * <noBreak> # Equip & Weapon Note that protects the Equip from beeing Broken  
+ *
+ * ============================================================================
+ * ============================================================================
+ * ============================================================================
+ *
+ * ABOUT: "Upgrade of battlers Status Window on srpg BattleMap"
+ * 
+ * Default equipSlots are : (BattleStatusWindow related)
+ * --------------------------------------------------------------------------
+ * 0 = weapon slot or shield slot (plugin checks if equip is armor or weapon)
+ * 1 = shield slot or weapon slot (plugin checks if equip is armor or weapon)
+ * 2 = head slot (plugin asumes armor)
+ * 3 = body slot (plugin asumes armor)
+ * 4 = accessory slot  (plugin asumes armor)
+ *
+ * The plugin will know if any Equip/Weapon was not added by default,
+ * or if the Equip/Weapon was Stolen..
+ *
+ * In such case the plugin will show related to the plugin param:
+ *
+ * "no equip"-in normal color, or "equip stolen"-in red color
+ *
+ * ============================================================================
+ * ==========================[Plugin ScriptCalls:]=============================
+ * ============================================================================
+ *
+ * ==========================[$gameTemp:] (for battleUnits)
+ *
+ * 
+ * (Change Equip/Weapon/Item related to event ID works for Actors & Enemys .. and on all slots)
+ * -> this allows individual EquipChange to every battleUnit
+ *
+ * $gameTemp.changeUnitArmor(eventID, slotID, armorID);   # set armorId on EquipSlotId based on eventId
+ *                                                        # by Default armor Slot IDs are "1","2","3","4"
+ *         example:  $gameTemp.changeUnitArmor(15, 1, 3);                                                     
+ *
+ * $gameTemp.changeUnitWeapon(eventID, slotID, weaponID);  # set weaponId on EquipSlotId based on eventId 
+ *                                                         # by Default weapon Slot ID is "0"
+ *         example:  $gameTemp.changeUnitWeapon(15, 0, 1);                                                     
+ *
+ * $gameTemp.changeEnemyItem(eventID, slotID, itemID, typeID);   # set Item on ItemSlotId based on eventId
+ *                                                               # default 4 ItemSlots are "0","1","2","3"
+ *                                                               # typeID can be "item","armor" or "weapon" 
+ *         example:  $gameTemp.changeEnemyItem(15, 0, 1, "item");   
+ * ________________________________________________________________________________________
+ * SideNote: the old equip/weapon/item in the slot, if their was any, will be deleted..
+ *          On Actors you can use eventCommands to give that equip/weapon/item back to $gameParty Storage
+ *
+ * (Enemys have no global equip/weapon/item Storage by default)
+ *
+ * => using 0 on weaponID or armorID or itemID, will clear any data in that Slot
+ * ________________________________________________________________________________________
+ *
+ * ==========================[Game_interpreter:]
+ *
+ * #pls Note "customExecution"-skillNote is related to usage of YEPs SkillCore#
+ * 
+ * this.changeBreakChance(chanceNumber);    # chanceNumber can be any Number from 0 to 100 (100 = 100%)
+ *                                          # should be used im "PreAction"-Event or "customExecution"-skillNote
+ *     example:  this.changeBreakChance(50); 
+ *
+ * this.changeStealChance(chanceNumber);    # chanceNumber can be any Number from 0 to 100 (100 = 100%)
+ *                                          # should be used im "PreAction"-Event or "customExecution"-skillNote
+ *     example:  this.changeStealChance(50);
+ *
+ * this.enableItemSlotsCommand(true/false); # enables/disables the ItemSlotsCommand in the Menu
+ *
+ *     example:  enableItemSlotsCommand(true);
+ *
+ * ==========================[Batller => Actor & Enemy:]
+ *
+ * #(thats the default rpg maker actor scriptcall which also is added for enemys by this plugin)#
+ * 
+ * $gameSystem.EventToUnit(eventId)[1].changeClass(classId, keepExp); # classId is the new ClassId
+ *                                                                    # if KeepExp === true, Exp is not reseted
+ *  example: $gameSystem.EventToUnit(eventId)[1].changeClass(3,true);
+ *
+ * ==========================[Batller => only Enemy:]
+ *
+ * #(thats added by this Plugin only for Enemys, to check the classLearnings Restictions)# 
+ *
+ * $gameSystem.EventToUnit(eventId)[1].isClassSkillLearned(skillId); # returns true or false
+ *
+ *  example: $gameSystem.EventToUnit(eventId)[1].isClassSkillLearned(2);
+ *
+ * => by default the Plugin assumes that enemys have learned all skills,
+ *    only The class Restriction for learned Skills can change that.
+ *
+ * (the actors equivalent for that script is "isLearnedSkill" in the rpg maker objects plugin)
+ * ============================================================================
+ *
+ * About Learn Skill, Forget Skill on Actors & Enemys:
+ *
+ * in the rpg maker objects plugin, actors have functions to learn & forget Skills..
+ * and to check if a skill is learned.
+ *
+ * But Enemys use their enemy param to know which skills they have.
+ * Thats why i currently have no option added to learn or forget skills,for Enemys.
+ * But we have the enemyClass Learnings Restictions, 
+ * which disables skills if the enemy level is to low.
+ * That way the skill is disabled till the Level is high enough
+ * so that the skill usage is "learned"..
+ * That means Enemys have the skill but they cant use it, till they learned the Usage
+ *
  *
  * ============================================================================
  *
@@ -535,7 +605,7 @@
  * ============================================================================
  * Changelog 
  * ============================================================================
- * Version 2.7:
+ * Version 2.8:
  * - first Release 18.12.2021 for SRPG (rpg mv)!
  * -> this REPLACES the old "enemyEquip"-Plugin
  * -> add Enemy class and enemy Level and "steal"Gold/Exp -Skills
@@ -544,6 +614,7 @@
  * -> reworked how chances are stored.. thats needed for a planed extension plugin
  * -> added change class for enemys, and fixed a bug about menu char img not updating on "page Up/Down"
  * -> fixed Issue where exp in mapBattleActions wasnt added
+ * -> added Class paran & upgraded help info
  */
  
 (function() {
@@ -941,6 +1012,7 @@ Game_Enemy.prototype.equips = function() {
     } 
 if (this._equips) {return this.enemyEquips()} else {return 0};
 };
+
 // debug weapon meta info to fit with the SRPGcore Setup for general plugin compatiblety
 Game_Enemy.prototype.metaDebug = function() {
     var eMeta = this.enemy().meta;
@@ -952,11 +1024,44 @@ Game_Enemy.prototype.metaDebug = function() {
     }
 };
 
+Game_Enemy.prototype.isActionValid = function(action) {
+    var skill = action.skillId;
+    return this.meetsCondition(action) && this.canUse($dataSkills[skill]) && this.isClassSkillLearned(skill);
+};
+
+// $gameSystem.EventToUnit(15)[1].isClassSkillLearned(1);
+Game_Enemy.prototype.isClassSkillLearned = function(skill) {
+    var classLearnings = this.currentClass().learnings;
+    var learned = classLearnings.length;
+    var isClassSkillValid = "true";
+    for (var cs = 0; cs < learned; cs++) {  
+         var learnSkill = classLearnings[cs];
+         if (learnSkill && (learnSkill.level > this._level) && (learnSkill.skillId === skill)) {
+             if ((learnSkill.note === this._name) || (learnSkill.note === "All")) isClassSkillValid = "false";
+         };
+    };   
+    if (isClassSkillValid === "false") return false; 
+    return true;
+};
+
+Game_Enemy.prototype.changeClass = function(classId, keepExp) {
+    if (keepExp) {
+        this._exp[classId] = this.currentExp();
+    }
+    this._classId = classId;
+    this.changeExp(this._exp[this._classId] || 0, false);
+    this.refresh();
+};
+
 // Reflect the characteristics of the Enemy_equipment  (add trairs ect)
 var _SRPG_Game_Enemy_traitObjects = Game_Enemy.prototype.traitObjects;
 Game_Enemy.prototype.traitObjects = function() {
     var objects = _SRPG_Game_Enemy_traitObjects.call(this);
     if ($gameSystem.isSRPGMode() == true) {
+        if (this._classId && this._classId > 0) {
+            objects = objects.concat(this.currentClass());
+        }     
+        //objects = objects.concat(this.enemy().params);
         var equips = this.equips();
         for (var i = 0; i < equips.length; i++) {
              var equipSlot = equips[i];
@@ -971,9 +1076,27 @@ Game_Enemy.prototype.traitObjects = function() {
                  }
              };
         };
+
     };
 return objects;
 };	
+
+var _Game_Enemy_paramBase = Game_Enemy.prototype.paramBase
+Game_Enemy.prototype.paramBase = function(paramId) {
+    if (this._classId > 0) {
+        var classParams = this.currentClass().params[paramId][this._level];
+        var enemyParams = this.enemy().params[paramId];
+        var bothParams = classParams + enemyParams;
+        var eMeta = this.enemy().meta;
+        if (!eMeta.addEnemyParams) return classParams;
+        // if meta is added use both
+        return bothParams;
+    } else {
+        // this will return the same as "enemyParams"
+        return _Game_Enemy_paramBase.call(this, paramId);
+    }
+};
+
 // Reflects the ability change value of the Enemy_equipment (add item stats)
 Game_Enemy.prototype.paramPlus = function(paramId) {
     var value = Game_Battler.prototype.paramPlus.call(this, paramId);

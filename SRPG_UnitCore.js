@@ -239,7 +239,7 @@
  *
  * Level: # is the required level to use the skill
  *
- * Skill: # thats the skill which can be resticted related to Level
+ * Skill: # thats the skill which can be restricted related to Level
  *
  * Note:  # this can be "All" or the name of the Monster => example "Slime"
  *

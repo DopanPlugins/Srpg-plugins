@@ -464,9 +464,9 @@
  *
  * Priority ,that decides which Chance applys:
  *
- *  "x" can be any Number from 0 to 100 (100 = 100% chance)
- *
  * Chance_ScriptCalls > "target"-StateNote > "user"-StateNote > pluginParam
+ *
+ *  "x" can be any Number from 0 to 100 (100 = 100% chance)
  *                            
  * <userBreakChance:x>     # StateNotetag that decides the SkillUser BreakChance
  * 

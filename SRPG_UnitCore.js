@@ -143,6 +143,56 @@
  * - upgrade of battlers Status Window on srpg BattleMap
  * ________________________________________________________
  *
+ *
+ * ====================
+ * ====================
+ *  SRPG TEAMS:
+ * ====================
+ * ====================
+ *
+ * Before we start with the UnitCore Plugin Info, 
+ * Here is the plugin Info from SRPG Teams.js, 
+ * which is intigrated into this plugin
+ *
+ * SRPG TEAMS PLUGIN INFO Starts HERE! 
+ *
+ *
+ * Allows actors and enemies to be assigned to teams
+ * /!\ Teams DO NOT automatically change AI behavior or skills /!\
+ *
+ * By checking teams in damage formulas or other plugins, such as SRPG_AIControl,
+ * you can create more team-like behaviors, and by checking the size of each team
+ * you can make more specific victory conditions, allowing for neutral entities
+ * and non-standard "death" conditions, like petrification or permanent charm
+ *
+ * New actor, class, enemy, and state tag:
+ * <srpgTeam:teamName>    changes the battler's team from the default
+ *
+ * New script calls:
+ * a.srpgTeam()       returns the name of the a's team
+ * a.sameTeam(b)      check if a and b are on the same team
+ * $gameSystem.teamSize("teamName")  returns the current size of teamName
+ *                                   only counts living actors and enemies
+ * $gameSystem.teamIsDead("teamName") easily check if the team size is 0
+ *
+ * $gameSystem.teamSize() allows for more advanced win / loss conditions, such as:
+ *
+ * - $gameSystem.teamIsDead("enemy") tells you when no enemies are left, but
+ *   excludes surviving "neutral" enemies (NPCs, breakable objects, etc).
+ *
+ * - $gameSystem.teamIsDead("actor") tells you when no actors are left, but
+ *   excludes technically-alive actors with a "stone" team, applied by a petrify
+ *   state that doesn't wear off on its own, counting them as defeated.
+ *
+ * - A charm status that never expires could change an enemy's team to "traitor," so
+ *   they don't have to be killed for the battle to end.
+ *
+ * - $gameSystem.teamIsDead("crystal") tells you when all battlers on the "crystal"
+ *   team are defeated, regardless of actor or enemy, to easily create defense or
+ *   assault missions
+ *
+ * SRPG TEAMS PLUGIN INFO ENDS HERE! 
+ *
  * ====================
  * ====================
  *  ENEMY NOTETAGS

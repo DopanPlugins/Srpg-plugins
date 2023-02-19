@@ -87,7 +87,7 @@
  *
  *- "this.allAxStartPage(x);" // "x" = Page number ID // runs the EventPage of all ActorUnits
  *
- *- "this.allAxLearnSkill(x);" // "x" = Skill ID (Only for Actors) // add Skill to all ActorUnits
+ *- "this.allAxAddSkill(x);" // "x" = Skill ID (Only for Actors) // add Skill to all ActorUnits
  *
  *- "this.allAxForgetSkill(x);" // "x" = Skill ID (Only for Actors) // remove Skill from all ActorUnits
  *
